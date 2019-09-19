@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO" packages="tenyuproject.tenyu.release1">
+<Properties>
+    <Property name="loglayout">%t%n	%d{yyyy-MMM-dd HH:mm:ss,SSS}%n	%p %C{1}#%M%n	%msg%n%n</Property>
+</Properties>
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${loglayout}" />
+        </Console>
+        <RollingFile name="file" fileName="log/Tenyu.log" filePattern="log/backup/Tenyu-%d{yyyy-MM-dd}-%i.zip">
+        <PatternLayout pattern="${loglayout}"/>
+        <Policies>
+            <OnStartupTriggeringPolicy />
+            <SizeBasedTriggeringPolicy size="20 MB" />
+            <TimeBasedTriggeringPolicy />
+        </Policies>
+        <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        <RollingFile name="error_file" fileName="log/Tenyu_error.log" filePattern="log/backup/Tenyu_error-%d{yyyy-MM-dd}-%i.zip">
+        <PatternLayout pattern="${loglayout}"/>
+        <Policies>
+            <OnStartupTriggeringPolicy />
+            <SizeBasedTriggeringPolicy size="20 MB" />
+            <TimeBasedTriggeringPolicy />
+        </Policies>
+        <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        <TextAreaAppender name="javafx">
+            <PatternLayout pattern="${loglayout}"/>
+        </TextAreaAppender>
+    </Appenders>
+    <Loggers>
+        <Root level="trace">
+            <AppenderRef ref="console" level="trace"/>
+            <AppenderRef ref="file" level="trace"/>
+            <AppenderRef ref="error_file" level="warn"/>
+            <AppenderRef ref="javafx" level="info"/>
+        </Root>
+    </Loggers>
+</Configuration>

@@ -1,0 +1,15 @@
+GuiCaused～は送信側でGUI起因で作成されるメッセージ
+～Guiは受信側でGUI表示
+
+リクエスト
+送信者			受信者
+GUIリクエスト、GUI表示		GuiCausedSimpleMessageGui
+GUIリクエスト、GUI非表示	GuiCausedRequest
+自動リクエスト、GUI表示		UserMessageListMessage等個別ロジックの中でやる。共通化無し
+自動リクエスト、GUI非表示	非GUI系リクエスト
+
+レスポンス
+GUIレスポンス				無し。一旦どこかにデータが蓄積されGUIを通じてリクエストとして処理されるから。
+自動レスポンス、GUI表示		StandardResponseGui
+自動レスポンス、GUI非表示	非GUI系レスポンス
+

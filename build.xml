@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<project name="tenyu" default="default" basedir="." xmlns:fx="javafx:com.sun.javafx.tools.ant">
+	<property name="JAVA_HOME" value="C:/Program Files/Java/jdk1.8.0_202" />
+	<property name="src.dir" value="src" />
+	<property name="classes.dir" value="target/classes" />
+	<property name="dist.dir" value="deploy/dist" />
+	<property name="jar" value="Tenyu.jar" />
+	<property name="title" value="Tenyu" />
+	<property name="main" value="Tenyu" />
+	<property name="width" value="800" />
+	<property name="height" value="600" />
+	<property name="vendor" value="lifeInWild exceptiontenyu@gmail.com satoji@protonmail.com lifeinwild1@gmail.com" />
+
+	<target name="default">
+		<taskdef resource="com/sun/javafx/tools/ant/antlib.xml" uri="javafx:com.sun.javafx.tools.ant" classpath=".:${JAVA_HOME}/lib/ant-javafx.jar" />
+
+		<fx:application id="tenyu" name="${title}" mainClass="${main}" />
+
+		<fx:resources id="appRes">
+			<fx:fileset dir="${dist.dir}" includes="${jar}" />
+		</fx:resources>
+
+		<fx:jar destfile="${dist.dir}/${jar}">
+			<fx:application refid="tenyu" />
+			<fx:resources refid="appRes" />
+			<fileset dir="${classes.dir}" />
+		</fx:jar>
+
+		<fx:deploy width="${width}" height="${height}" nativeBundles="exe" outdir="${basedir}/${dist.dir}" outfile="${title}">
+			<fx:application name="${title}" mainClass="${main}" />
+			<fx:resources>
+				<fx:fileset dir="${basedir}/${dist.dir}" includes="*.jar" />
+			</fx:resources>
+			<fx:info title="${title}" vendor="${vendor}" />
+		</fx:deploy>
+	</target>
+</project>

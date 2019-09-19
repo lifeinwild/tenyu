@@ -1,0 +1,67 @@
+
+.grid {
+		-fx-border-color: #FF6666;
+	-fx-border-insets: 5.0;
+	-fx-border-width: 3.0;
+	-fx-border-style: solid;
+}
+
+#userRegistrationUserNameInput{
+    -fx-max-width: 180.0;
+}
+
+#userRegistrationExplanationInput{
+    -fx-max-width: 300.0;
+}
+
+.label {
+    -fx-font-size: 12.0px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-effect: dropshadow( gaussian , rgba(255.0,255.0,255.0,0.5) , 0.0,0.0,0.0,1.0 );
+}
+.button {
+    -fx-text-fill: white;
+    -fx-font-family: "Arial Narrow";
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(#61a2b1, #2A5058);
+    -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
+}
+.button:hover {
+    -fx-background-color: linear-gradient(#2A5058, #61a2b1);
+}
+
+
+#userUpdateAvatarPane{
+	-fx-spacing: 10.0;
+	-fx-padding: 8.0 8.0 8.0 8.0;
+	-fx-border-color: #CCCCCC;
+	-fx-border-insets: 5.0;
+	-fx-border-width: 3.0;
+	-fx-border-style: solid;
+}
+#materialRegisterUserLimitationPane{
+	-fx-spacing: 10.0;
+	-fx-padding: 8.0 8.0 8.0 8.0;
+	-fx-border-color: #CCCCCC;
+	-fx-border-insets: 5.0;
+	-fx-border-width: 3.0;
+	-fx-border-style: solid;
+}
+
+#materialRelationRegisterRefToMaterialPane{
+	-fx-spacing: 10.0;
+	-fx-padding: 8.0 8.0 8.0 8.0;
+	-fx-border-color: #CCCCCC;
+	-fx-border-insets: 5.0;
+	-fx-border-width: 3.0;
+	-fx-border-style: solid;
+}
+#materialRelationUpdateRefToMaterialPane{
+	-fx-spacing: 10.0;
+	-fx-padding: 8.0 8.0 8.0 8.0;
+	-fx-border-color: #CCCCCC;
+	-fx-border-insets: 5.0;
+	-fx-border-width: 3.0;
+	-fx-border-style: solid;
+}
