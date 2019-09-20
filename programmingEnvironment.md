@@ -746,37 +746,39 @@ OOPという言葉で指定される意味にはユーザー中心コンピュ�
 https://en.wikipedia.org/wiki/Circular_dependency
 https://en.wikipedia.org/wiki/Acyclic_dependencies_principle
 
-こういう3階層の継承があったとします。Parent2>Parent1>Child
-abstract class Paren2{}
-abstract class Parent1 extends Parent2{}
-class Child extends Parent1{}
 
-これを構成で書くとこうなります。
-class Paren2{}
-class Parent1{}
-class Child {
-    private Parent1 p1;
-    private Parent2 p2;
-}
+こういう3階層の継承があったとします。  
+ Parent2>Parent1>Child  
+abstract class Paren2{}  
+abstract class Parent1 extends Parent2{}  
+class Child extends Parent1{}  
+
+これを構成で書くとこうなります。  
+class Paren2{}  
+class Parent1{}  
+class Child {  
+    private Parent1 p1;  
+    private Parent2 p2;  
+}  
 
 **継承では子クラスは親クラスに依存できます**。つまりChildやParent1はParent2のpublicまたはprotectedな要素にアクセスできたはずです。
 **親クラスは仮想メソッドを通じて子クラスで振る舞いを変更できます**。
 **このような継承における上下の依存関係を構成で再現する**にはこうなると思います。
-interfaceを乱立させるような別の書き方もありそうですが、interfaceの乱立自体が問題になります。
-interface EverythingHolder{//child,parent1,parent2の全組み合わせに対してinterfaceを作るべきかも
-    Parent1 getParetn1();
-    Parent2 getParent2();
-    Child getChild();
-}
-class Child implements EverythingHolder{
-    private Parent1 p1;
-    public void do(){
-        p1.method1(this);
-    }
-}
-class Parent1{
-    public void method1(EverythingHolder host){}
-}
+interfaceを乱立させるような別の書き方もありそうですが、interfaceの乱立自体が問題になります。  
+interface EverythingHolder{//child,parent1,parent2の全組み合わせに対してinterfaceを作るべきかも  
+    Parent1 getParetn1();  
+    Parent2 getParent2();  
+    Child getChild();  
+}  
+class Child implements EverythingHolder{  
+    private Parent1 p1;  
+    public void do(){  
+        p1.method1(this);  
+    }  
+}  
+class Parent1{  
+    public void method1(EverythingHolder host){}  
+}  
 p1やp2のメソッドを呼び出すときいちいちthisを与えます。するとp1やp2はthisを通じて全オブジェクトにアクセスできるので、継承にあった親子クラスの相互依存を再現できます。
 メソッドでthisをいちいち与えるのが面倒だからとParent1やParent2のメンバー変数にChildを持たせるかもしれません。
 それは継承よりも強い依存です。継承では親クラスから子クラスを参照する事はできず、そのタイプの依存性は仮想メソッドで抽象化されます。
@@ -786,9 +788,9 @@ p1やp2のメソッドを呼び出すときいちいちthisを与えます。す
 
 継承の長所について。
 **継承は意味を記述できている**。一般にクラスは様々なメンバー変数を持ちますが、**親クラスを継承する記述は他のメンバー変数のクラスとの意味的な違いを記述します**。
-class A extends B{
-    private C c;
-}
+class A extends B{  
+    private C c;  
+}  
 BとCではAとの関係性が違うという事です。具体的にはcはセッター等で置き換わるかもしれませんが、Bのインスタンスが置き換わる事はありません。
 ところが構成ベースで作った場合、親クラスはメンバー変数の1つになります。その意味的な違いの記述を失っており、可読性の低下です。
 
@@ -831,13 +833,13 @@ class Composition{
 
 # 構成的多重継承    案
 多重継承される事が可能なcompositionalクラスという概念を作る。
-構成的多重継承はcompositionalクラスを多重継承する。
-ClassA extends CompositionalClass1, CompositionalClass2
-compositionalクラスのメソッドは再帰的に呼び出される。
-ClassA#equalsが呼び出されたら
-CompositionalClass1#equals
-CompositionalClass2#equals
-も呼び出される。
+構成的多重継承はcompositionalクラスを多重継承する。  
+ClassA extends CompositionalClass1, CompositionalClass2  
+compositionalクラスのメソッドは再帰的に呼び出される。  
+ClassA#equalsが呼び出されたら  
+CompositionalClass1#equals  
+CompositionalClass2#equals  
+も呼び出される。  
 多重継承の典型的問題としてひし形継承の問題が良く言われるが、この再帰的呼び出しによって解決される。
 compositionalクラスは直接newされず、子クラスを通してnewされる。
 
@@ -865,15 +867,15 @@ func(CompositionalClass1 CompositionalClass2 arg1);
 
 compositionalクラスは「メンバー変数としての参照が1か所に限定される」という原則を言語仕様上強制されるとする。
 するとcompositionalクラスのインスタンスは常に一意な親オブジェクトが存在する。
-そしてcompositionalクラスのメソッドから親オブジェクトを参照できる。
-public compositional class Member<T extends Holder>{
-    public void func(){
-        parent.someMethod();//thisみたいな感じでparentが使える。
-    }
-}
-public class HolderImpl implements Holder{
-    private Member<HolderImpl> m1 = new Member<>();//m1と同じインスタンスへの参照はここにしかない。
-}
+そしてcompositionalクラスのメソッドから親オブジェクトを参照できる。  
+public compositional class Member<T extends Holder>{  
+    public void func(){  
+        parent.someMethod();//thisみたいな感じでparentが使える。  
+    }  
+}  
+public class HolderImpl implements Holder{  
+    private Member<HolderImpl> m1 = new Member<>();//m1と同じインスタンスへの参照はここにしかない。  
+}  
 Holderインターフェースはその構成内で相互参照を実現するための、その構成内の標準知識のようなもので、そこに各メンバーへのゲッターを備えれば構成内で相互参照ができます。
 
 さらにcompositionalクラスのインスタンスをメンバーに持つ場合、継承と同様に自動的にそのインターフェースを持つとしても良いと思います。つまりHolderImpl#func()が自動的に存在するという事です。HolderImplがMember m1を持つからです。
@@ -885,10 +887,10 @@ compositionalクラスは多数のインスタンスを作れるが、1つのイ
 
 さらに、compositionalクラスに特定のインターフェースの実装を強制できるといいかと思った。
 例えばHolderImplがそのメンバー変数のうちcompositionalクラスであるものについてvalidate()インターフェースの実装を要求する。
-そしてcompositionsというキーワードをthisやparentのように使えて、そのクラス内のcompositionalクラスである全メンバー変数を参照できる。
-//in HolderImpl
-for(CompositionalMember<HolderImpl> e : compositions)
-    e.validate();
+そしてcompositionsというキーワードをthisやparentのように使えて、そのクラス内のcompositionalクラスである全メンバー変数を参照できる。  
+//in HolderImpl  
+for(CompositionalMember<HolderImpl> e : compositions)  
+    e.validate();  
 このようなコードが可能になるように。
 
 # Neckless言語  解釈、説明
