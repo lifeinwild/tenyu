@@ -1079,13 +1079,18 @@ TenyuはlocalhostのプログラムにWebAPIを提供します。P2Pネットワ
 私が各ゲームエンジンを評価した時の簡易メモです。
 別ファイルに私のソフトウェアに関する思想をまとめましたが、私の思想から、JVMベースのゲームエンジンを選ぶ必要がありました。
 
- - Unity。JVMベースじゃない。商業主義がきつい。SpatialOSが排除された。Tenyuも似たような立ち位置。ランキング上位。最大のエコシステムを持つ。google unity site:www.quora.com
- SpatialOSを排除した事はUnityが非創発ソフトウェアである事を示唆する。
- - UE4。JVMベースじゃない。ランキング上位。google ue4 site:www.quora.com
- - Godot。JVMベースじゃない。ランキング上位、あるいは首位。専門家が最も推奨する印象がある。google godot site:www.quora.com
- - libgdx。開発力が低下中。2Dを主眼にしているが3Dとしても高い評価。BVHサポートが不明。C/C++/Javaで作成された。専門家が推奨する場合がある。google libgdx site:www.quora.com
+ - Unity。JVMベースじゃない。商業主義がきつい。SpatialOSが排除された。Tenyuも似たような立ち位置。ランキング上位。最大のエコシステムを持つ。  
+ google unity site:www.quora.com  
+ SpatialOSを排除した事はUnityが非創発ソフトウェアである事を示唆する。https://gigazine.net/news/20190111-unity-suspended-spatialos/
+ - UE4。JVMベースじゃない。ランキング上位。  
+ google ue4 site:www.quora.com  
+ - Godot。JVMベースじゃない。ランキング上位、あるいは首位。専門家が最も推奨する印象がある。  
+ google godot site:www.quora.com  
+ - libgdx。開発力が低下中。2Dを主眼にしているが3Dとしても高い評価。BVHサポートが不明。C/C++/Javaで作成された。専門家が推奨する場合がある。  
+ google libgdx site:www.quora.com  
  - jME3。2019年4月のclosed issuesが18件。活発とは言えないが死んでいるわけでもない。アセットの読み込みやアニメーションのリターゲッティング処理が充実しておらず、可能なツールチェーンが乏しい。3Dを主眼にしている。アニメーションシステムを大幅に更新中。BVHサポートは中途半端で、古いアニメーションシステムに基づいて書かれている。専用のSDKがあるがアップデートされていない。 jmonkeyはその大規模な更新を始めたところでそれを担当していたコア開発者が非アクティブになった。おおむね、設計もプロジェクトの構成もサンプルコードもしっかりしている印象がある。
- Javaで作成された。google jmonkey site:www.quora.com
+ Javaで作成された。  
+ google jmonkey site:www.quora.com  
  - WhiteStormJS。JSの世界は活発で、ソースコードが公開され、ブラウザ上で実行されよりセキュアであるという長所がある。さらにTenyu基盤ソフトウェアはアセットランタイムになりうるので、多数のJSゲームでアセットランタイムを共有できる。しかしあらゆるブラウザでlocalhostとの通信ができるか分からない。WebRTCはブラウザ上のJSでP2P型オンラインゲームを作る事を可能にするらしい。しかし、P2Pソフトウェアとの連携、WebRTC、ブラウザ3Dゲームなど新しい事をたくさんやる必要があり、どこで問題が生じるか分からない。ブラウザ間の互換性も問題になる。特殊な使い方は想定されていないだろうし。さらに、JSはWebAssemblyに代替される可能性がある。私の考察上、WWW及びJSの未来は怪しい。
  - lwjglエンジン一覧。恐らくほぼ全てのJavaゲームエンジン。http://wiki.lwjgl.org/wiki/Game_Engines_and_Libraries_Using_LWJGL.html#3D_Engines_and_Libraries
  生きているのはlibgdx、jmonkey、Clydeだけ。 チュートリアルがあり実用レベルなのはlibgdxとjmonkeyだけ。
