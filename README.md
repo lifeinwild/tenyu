@@ -302,8 +302,6 @@ OfflineKey:MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAiUDRqf9GiC0rX6k2BxknD1qMB
 PublicKeys.txt
 
 ## 限定公開プロジェクトとして活動していた時のURL
-プロジェクト公開までの経緯について。
-
 https://bitbucket.org/tenyuproject/tenyu/commits/all
 2018年7-9月にかけて、オンラインゲームの古い知り合い2名にこの限定公開プロジェクトの内容を見せました。
 一旦限定公開の段階を作り限られた人に見てもらいフィードバックをもらおうと考えたからです。
