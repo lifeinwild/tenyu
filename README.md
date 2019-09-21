@@ -221,7 +221,7 @@ https://github.com/Nehon/bvhretarget/blob/master/src/com/jme3/scene/plugins/bvh/
   
 # License
 この文書及びTenyu基盤ソフトウェアのソースコード及びバイナリのライセンスはTenyuLicenseです。
-用途制限：本ライセンスは創作活動のプラットフォームを作成する目的ではない場合にのみ適用される。
+用途制限：本ライセンスはp2pソフトウェアまたは創作活動のプラットフォームを作成する目的ではない場合にのみ適用される。
 
 リンク可。記事やコメントやツイートにおけるURL付き引用可。
 
