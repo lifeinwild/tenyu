@@ -1162,11 +1162,15 @@ https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcu
 問題作成情報とはプロセッサ証明の問題関数を作成するための情報です。問題関数とは、それに正しい回答を作成する事でプロセッサ性能が伴っている事を証明できます。
 
 B。各ノードは通常多数の近傍を持っているので多数の問題作成情報を受け取ります。
-受け取った全問題作成情報から1つのハッシュ値を作り、ハッシュ値から一意に定まる問題関数を作成します。
-ここのinteractionメソッドは近傍から多数の問題作成情報を受け取り、それらを総合して1つの問題作成情報を作成し、139 CPUProvement.parallelSolveから呼び出されるCPUProvementクラスは問題作成情報からハッシュ値を作成してハッシュ値から問題関数を作成し、それの返値が特定の値になる引数を探索します。その探索された引数が回答情報になります。
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/processorprovement/RandomString.java
+受け取った全問題作成情報から1つのハッシュ値を作り、ハッシュ値から一意に定まる問題関数を作成します。  
+ここのinteractionメソッドは近傍から多数の問題作成情報を受け取り、それらを総合して1つの問題作成情報を作成し、
+139 CPUProvement.parallelSolve
+から呼び出されるCPUProvementクラスは問題作成情報からハッシュ値を作成してハッシュ値から問題関数を作成し、それの返値が特定の値になる引数を探索します。その探索された引数が回答情報になります。  
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/processorprovement/RandomString.java  
+ここの217 generateProblemがハッシュ値から問題を作成します。そのメソッドのコメントに書かれているのは作成される問題関数の性質。hは元とするハッシュ値。cNはクラス名。  
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/processorprovement/CPUProvement.java
 
-回答を作成できたら近傍に送りますが、ここの182で回答の確認をしています。相手が送ってきた回答が相手が計算した問題に対して正しい事と、その問題が自分がその時作成したランダム値から作られた事を確認できれば、その回答がその時計算された事が分かり、相手がプロセッサを伴っている事が分かります。
+回答を作成できたら近傍に送りますが、ここの182で回答の確認をしています。相手が送ってきた回答が相手が計算した問題に対して正しい事と、その問題が自分がその時作成したランダム値から作られた事を確認できれば、その回答がその時計算された事が分かり、相手がプロセッサを伴っている事が分かります。  
 https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/processorprovement/Answer.java
 
 問題関数を作る時問題作成情報に任意の値を加える事ができます。結局ハッシュ値を作れればいいのと、問題作成情報のランダム値に近傍が送信してきたランダム値が含まれてさえいればその近傍の元で有効であり、他の情報に依存してはならないという制約はないからです。
@@ -1175,7 +1179,7 @@ https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcu
 
 問題関数は引数を取ります。その出力が特定の範囲になるような引数を探索します。
 引数探索より引数の検算の方が簡単にできるので、解くのは難しく確かめるのは簡単という事になります。つまり回答の検証処理は楽になりボトルネックにならなくなります。
-ここの228から検証処理があります。
+ここの228から検証処理があります。  
 https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/processorprovement/Answer.java
 
 問題関数はAにおいてランダム値に依存している事から予め作成しておく事ができません。即ち予め回答を計算しておく事もできません。
@@ -1186,14 +1190,14 @@ C。このとき回答に全問題作成情報を含めます。
 その回答がその問題に対して正しい事を確認します。
 このとき、AとBから、その回答を送ってきたノードは今その計算をして回答をしたのだと分かります。
 そうして初めて全く相互に信用していなかったノードが互いを少し信用します。
-231でスコアインクリメント、115でノードnが今回獲得したスコア、138でノードの信用更新。
+231でスコアインクリメント、115でノードnが今回獲得したスコア、138でノードの信用更新。  
 https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/processorprovement/Answer.java
 
 **なお信用は継続的に、徐々に変化していくものです**。
-ここの168 updateProcessorScoreの実装が示すように、新たに獲得した信用によって既存の信用値が徐々に変化していきます。
+ここの168 updateProcessorScoreの実装が示すように、新たに獲得した信用によって既存の信用値が徐々に変化していきます。  
 https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/subjectivity/P2PEdgeBase.java
-102 getImpressionの返値はノードの信用を大部分決定します。
-ここの284 creditメソッドで最終的なノードの信用値を取得できます。
+102 getImpressionの返値はノードの信用を大部分決定します。  
+ここの284 creditメソッドで最終的なノードの信用値を取得できます。  
 https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/subjectivity/P2PEdge.java
 
 このようにすると他のノードがプロセッサを持っている事を確認していけます。
@@ -1201,7 +1205,7 @@ https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcu
 ダミーアカウントが排除されると、P2Pネットワークで投票が可能になります。つまりプロセッサの性能に応じて投票権が得られているという事です。プロセッサ証明の主旨は1個のプロセッサで大量に実行されるダミーアカウントを排除する事です。
 
 Cの重要性について。回答に含められたランダム値の長さによって、近傍の近傍数を知る事ができて、その近傍数は過少報告が防止されています。近傍の近傍数をある意味で証明的に取得できるという事です。
-187から近傍の近傍数を確認しています。
+187から近傍の近傍数を確認しています。  
 https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/processorprovement/Answer.java  
 Bは1つの問題関数を解くだけで複数の近傍において信用が得られる事を意味します。
 そうであれば、多くのノードの近傍となる事でP2Pネットワークにおいて大きな信用を獲得できます。
@@ -1225,7 +1229,7 @@ Bは1つの問題関数を解くだけで複数の近傍において信用が得
 そして分散合意によって全体運営者の選出投票など、ネットワーク全体での意思決定が可能になります。
 つまりプロセッサ証明の「近傍ノードの信用しか算出できない」という欠点と「近傍についてダミーノードを排除できる」という長所と、分散合意の「ダミーノードに弱い」という欠点と「局所的多数決のみで全体の多数決をした場合と同じ結果になる」という長所が相補的に組み合わさり、P2Pネットワーク全体での多数決が実現されます。
 多数決が実現されるとは即ち少数派意見が排除されるということであり、一部のノードによる不正な改ざんが阻止されるということです。例えばP2Pネットワークで共有されるDB全体のハッシュ値を全ノードが正しく知っていれば不正に改竄されることがありません。
-この短いコードは分散合意の局所的多数決が全体の多数決と同じ結果になる事を示します。私は分散合意を思いついた時実際にサンプルコードを書いて結果を確認するまで確信が得られませんでした。シミュレーション的なコードであり因果関係を頭の中で追いきれないからです。
+この短いコードは分散合意の局所的多数決が全体の多数決と同じ結果になる事を示します。私は分散合意を思いついた時実際にサンプルコードを書いて結果を確認するまで確信が得られませんでした。シミュレーション的なコードであり因果関係を頭の中で追いきれないからです。  
 https://github.com/lifeinwild/tenyu/blob/master/DistributedVoteSample/src/main/java/DistributedVote/P2PApprovalInformationPlatformSample/DistributedVoteTest.java
 
 そして全体運営者を分散合意によって選出します。その選出過程は堅牢であり改竄できません。選出されたノードは自動的にいくつかの権利が与えられ、P2Pネットワーク上で特別な役割を果たせるようになります。**投票によって選出された人が決定した事だからという理由で各ノードはその決定に従います**。全ノードが他のノードを一切信用していない状況からここで初めて全体の意思決定に従う素地が完成します。
@@ -1234,18 +1238,18 @@ https://github.com/lifeinwild/tenyu/blob/master/DistributedVoteSample/src/main/j
 P2Pネットワークを使って何をするかを考えた時、特別な決定を下せる全体運営者の存在は助けになります。全てを純粋に分散的に決定するのは性能や多重送金的問題で難しいからです。**分散的に選出された中央集権的ノード**を受け入れる事はP2P分野の可能性を広げます。そしてこの選出プロセスは堅牢であり誰も恣意的に改ざんできません。ネットワークの過半数のノードが悪意ある改ざんをしない限り。
 ここに分散合意の1実装があります。これ以外に同調処理も特殊な分散合意ですがこちらの方が典型例です。このPowerVoteという機能は、複数の選択肢についてそれぞれの選択肢の影響力をP2Pネットワーク全体で決定します。その中で最大の影響力となったものを採用してもいいし、上位いくつかの選択肢を採用してもいいし、全体運営者の候補を選択肢としてそれぞれの影響力を算出する事にも使えます。
 133で信用が取得され、145で信用が低い意見は除外されます。ここで信用はプロセッサ証明によって得られた近傍の信用です。
-170で次のターンの自分の主張値が設定されます。このような局所的多数決を20ターンも繰り返せばP2Pネットワークがどれほど巨大でも全体で多数決した場合と同じ結果をどのノードにおいても持つ事になります。
+170で次のターンの自分の主張値が設定されます。このような局所的多数決を20ターンも繰り返せばP2Pネットワークがどれほど巨大でも全体で多数決した場合と同じ結果をどのノードにおいても持つ事になります。  
 https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/vote/PowerVoteStatement.java
 
 ## 同調処理
 P2Pネットワークで共有されたDBがノード毎に異なってはいけません。そのため定期的に同調処理が発生してDBを同値にします。
-Tenyu基盤ソフトウェアのDBはHashStoreという機能によってDB全体のハッシュ値を高速に取得できます。
+Tenyu基盤ソフトウェアのDBはHashStoreという機能によってDB全体のハッシュ値を高速に取得できます。  
 https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/db/store/HashStore.java
 そして近傍ノードと現在のDBのハッシュ値について局所的多数決を行いながら、もし不整合があれば食い違っている部分を効率良く特定できます。
 この同調処理における局所的多数決でもプロセッサ証明で得た信用が使用されます。そうすると、もし同調処理において嘘のハッシュ値を近傍に伝えてP2Pネットワークの多数のノードを騙そうとした場合、まず多数のノードで信用を得る必要があり、それにはP2Pネットワークの過半数のノードの合計プロセッサ性能を上回るプロセッサ性能を長期間用いる必要があります。長期間用いる必要があるのは近傍ノードへの信用が継続的に蓄積されるものだからです。
 
 同調処理は極めて入り組んだ並列処理です。
-同調処理関連のクラスはcatchupパッケージにあります。
+同調処理関連のクラスはcatchupパッケージにあります。  
 https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/request/catchup
 
 同調処理も一種の分散合意とみなせます。プロセッサ証明によって助けられた局所的多数決の繰り返し、それによる全体で多数決した場合と同じ結果になるという共通の性質があります。
