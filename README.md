@@ -1158,7 +1158,7 @@ https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcu
 以下、各ノードが互いの信用値をどのように高めていくかという事、それでなぜ全体が堅牢になるか、どのように全体で共有される情報を作るかを説明します。
 
 A。基盤ソフトウェアはプロセッサ証明を実施する日時を定数として持っています。プロセッサ証明は他のノードがプロセッサ性能を伴っている事を確認する方法だと思っておいてください。その日時が来ると全ノードは一斉に近傍にランダム値を含む問題作成情報を送ります。問題作成情報は日時や作成者やランダム値が含まれた、具体的にはここに定義されている情報です。
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/processorprovement/ProblemSrc.java
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/processorprovement/ProblemSrc.java  
 問題作成情報とはプロセッサ証明の問題関数を作成するための情報です。問題関数とは、それに正しい回答を作成する事でプロセッサ性能が伴っている事を証明できます。
 
 B。各ノードは通常多数の近傍を持っているので多数の問題作成情報を受け取ります。
@@ -1193,9 +1193,9 @@ C。このとき回答に全問題作成情報を含めます。
 231でスコアインクリメント、115でノードnが今回獲得したスコア、138でノードの信用更新。  
 https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/processorprovement/Answer.java
 
-**なお信用は継続的に、徐々に変化していくものです**。
+**なお信用は継続的に、徐々に変化していくものです**。  
 ここの168 updateProcessorScoreの実装が示すように、新たに獲得した信用によって既存の信用値が徐々に変化していきます。  
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/subjectivity/P2PEdgeBase.java
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/subjectivity/P2PEdgeBase.java  
 102 getImpressionの返値はノードの信用を大部分決定します。  
 ここの284 creditメソッドで最終的なノードの信用値を取得できます。  
 https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/subjectivity/P2PEdge.java
