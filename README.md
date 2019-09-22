@@ -1167,7 +1167,7 @@ https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcu
   独自の発明であり、「近傍との局所的多数決を繰り返すだけで全体で多数決をした場合と同じ情報が各ノードの手元に現れる」という性質があり、それによって各ノードはただ主観的な信用値を持つだけで良くなる。信用の伝播をしなくていい。サンプルコードでその性質を確認できます。  
   https://github.com/lifeinwild/tenyu/blob/master/DistributedVoteSample/src/main/java/DistributedVote/P2PApprovalInformationPlatformSample/DistributedVoteTest.java
     - 局所的多数決  
-    自分の近傍と何らかの事柄について多数決をする。分散合意はこれを繰り返す。局所的多数決は、平均や中央値を作成する場合もあるし、通常の多数決のように一致ベースで各選択肢の票数を集計する場合もあります。選挙は平均（異常値の排除等もあるが）で、同調処理は一致ベースの集計です。  
+    自分の近傍と何らかの事柄について多数決をする。分散合意はこれを繰り返す。局所的多数決は、平均や中央値を作成する場合もあるし、通常の多数決のように一致ベースで各選択肢の票数を集計する場合もあります。選挙は平均（異常値の排除等もあるが）で、同調処理は一致ベースの集計で最大得票の選択肢を採用します。  
     これのinteractionメソッド等は局所的多数決の実装例です。
     https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/vote/PowerVoteStatement.java
     - ダミーノード  
@@ -1181,7 +1181,7 @@ https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcu
     getImpressionはそのノードへの主観的な信用を返す。 
     https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/subjectivity/P2PEdgeBase.java
   - 選挙  
-  分散合意によって全体運営者の選出や、またはアンケート等ができます。これらP2P技術によって、選挙を操作する事は技術的にできません。 
+  選挙はプロセッサ証明と分散合意によって実現され、全体運営者の選出やアンケート等ができます。これらP2P技術によって、選挙を不正に操作する事は技術的にできません。 
   PowerVoteがその実装です。
   https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/vote/PowerVoteSequence.java
     - 全体運営者  
