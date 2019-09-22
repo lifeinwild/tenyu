@@ -120,7 +120,7 @@ P2Pベースのユーザー中心コンピューティングやゲームミド�
   - [エンドコンテンツ問題](#エンドコンテンツ問題)
 - [基礎技術](#基礎技術)
   - [ノード、エッジという言葉](#ノード、エッジという言葉)
-  - [客観](#客観)
+  - [独自用語](#独自用語)
   - [ストーリー](#ストーリー)
   - [P2P技術と多重送金とオンラインゲームと相互評価フローネットワークとゲームミドルウェア](#P2P技術と多重送金とオンラインゲームと相互評価フローネットワークとゲームミドルウェア)
   - [自由更新](#自由更新)
@@ -1145,9 +1145,109 @@ BVHファイルは基盤ソフトウェアに共用素材として登録され�
 相互評価フローネットワークはP2P技術と無関係です。P2Pノード、P2Pエッジと言っていたら相互評価フローネットワークと区別するためにあえてそう呼んでいます。  
 P2Pネットワークはごく標準的な意味のP2Pネットワークですが、相互評価フローネットワークはP2Pネットワークで共有されるDB上のデータです。
 
-## 客観
-P2Pネットワークで共有されるDBを客観とか統一値と呼ぶ場合があります。ソースコードのObjectivityObject系のクラスが相当します。  
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/objectivity/ObjectivityObject.java
+## 独自用語  
+独自用語が多く分かりにくいと思うので一覧を作成しそれぞれ簡単に説明します。分かりにくい事があったら教えてください。
+
+- P2P技術   
+Tenyuはプロセッサ証明と分散合意という独自のP2P技術によって桁違いの性能と省電力をセキュリティを保ちつつ実現します。
+  - 客観、統一値  
+  P2Pネットワークの全ノードで共有されるDBを客観とか統一値と呼ぶ場合があります。各ノードが客観全体を持ち、同値です。ここに仮想通貨残高や相互評価フローネットワークのエッジ等重要な承認情報が記録される。客観を高速更新できる事及び改ざんされないようにする事がこれら一連のP2P技術の主旨である。ソースコードのObjectivityObject系のクラスが相当します。例えばUserはそれを継承しているので客観DBに記録される事が分かります。  
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/objectivity/ObjectivityObject.java   
+objectivityパッケージに客観系のクラスがまとめられています。
+https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/objectivity
+  - 主観  
+  各ノードの手元でのみ扱われる情報。
+  基本的に他のノードと共有されない。
+  例えば近傍の各ノードをどれくらい信用するかという情報は主観として扱われる。  
+  subjectivityパッケージに主観系のクラスがまとめられています。ここにP2PNodeやP2PEdgeがある事を確認してください。それらクラスは相互評価フローネットワークと無関係です。P2Pプラットフォームの確立過程、つまり基礎技術が駆使される段階では主観系のクラスが主に使用されます。
+  https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/subjectivity
+  - プログラム及び定数  
+  当然ながら全ノードが同じP2Pソフトウェアを実行し、そこには定数などがあり、それも全ノードで同値である事が期待できる情報の一種と言える。P2PソフトウェアはTenyu基盤ソフトウェアと呼んでいる。
+  - 分散合意  
+  独自の発明であり、「近傍との局所的多数決を繰り返すだけで全体で多数決をした場合と同じ情報が各ノードの手元に現れる」という性質があり、それによって各ノードはただ主観的な信用値を持つだけで良くなる。信用の伝播をしなくていい。サンプルコードその性質を確認できます。  
+  https://github.com/lifeinwild/tenyu/blob/master/DistributedVoteSample/src/main/java/DistributedVote/P2PApprovalInformationPlatformSample/DistributedVoteTest.java
+    - 局所的多数決  
+    自分の近傍と何らかの事柄について多数決をする。分散合意はこれを繰り返す。  
+    これのinteractionメソッド等は局所的多数決の実装例です。
+    https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/vote/PowerVoteStatement.java
+    - ダミーノード  
+    1台のPCで大量に実行されたノード等。ダミーノードが分散合意において影響力を持つようでは客観は改ざんされてしまうし選挙は操作されてしまう。
+    - ターン  
+    分散合意は局所的多数決を数回繰り返すが、各ノードがベストエフォートで最速実行するのではなく、ターンがあり、速く通信が終わったノードは次のターンの開始時間が来るまで待機する。  
+    getTurnCountMaxは分散合意におけるターン数を返します。
+  - プロセッサ証明
+    - 主観的な信用  
+    主観的な信用は、近傍のノードをどれくらい信用するか＝分散合意の局所的多数決でその近傍の主張値にどれくらいの票数を与えるか、を決定する数値である。信用は大部分プロセッサ証明を通じた演算量証明によって増加する。分散合意が局所的多数決のみでP2Pネットワーク全体での同調ができるという性質をもたらすので信用は主観的で良いという事になります。主観一般の改竄不可能性及び分散合意における主観的な信用で良いという性質は即ち演算量証明以外に改ざん困難な信用ソースを持ちうる事を意味する。例えば友人のノードを強く信用する等できる。 
+    getImpressionはそのノードへの主観的な信用を返す。 
+    https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/subjectivity/P2PEdgeBase.java
+  - 選挙  
+  分散合意によって全体運営者の選出や、またはアンケート等ができます。これらP2P技術によって、選挙を操作する事は技術的にできません。 
+  PowerVoteがその実装です。
+  https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/vote/PowerVoteSequence.java
+    - 全体運営者  
+    選挙によって選出され、共同主体の管理者になり、共同主体からエッジを作成します。その他Tenyu全体の設定値などを決めたり、BANの最終判断をします。  
+    ここのmanagerListが全体運営者一覧です。複数居て、それぞれ影響力割合が設定されています。 
+    https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/objectivity/ObjectivityCore.java
+  - 同調処理  
+  客観DBを全ノードで同値にするための処理で、随時、各ノード各々のタイミングで行われます。  
+  cathcupパッケージに同調処理系のクラスがまとめられていますが、このあたりは極めて複雑な並列処理です。 
+  https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/middle/catchup
+    - 整合性情報  
+    客観はUserStoreやSocialityStoreなど様々な多彩な機能のためのストアを持ちますが、各ストアのハッシュ値を集めた整合性情報を近傍とやり取りします。近傍と現在の整合性情報について局所的多数決を行い、正しい整合性情報（各種ストアのハッシュ値）を特定し、自分の客観がずれていたら修正します。 
+    https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/middle/catchup/Integrity.java
+    - 一斉更新  
+    これらP2P技術によって客観DBは常に多数派と同値なものになり、攻撃者でなくとも一部のノードが客観DBを更新するだけでは即座に古い値に巻き戻ります。客観DBの保護システムが動作している事で客観DBの更新は「一斉更新」が必要になります。定期的に一斉に全く同じように客観DBを更新する事で巻き戻らなくなります。一斉更新の実装方法は2種類考えられました。参照：純粋P2P型のみでP2Pプラットフォームを実現するには  
+    現在実装されているのはブロードキャストに頼らない方法です。  
+    一斉更新はこのあたりのコードに書かれていますが、同調処理とのタイミング問題の解決等極めて複雑です。  
+    https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/right/ObjectivityUpdateSequence.java
+    - 客観DB不整合検出、ハッシュツリー  
+    客観DBが不整合である事が判明した時、どの部分が不整合を起こしているのか効率良く特定する必要があります。そこを特定できたら近傍から正しい値を取得して自分の客観DBを上書きします。不正な値を教えられても客観DB全体のハッシュ値が分かっているので正しいハッシュ値になるまで繰り返し同調処理が行われます。  
+    このHashStoreクラスはハッシュツリーを提供し、不整合箇所を効率良く特定できます。 
+    https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/db/store/HashStore.java
+  - 近傍の定期削除  
+  各ノードは独自の近傍一覧を持ちますが、それはレイテンシの悪さや同じ時間帯にオンラインにならない等の理由で定期的に削除され、近傍一覧は洗練されていきます。ここのrankingAndRemoveがそれを行っています。  
+  https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/subjectivity/UpdatableNeighborList.java
+
+- P2Pプラットフォームが確立しさえすれば実現性に問題が無い各種多彩な機能
+  - ユーザー登録  
+  紹介制です。既存ユーザーの紹介が無ければ登録できません。こうする事で、BANされた人が繰り返しユーザー登録するのが困難になります。不正者を繰り返し紹介する人もBANされるからです。  
+  Userクラス  
+  https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/objectivity/naturality/User.java   
+  User登録メッセージ  
+  https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/request/gui/right/user/UserRegistration.java  
+  - 相互評価フローネットワーク  
+  あらゆるソフトウェアや知識の生産活動を収益化するため、創作者による相互評価が記述されたフローネットワークです。
+    - ノード  
+    相互評価フローネットワーク上のノードであり、様々な種類があり、種類毎に管理者になる方法が違います。  
+    ソースコード上ではSocialityがノードに相当し、客観DBに記録されます。SocialityにWalletがありそこに仮想通貨残高がある事を確認してください。これはUserだけでなく共同主体やWebページ等が仮想通貨残高を持ちうるという事で、いわば法人のような非人間が残高を持ちうるということです。
+    https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/objectivity/sociality/Sociality.java
+      - 共同主体ノード  
+      選挙によって全体運営者になる事で管理者になれます。相互評価フローネットワークの根本にあるノードで、ここから経路ができてフローが流れ込むと仮想通貨分配を受けれます。
+      - ユーザーノード  
+      ユーザー登録をすると自動的に作成され、そのユーザーが管理者になります。
+      - Webノード   
+      誰かが未登録のURLについてURL証明をするか、他のノードが未登録のURLにエッジを作成した場合に作成されます。
+        - URL証明 
+        任意のWebページをTenyuのシステムに登録し、相互評価フローネットワーク上のWebノードを作成できます。https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/middle/takeoverserver/urlprovement/URLProvementServer.java 
+      - レーティングゲームノード  
+      レーティングゲームが登録された時に登録され、その登録者が管理者になります。
+      - 常駐空間ゲームノード  
+      常駐空間ゲームが登録された時に登録され、その登録者が管理者になります。
+    - エッジ  
+    貢献を記述します。例えばフリーソフト→ライブラリというようなエッジが作られます。 
+    https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/objectivity/sociality/Edge.java
+  - 仮想通貨分配  
+  定期的に（1日1回など）相互評価フローネットワークを通じてフロー計算が行われ、共同主体からフローが流れ込んだノードに仮想通貨が分配されます。資金源は共同主体の仮想通貨残高です。
+    - 無責任支払い  
+    仮想通貨分配は共同主体のみが支払うので、ユーザーが支払う事はありません。一方でユーザーは相互評価フローネットワーク上でエッジを作成する権限を持ちます。つまり自分が支払うわけじゃないのに他の人を収益化できます。
+  - 連合型MMO 
+  多数の異なる制作者が小さなゲームを登録して、それらを連携させて連合型MMOを実現します。連合型MMOの長所は、1つのゲームが廃れるだけでは全体に影響が無い事です。全ゲームで共通の通貨やユーザーDBを使います。連合型MMOを通じて分配された仮想通貨が共同主体の元へ回収されます。つまり有料アイテムを購入したら支払われた仮想通貨は共同主体の残高に入るということです。
+    - レーティングゲーム  
+    試合形式のゲームが開催されレーティングを高めます。
+    - 常駐空間ゲーム  
+    いわゆるMMOのフィールドに相当し、大勢でボスモンスターを討伐する等のゲームが可能です。
+
+その他programmingEnvironment.mdにも独自用語がありますが、そこで説明されています。
   
 ## ストーリー
 最初、全ノードは互いを全く信用していません。  
