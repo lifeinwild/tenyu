@@ -1196,8 +1196,7 @@ https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcu
     客観はUserStoreやSocialityStoreなど様々な多彩な機能のためのストアを持ちますが、各ストアのハッシュ値を集めた整合性情報を近傍とやり取りします。近傍と現在の整合性情報について局所的多数決を行い、正しい整合性情報（各種ストアのハッシュ値）を特定し、自分の客観がずれていたら修正します。 
     https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/middle/catchup/Integrity.java
     - 一斉更新  
-    これらP2P技術によって客観DBは常に多数派と同値なものになり、攻撃者でなくとも一部のノードが客観DBを更新するだけでは即座に古い値に巻き戻ります。客観DBの保護システムが動作している事で客観DBの更新は「一斉更新」が必要になります。定期的に一斉に全く同じように客観DBを更新する事で巻き戻らなくなります。一斉更新の実装方法は2種類考えられました。参照：純粋P2P型のみでP2Pプラットフォームを実現するには  
-    現在実装されているのはブロードキャストに頼らない方法です。  
+    これらP2P技術によって客観DBは常に多数派と同値なものになり、一部のノードが客観DBを更新するだけでは即座に古い値に巻き戻ります。客観DBの保護システム（＝同調処理）が動作している事で客観DBの更新は「一斉更新」が必要になります。定期的に一斉に全く同じように客観DBを更新すれば近傍と客観DBを同調させても巻き戻らなくなります。
     一斉更新はこのあたりのコードに書かれていますが、同調処理とのタイミング問題の解決等極めて複雑です。  
     https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/right/ObjectivityUpdateSequence.java
     - 客観DB不整合検出、ハッシュツリー  
@@ -1205,7 +1204,7 @@ https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcu
     このHashStoreクラスはハッシュツリーを提供し、不整合箇所を効率良く特定できます。 
     https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/db/store/HashStore.java
   - 近傍の定期削除  
-  各ノードは独自の近傍一覧を持ちますが、それはレイテンシの悪さや同じ時間帯にオンラインにならない等の理由で定期的に削除され、近傍一覧は洗練されていきます。ここのrankingAndRemoveがそれを行っています。  
+  各ノードは独自の近傍一覧を持ちますが、それはレイテンシの悪さや同じ時間帯にオンラインにならない等の理由で定期的に削除され、近傍一覧は洗練されていきます。ここのrankingAndRemoveがそれを行っています。近傍から定期的に演算量証明を通じて信用値を獲得しないと近傍関係を削除されてしまうので、ダミーノードに対して常に排除圧がかかっています。  
   https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/subjectivity/UpdatableNeighborList.java
 
 - P2Pプラットフォームが確立しさえすれば実現性に問題が無い各種多彩な機能
