@@ -1188,7 +1188,7 @@ https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcu
     getImpressionはそのノードへの主観的な信用を返す。 
     https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/subjectivity/P2PEdgeBase.java
   - 選挙  
-  選挙はプロセッサ証明と分散合意によって実現され、全体運営者の選出やアンケート等ができます。これらP2P技術によって、選挙を不正に操作する事は技術的にできません。 
+  選挙はプロセッサ証明と分散合意によって実現され、全体運営者の選出やアンケート等ができます。これらP2P技術によって、選挙を不正に操作する事は技術的にできません。同調処理と異なり**全ノードが同時に一斉に行います**。 
   PowerVoteがその実装です。
   https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/vote/PowerVoteSequence.java
     - 全体運営者  
@@ -1196,7 +1196,7 @@ https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcu
     ここのmanagerListが全体運営者一覧です。複数居て、それぞれ影響力割合が設定されています。 
     https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/objectivity/ObjectivityCore.java
   - 同調処理  
-  客観DBを全ノードで同値にするための処理で、随時、各ノード各々のタイミングで行われます。  
+  客観DBを全ノードで同値にするための処理で、随時、**各ノード各々のタイミングで**行われます。この点で選挙と異なります。  
   cathcupパッケージに同調処理系のクラスがまとめられていますが、このあたりは極めて複雑な並列処理です。 
   https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/middle/catchup
     - 整合性情報  
