@@ -1170,9 +1170,9 @@ https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcu
   - 分散合意  
   独自の発明であり、「近傍との局所的多数決を繰り返すだけで全体で多数決をした場合と同じ情報が各ノードの手元に現れる」という性質があり、それによって各ノードはただ主観的な信用値を持つだけで良くなる。信用の伝播をしなくていい。サンプルコードでその性質を確認できます。  
   https://github.com/lifeinwild/tenyu/blob/master/DistributedVoteSample/src/main/java/DistributedVote/P2PApprovalInformationPlatformSample/DistributedVoteTest.java
-    - 局所的多数決  
+    - 局所的多数決、相互作用関数  
     自分の近傍と何らかの事柄について多数決をする。分散合意はこれを繰り返す。局所的多数決は、平均や中央値を作成する場合もあるし、通常の多数決のように一致ベースで各選択肢の票数を集計する場合もあります。選挙は平均（異常値の排除等もあるが）で、同調処理は一致ベースの集計で最大得票の選択肢を採用します。  
-    これのinteractionメソッド等は局所的多数決の実装例です。
+    これのinteractionメソッド等は局所的多数決の実装例です。なお局所的多数決はもともと相互作用関数と呼んでいたので、メソッド名がinteraction(相互作用)という名前になっています。
     https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/vote/PowerVoteStatement.java
     - ダミーノード  
     1台のPCで大量に実行されたノード等。ダミーノードが分散合意において影響力を持つようでは客観は改ざんされてしまうし選挙は操作されてしまう。
