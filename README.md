@@ -1162,7 +1162,7 @@ https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcu
   subjectivityパッケージに主観系のクラスがまとめられています。ここにP2PNodeやP2PEdgeがある事を確認してください。それらクラスは相互評価フローネットワークと無関係です。P2Pプラットフォームの確立過程、つまり基礎技術が駆使される段階では主観系のクラスが主に使用されます。
   https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/subjectivity
   - プログラム及び定数  
-  当然ながら全ノードが同じP2Pソフトウェアを実行し、そこには定数などがあり、それも全ノードで同値である事が期待できる情報の一種と言える。P2PソフトウェアはTenyu基盤ソフトウェアと呼んでいる。
+  当然ながら全ノードが同じP2Pソフトウェアを実行し、そこには定数などがあり、それも全ノードで同値である事が期待できる情報の一種と言える。これも統一値と呼ぶ場合があります。P2PソフトウェアはTenyu基盤ソフトウェアと呼んでます。
   - 分散合意  
   独自の発明であり、「近傍との局所的多数決を繰り返すだけで全体で多数決をした場合と同じ情報が各ノードの手元に現れる」という性質があり、それによって各ノードはただ主観的な信用値を持つだけで良くなる。信用の伝播をしなくていい。サンプルコードその性質を確認できます。  
   https://github.com/lifeinwild/tenyu/blob/master/DistributedVoteSample/src/main/java/DistributedVote/P2PApprovalInformationPlatformSample/DistributedVoteTest.java
