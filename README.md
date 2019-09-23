@@ -1282,7 +1282,7 @@ A。基盤ソフトウェアはプロセッサ証明を実施する日時を定�
 その日時が来ると全ノードは一斉に近傍にランダム値を含む問題作成情報を送ります。問題作成情報は日時や作成者やランダム値が含まれた、具体的にはここに定義されている情報です。
 https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/processorprovement/ProblemSrc.java  
 問題作成情報とはプロセッサ証明の問題関数を作成するための情報です。問題関数とは、それに正しい回答を作成する事でプロセッサ性能が伴っている事を証明できます。  
-各ノードが自分だけの問題（近傍から送られたランダム値に依存した問題）を解くので、ブロックチェーンのように共通の問題を解くわけではありません。
+各ノードが自分だけの問題（近傍から送られたランダム値に依存した問題）を解くので、ブロックチェーンのように共通の問題を解くわけではありません。  
 
 B。各ノードは通常多数の近傍を持っているので多数の問題作成情報を受け取ります。
 受け取った全問題作成情報から「総合された問題作成情報」を作り、そこからハッシュ値を作り、ハッシュ値から一意に定まる問題関数を作成します。  
@@ -1292,7 +1292,8 @@ B。各ノードは通常多数の近傍を持っているので多数の問題�
 から呼び出されるCPUProvementクラスは問題作成情報からハッシュ値を作成してハッシュ値から問題関数を作成し、それの返値が特定の値になる引数を探索します。その探索された引数が回答情報になります。  
 https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/processorprovement/RandomString.java  
 ここの217 generateProblemがハッシュ値から問題を作成します。そのメソッドのコメントに書かれているのは作成される問題関数の性質。hは元とするハッシュ値。cNはクラス名。  
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/processorprovement/CPUProvement.java
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/processorprovement/CPUProvement.java   
+このように近傍から寄せられた多数の問題作成情報からただ1つの総合された問題作成情報を作りそこから問題関数を作り、つまりただ1つの問題関数を解くだけで全ての近傍において演算量証明ができるということは、近傍数の増加に反比例して1ノードあたりの演算量証明が低下するという事が無くなります。もし1つ1つの近傍に異なる問題を解いていたら、近傍を増やすのが難しくなり、それは孤立するノードを多発させP2Pネットワークを脆弱にします。演算量証明のために近傍関係にそこまで深刻な制限をもたらしてはいけないということで、この全近傍でまとめて演算量証明できるというアイデアが必要でした。
 
 回答を作成できたら近傍に送りますが、ここの182で回答の確認をしています。相手が送ってきた回答が相手が計算した問題に対して正しい事と、その問題が自分がその時作成したランダム値から作られた事を確認できれば、その回答がその時計算された事が分かり、相手がプロセッサを伴っている事が分かります。  
 https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/processorprovement/Answer.java
