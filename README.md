@@ -1173,8 +1173,9 @@ https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcu
   - プログラム及び定数  
   当然ながら全ノードが同じP2Pソフトウェアを実行し、そこには定数などがあり、それも全ノードで同値である事が期待できる情報の一種と言える。これも統一値と呼ぶ場合があります。P2PソフトウェアはTenyu基盤ソフトウェアと呼んでます。
   - 分散合意  
-  P2Pネットワークの全ノードで共通の改竄困難な情報を持つという問題を、ダミーノードが排除された局所的多数決を実施するという問題へ帰結させるアイデア。独自の発明であり、「近傍との局所的多数決を繰り返すだけで全体で多数決をした場合と同じ情報が各ノードの手元に現れる」という性質があり、それによって各ノードはただ主観的な信用値を持つだけで良くなる。信用の伝播をしなくていい。サンプルコードでその性質を確認できます。  
-  https://github.com/lifeinwild/tenyu/blob/master/DistributedVoteSample/src/main/java/DistributedVote/P2PApprovalInformationPlatformSample/DistributedVoteTest.java
+  P2Pネットワークの全ノードで共通の改竄困難な情報を持つという問題を、ダミーノードが排除された局所的多数決を実施するという問題へ帰結させるアイデア。独自の発明であり、「近傍との局所的多数決を繰り返すだけで全体で多数決をした場合と同じ情報が各ノードの手元に現れる」という性質があり、局所的多数決をするだけで良くなるから各ノードはただ近傍への主観的な信用値を持つだけで良くなる。信用の伝播をしなくていいし、アタッカーが改ざんしうる情報を元に信用を作るという事が無い。主観情報はそもそもアクセスされないから改竄されない。サンプルコードでその性質を確認できます。分散合意は平均、同値型があるし、全ノード一斉にやる場合もあれば任意タイミングでやる場合もあります。   
+  https://github.com/lifeinwild/tenyu/blob/master/src/sample/java/bei7473p5254d69jcuat/tenyu/sample/DistributedVoteSample2015.java    
+  https://github.com/lifeinwild/tenyu/blob/master/src/sample/java/bei7473p5254d69jcuat/tenyu/sample/DistributedVoteSample2018.java    
     - 局所的多数決、相互作用関数  
     自分の近傍と何らかの事柄について多数決をする。分散合意はこれを繰り返す。局所的多数決は、平均や中央値を作成する場合もあるし、通常の多数決のように一致ベースで各選択肢の票数を集計する場合もあります。選挙は平均（異常値の排除等もあるが）で、同調処理は一致ベースの集計で最大得票の選択肢を採用します。  
     これのinteractionメソッド等は局所的多数決の実装例です。なお局所的多数決はもともと相互作用関数と呼んでいたので、メソッド名がinteraction(相互作用)という名前になっています。
@@ -1378,7 +1379,8 @@ Bは1つの問題関数を解くだけで複数の近傍において信用が得
 つまりプロセッサ証明の「近傍ノードの信用しか算出できない」という欠点と「近傍についてダミーノードを排除できる」という長所と、分散合意の「ダミーノードに弱い」という欠点と「局所的多数決のみで全体の多数決をした場合と同じ結果になる」という長所が相補的に組み合わさり、P2Pネットワーク全体での多数決が実現されます。
 多数決が実現されるとは即ち少数派意見が排除されるということであり、一部のノードによる不正な改ざんが阻止されるということです。例えばP2Pネットワークで共有されるDB全体のハッシュ値を全ノードが正しく知っていれば不正に改竄されることがありません。
 この短いコードは分散合意の局所的多数決が全体の多数決と同じ結果になる事を示します。私は分散合意を思いついた時実際にサンプルコードを書いて結果を確認するまで確信が得られませんでした。シミュレーション的なコードであり因果関係を頭の中で追いきれないからです。  
-https://github.com/lifeinwild/tenyu/blob/master/DistributedVoteSample/src/main/java/DistributedVote/P2PApprovalInformationPlatformSample/DistributedVoteTest.java  
+https://github.com/lifeinwild/tenyu/blob/master/src/sample/java/bei7473p5254d69jcuat/tenyu/sample/DistributedVoteSample2015.java    
+https://github.com/lifeinwild/tenyu/blob/master/src/sample/java/bei7473p5254d69jcuat/tenyu/sample/DistributedVoteSample2018.java    
 このコードは基盤ソフトウェアの実装における分散合意のコードです。これ以外に同調処理も分散合意です。getTurnCountMaxは20回局所的多数決を繰り返す事を示しています。interactionは局所的多数決の実装です。PowerVoteは複数の選択肢に合計値が1.0になる実数値をつける処理です。それは各選択肢の重みづけという事であり、PowerVoteさえあれば様々な意思決定が可能になります。全体運営者候補AとBが居てAが0.7、Bが0.3の影響力を持つ、というようなある種の影響力配分が可能です。あるいは最大値を獲得したAのみが特別な権限を持つようにする事もできます。PowerVoteさえあれば一通りのアンケートや意思決定的な処理ができるということです。  
 https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/vote/PowerVoteStatement.java
 
