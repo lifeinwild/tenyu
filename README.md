@@ -1249,9 +1249,8 @@ https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcu
   User登録メッセージ  
   https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/request/gui/right/user/UserRegistration.java  
   - [相互評価フローネットワーク](#相互評価フローネットワーク)  
-    - [ノードとエッジの種類](#ノードとエッジの種類)  
-    相互評価フローネットワーク上のノードであり、様々な種類があり、種類毎に管理者になる方法が違います。  
-    ソースコード上ではSocialityがノードに相当し、客観DBに記録されます。SocialityにWalletがありそこに仮想通貨残高がある事を確認してください。これはUserだけでなく共同主体やWebページ等が仮想通貨残高を持ちうるという事で、いわば法人のような非人間が残高を持ちうるということです。
+    - 相互評価フローネットワークのノード  
+    様々な種類があり、種類毎に管理者になる方法が違います。ソースコード上ではSocialityがそれで、客観DBに記録されます。SocialityにWalletがありそこに仮想通貨残高がある事を確認してください。これはUserだけでなく共同主体やWebページ等が仮想通貨残高を持ちうるという事で、いわば法人のような非人間が残高を持ちうるということです。
     https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/objectivity/sociality/Sociality.java
       - 共同主体ノード  
       選挙によって全体運営者になる事で管理者になれます。相互評価フローネットワークの根本にあるノードで、ここから経路ができてフローが流れ込むと仮想通貨分配を受けれます。
@@ -1273,9 +1272,9 @@ https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcu
     仮想通貨分配では共同主体のみが支払うのでユーザーは少しも支払いません。一方でユーザーは相互評価フローネットワーク上でエッジを作成する権限を持ちます。つまり自分が支払うわけじゃないのに他の人に報酬を与えれます。これによって貢献関係の記述（相互評価フローネットワーク上のエッジ作成）は人々の善意に任せやすくなります。もし他の人にエッジを作成する事が自分の支出になるなら貢献があった事を認識していても作成を渋るかもしれません。
   - [連合型MMO](#仮想経済)   
     - [レーティングゲーム](#レーティングゲーム)  
-    試合形式のゲームが開催されレーティングを高めます。
+    https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/objectivity/naturality/game/RatingGame.java
     - [常駐空間ゲーム](#常駐空間ゲーム)  
-    いわゆるMMOのフィールドに相当し、大勢でボスモンスターを討伐する等のゲームが可能です。
+    https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/objectivity/naturality/game/StaticGame.java
 - Tenyutalk   
 この概念は後回しで問題無いと思います。
 これはユーザー中心コンピューティングのためのシステムで、peoplewareと呼ばれていた概念をユーザー中心に変えるものです。  
