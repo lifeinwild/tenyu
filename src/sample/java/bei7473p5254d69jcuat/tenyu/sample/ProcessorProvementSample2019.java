@@ -354,9 +354,9 @@ public class ProcessorProvementSample2019 {
 				//近傍からのランダム値をつなげる。
 				StringBuilder joinedRndStr = new StringBuilder();
 				for (Edge e : edges) {
-					if (e.getRndStr() == null)
+					if (e.getRndStrFromNeighbor() == null)
 						continue;
-					joinedRndStr.append(e.getRndStr());
+					joinedRndStr.append(e.getRndStrFromNeighbor());
 				}
 
 				//総合された問題作成情報
@@ -479,7 +479,7 @@ public class ProcessorProvementSample2019 {
 			//さらに自分が送ったランダム値に依存した問題を解いたかをチェックする
 			//これで相手が”今作成された問題に回答した”ことも確認できる
 			if (edge == null || !result.getProblemSrc().getRndStr()
-					.contains(edge.getRndStrFromNeighbor())) {
+					.contains(edge.getRndStr())) {
 				//System.out.println("スパム攻撃検出");
 				return;
 			}
