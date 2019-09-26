@@ -21,6 +21,9 @@ public class CPUProvementTestSample2018 {
 		byte[] respondentPubB = respondentPub.getEncoded();
 
 		//問題作成	これらの入力から問題関数が作成される
+		//参照：CPUProvementSample2018の756
+		//そこでハッシュ値からコードを動的に作成している
+		//”任意の情報に依存した動的な演算量証明問題”を可能にする
 		CPUProvementSample2018 problem = new CPUProvementSample2018("aaaa",
 				2017, 12, 17, 0, 1, respondentPubB);
 		//回答計算をして結果が返る
