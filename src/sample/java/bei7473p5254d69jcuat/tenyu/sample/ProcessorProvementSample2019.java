@@ -520,6 +520,10 @@ public class ProcessorProvementSample2019 {
 		 * 近傍からランダム値を受信する
 		 */
 		public void receive(Node sender, String rndStr) {
+			//ランダム値の長さはソフトウェアの定数によって制限される
+			//この制限が全ランダム値の長さから近傍の近傍数の取得を可能にする
+			if(rndStr == null || rndStr.length() != rndStrLen)
+				return;
 			Edge e = getEdge(sender);
 			if (e == null)
 				return;
