@@ -124,7 +124,6 @@ public class ProcessorProvementSample2019 {
 		for (Node n : allNodes) {
 			int max = neighborMax;
 			if (n.isOverCount()) {
-				//System.out.println("過剰近傍攻撃");
 				//過剰近傍攻撃ノードなら制限を超えて近傍を作る
 				max *= 3;
 			}
