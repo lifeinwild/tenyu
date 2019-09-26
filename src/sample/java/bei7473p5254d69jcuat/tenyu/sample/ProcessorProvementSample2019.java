@@ -57,11 +57,14 @@ public class ProcessorProvementSample2019 {
 	//善意のノードの数
 	private static final int goodNodeCount = (int) (allNodeCount * 0.25);
 
+	/**
+	 * @return	正常値を持っている善意ノード数 / 善意ノード数
+	 */
 	private static double getRate() {
-		//善意のノードにおける正常値を持っているノード数
+		//正常値を持っている善意ノード数
 		int goodCount = 0;
 		for (Node n : allNodes) {
-			//悪意のノードを除外
+			//悪意ノードを除外
 			if (n.isDummy() || n.isOverCount() || n.isSpam()) {
 				continue;
 			}
