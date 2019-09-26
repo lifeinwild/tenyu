@@ -1467,6 +1467,8 @@ https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcu
 https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/middle/takeoverserver/usermessagelist/UserMessageListServer.java
 
 ## ターン
+※セキュリティ上同調処理でターン概念が不要であるという認識はTenyuのP2P技術において最も捉えるのが難しいと思います。しかもそれは一斉更新を裏で支える重要な仕組みです。P2Pネットワークでノードがオンラインになったりオフラインになったりする描像、そしてオンラインになったノードが客観遅れを自分のタイミングで修正していく描像を捉え全体として多数派の客観が同値なまま推移する描像を捉える必要があります。
+
 分散合意は局所的多数決を数回繰り返すが、選挙型では各ノードがベストエフォートで最速実行するのではなく、ターンがあり、速く通信が終わったノードは次のターンの開始時間が来るまで待機する。  
 ここの285 sleepUntilでそのターンの終了時間が来るまで待機します。  
 https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/TurnBaseMessage.java  
