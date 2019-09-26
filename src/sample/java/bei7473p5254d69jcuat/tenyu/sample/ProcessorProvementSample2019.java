@@ -186,7 +186,8 @@ public class ProcessorProvementSample2019 {
 		double rate = getRate();
 		System.out.println("after sync 善意のﾉｰﾄﾞにおける正常値率=" + rate);
 		//少し正常値率が低下するのはスパム攻撃ノードが正しく近傍に回答を送信する場合があるから。
-		//その場合真っ当に演算量証明できているので善意のノードに影響する
+		//その場合真っ当に演算量証明できているので善意のノードから信用を得て分散合意に影響する
+		//とはいえ、それはスパム攻撃が成功した事を示すものではない
 		return rate;
 	}
 
