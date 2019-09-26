@@ -54,6 +54,25 @@ public class ProcessorProvementSample2019 {
 	 */
 	private static final List<Node> allNodes = new ArrayList<>();
 
+	//善意のノードの数
+	private static final int goodNodeCount = (int) (allNodeCount * 0.25);
+
+	private static double getRate() {
+		//善意のノードにおける正常値を持っているノード数
+		int goodCount = 0;
+		for (Node n : allNodes) {
+			//悪意のノードを除外
+			if (n.isDummy() || n.isOverCount() || n.isSpam()) {
+				continue;
+			}
+			if (n.getData().equals(goodVal)) {
+				goodCount++;
+			}
+		}
+
+		return (double) goodCount / goodNodeCount;
+	}
+
 	public static void main(String[] args) {
 		sampleCase();
 	}
@@ -80,9 +99,6 @@ public class ProcessorProvementSample2019 {
 		}
 		System.out.println("プロセッサ証明終了");
 	}
-
-	//善意のノードの数
-	private static final int goodNodeCount = (int) (allNodeCount * 0.25);
 
 	private static double sampleCase() {
 		Random r = new Random();
@@ -130,18 +146,18 @@ public class ProcessorProvementSample2019 {
 			}
 			//普通のノードは最大近傍数の半分～最大までの近傍を持つ
 			for (; n.getEdges().size() < max / 2;) {
+				//ランダムに近傍を選択
 				Node neighbor = allNodes.get(r.nextInt(allNodes.size() - 1));
 				//相手側の近傍数が限界なら他のノードを探す
 				if (neighbor == null || neighbor.getEdges().size() >= max)
 					continue;
-
+				//近傍関係作成
 				if (neighbor != null) {
 					n.add(neighbor);
 				}
 				//逆方向からも作る。プロセッサ証明ではこれが必須
-				//相互の信用という概念が双方向のエッジがあった方が考えやすい
-				//恐らくそうする必要性も実際に存在する
-				//膨大な考察の中で双方向にすべきという結論になったが詳細を覚えていない
+				//単方向前提なら自分が知らないところで自分を近傍としているノードが居るわけで
+				//スパム攻撃を防ぐ論理を失う
 				neighbor.add(n);
 			}
 		}
@@ -169,22 +185,6 @@ public class ProcessorProvementSample2019 {
 		//少し正常値率が低下するのはスパム攻撃ノードが正しく近傍に回答を送信する場合があるから。
 		//その場合真っ当に演算量証明できているので善意のノードに影響する
 		return rate;
-	}
-
-	private static double getRate() {
-		//善意のノードにおける正常値を持っているノード数
-		int goodCount = 0;
-		for (Node n : allNodes) {
-			//悪意のノードを除外
-			if (n.isDummy() || n.isOverCount() || n.isSpam()) {
-				continue;
-			}
-			if (n.getData().equals(goodVal)) {
-				goodCount++;
-			}
-		}
-
-		return (double) goodCount / goodNodeCount;
 	}
 
 	/**
@@ -479,6 +479,7 @@ public class ProcessorProvementSample2019 {
 			//これで相手が”今作成された問題に回答した”ことも確認できる
 			if (edge == null || !result.getProblemSrc().getRndStr()
 					.contains(edge.getRndStr())) {
+				//ここに来た場合、スパム攻撃あるいは予め回答を計算済みの問題を解いたという事
 				//System.out.println("スパム攻撃検出");
 				return;
 			}
