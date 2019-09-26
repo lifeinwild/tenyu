@@ -1191,7 +1191,23 @@ Tenyuの連合型MMOが示す新たな解決策
 - 全ゲームで共通の仮想通貨を蓄積する。
   
 # P2P技術  
-Tenyuはプロセッサ証明と分散合意という独自のP2P技術によって桁違いの性能と省電力をセキュリティを保ちつつ実現します。
+Tenyuはプロセッサ証明と分散合意という独自のP2P技術によって桁違いの性能と省電力をセキュリティを保ちつつ実現します。  
+
+Tenyu独自P2P技術教程
+
+分散合意模擬動作。異常排除型と選挙型
+https://github.com/lifeinwild/tenyu/blob/master/src/sample/java/bei7473p5254d69jcuat/tenyu/sample/DistributedVoteSample2015.java
+
+分散合意によって不正値を信じ込んだノードが正常値へと回復する動作を示す。異常排除型
+https://github.com/lifeinwild/tenyu/blob/master/src/sample/java/bei7473p5254d69jcuat/tenyu/sample/DistributedVoteSample2018.java
+
+演算量証明コア部分。いかにしてCPU以外での演算を防止するか。
+このような動的な問題生成が可能なのは分散合意がもたらす主観信用で良いという性質がノード毎の問題を可能にする事による。
+https://github.com/lifeinwild/tenyu/blob/master/src/sample/java/bei7473p5254d69jcuat/tenyu/sample/CPUProvementTestSample2018.java
+https://github.com/lifeinwild/tenyu/blob/master/src/sample/java/bei7473p5254d69jcuat/tenyu/sample/CPUProvementSample2018.java
+
+プロセッサ証明と分散合意の相補性のサンプルコード。異常排除型だが信用によるダミーノードの排除は選挙型にも応用可能
+https://github.com/lifeinwild/tenyu/blob/master/
   
 ## ノード、エッジという言葉  
 以降P2P技術に関する項目におけるノード、エッジという言葉はP2Pネットワークのノードやエッジです。
