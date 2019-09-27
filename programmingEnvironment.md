@@ -791,7 +791,7 @@ P2P PKIはサーバーモードを設定できて、エンドユーザー環境�
 
     「interfaceの実装の交換可能性はプログラムが潜在的に様々なバージョンを実現する唯一の方法です(The combinatorial freedom just mentioned seems to be the only way in which we can make a program as part of a family or "in many (potential) versions" without the labour involved increasing proportional to the number of members of the family)。(The family becomes the set of those selections from a given collection of pearls that can be strung into a fitting necklace.)。」  
 
-    エドガーダイクストラは今日のDIフレームワークのようなinterfaceを作りまくり実装を任意に選択できるプログラミングを構想していた。この件についてNeckless言語として後述。
+    エドガーダイクストラは今日のDIフレームワークのようなinterfaceを作りまくり実装を任意に選択できるプログラミングを構想していた。この件について[Neckless言語](#Neckless言語_解釈_説明)Neckless言語として後述。
 
     Simulaは構造化プログラミングに分類されていますが、既にクラスを扱っていました。
     https://ja.wikipedia.org/wiki/Simula
@@ -800,7 +800,6 @@ P2P PKIはサーバーモードを設定できて、エンドユーザー環境�
     https://ja.wikipedia.org/wiki/%E3%82%AA%E3%83%96%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E6%8C%87%E5%90%91%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0#%E6%AD%B4%E5%8F%B2
     ＞部品化を推進する仕組みが提唱され構造化プログラミング (structured programming) として1967年[要出典]にエドガー・ダイクストラ (Edsger Wybe Dijkstra) らによってまとめあげられた
 
-    続き[Neckless言語_解釈、説明](#Neckless言語_解釈、説明)
 
 - プロトタイプベース
     構造化プログラミングともアランケイのOOPとも全く違います。
