@@ -778,7 +778,7 @@ P2P PKIはサーバーモードを設定できて、エンドユーザー環境�
 
     そしてエドガーダイクストラはpearlのハードウェア実装について語り始める。実際それはJDKというある種の仮想環境でハードウェアではないが実現された。ハードウェア実装は固定長である必要がありPearlが内部に持つデータはたびたび可変長になると思われるので実際のハードウェアによる実装は無理で仮想機械による実装になる。  
 
-    「interface振る舞いを実装したクラスとそれによる実装の選択可能性は(Pearls and necklace)抽象な部分が残され実装を選択しきっていないプログラムへ実装の選択というある種の設定値を与える作業である(give a clear status to an "incomplete program")、不完全な実装とはそのinterfaceと実装の繰り返しの下部実装を排除した場合の上部実装である。(consisting of the top half of a necklace;)。下部実装はコンピューターで実装可能であり上部実装はそのプログラムとみなせます(it can be regarded as a complete program to be executed by a suitable machine (of which the bottom half of the necklace gives a feasible implementation))このとき上部実装は下部実装に拠らず意味的に確立している(As such, the correctness of the upper half of the necklace can be established regardless of the choice of the bottom half)。」  
+    「interface振る舞いを実装したクラスとそれによる実装の選択可能性は(Pearls and necklace)抽象的な部分が残され実装を選択しきっていないプログラムへ実装の選択というある種の設定値を与える作業である(give a clear status to an "incomplete program")、不完全な実装とはそのinterfaceと実装の繰り返しの下部実装を排除した場合の上部実装である。(consisting of the top half of a necklace;)。下部実装はコンピューターで実装可能であり上部実装はそのプログラムとみなせます(it can be regarded as a complete program to be executed by a suitable machine (of which the bottom half of the necklace gives a feasible implementation))このとき上部実装は下部実装に拠らず意味的に確立している(As such, the correctness of the upper half of the necklace can be established regardless of the choice of the bottom half)。」  
 
     エドガーダイクストラはその上部実装を、下部実装を実装したコンピューターの"マニュアル"と表現した。マニュアルは機械の操作手順のようなニュアンスだろう。マニュアルという表現が与える印象は、その下部実装コンピューターは汎用コンピューターというニュアンスから離れてそれを操作する事がマニュアルと表現されうるような高次機能を提供する機械を意味しているということ。
     そして完全にJavaのinterfaceに相当する概念に言及している。  
