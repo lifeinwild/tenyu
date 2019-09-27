@@ -242,7 +242,7 @@ https://github.com/Nehon/bvhretarget/blob/master/src/com/jme3/scene/plugins/bvh/
 リンク可。記事やコメントやツイートにおけるURL付き引用可。
 
 # 採用したソフトウェアの構成  
-programmingEnvironment.mdに私のソフトウェアに関する思想を書きました。それら思想からソフトウェアの構成を決定しました。
+[programmingEnvironment.md](https://github.com/lifeinwild/tenyu/blob/master/programmingEnvironment.md)に私のソフトウェアに関する思想を書きました。それら思想からソフトウェアの構成を決定しました。
 
 全Tenyu関連ソフトウェア
 - 言語はJava
