@@ -84,6 +84,9 @@ public class ProcessorProvementSample2019 {
 	 * ﾌﾟﾛｾｯｻ証明
 	 */
 	private static void processorProvement() {
+		//本番用実装ではソフトウェアに開始日時が設定されていて
+		//その日時が来ると全ノードが一斉にプロセッサ証明を開始する
+
 		//近傍へのランダム値送信。それに依存して問題関数が作られる
 		for (Node n : allNodes) {
 			for (Edge e : n.getEdges()) {
@@ -93,12 +96,18 @@ public class ProcessorProvementSample2019 {
 				//ランダム値送信
 				e.getNeighbor().receive(n, rndStr);
 			}
+			//同時に回答受付開始
+			n.setAccept(true);
 		}
 
 		//近傍から届いたランダム値で問題関数を作成して回答する。成功すれば信用を得る
 		System.out.println("プロセッサ証明開始");
 		for (Node n : allNodes) {
 			n.interactionProcessorProvement();
+		}
+		for (Node n : allNodes) {
+			//回答受付締め切り
+			n.setAccept(false);
 		}
 		System.out.println("プロセッサ証明終了");
 	}
@@ -163,10 +172,6 @@ public class ProcessorProvementSample2019 {
 				//スパム攻撃を防ぐ論理を失う
 				neighbor.add(n);
 			}
-		}
-
-		for (Node n : allNodes) {
-			System.out.println(n.getEdges().size());
 		}
 
 		System.out.println("before sync 善意のﾉｰﾄﾞにおける正常値率=" + getRate());
@@ -283,11 +288,6 @@ public class ProcessorProvementSample2019 {
 	 */
 	private static class Node {
 		/**
-		 * 最低限これだけの信用がないと受信しない
-		 */
-		private static final int creditThreshold = 20;
-
-		/**
 		 * 主張する値｡各ﾀｰﾝでこれが各ﾉｰﾄﾞの相互通信情報として送信されている
 		 * とみなせる｡
 		 */
@@ -314,6 +314,11 @@ public class ProcessorProvementSample2019 {
 		private boolean spam = false;
 
 		/**
+		 * 回答を受付中か
+		 */
+		private boolean accept = false;
+
+		/**
 		 * 近傍からの相互通信情報を一時的に格納する
 		 */
 		private List<Long> dataFromNeighbors = new ArrayList<Long>();
@@ -327,6 +332,13 @@ public class ProcessorProvementSample2019 {
 				Edge e = new Edge(n);
 				this.edges.add(e);
 			}
+		}
+
+		/**
+		 * @return	近傍から主張値を受け取るには最低限これだけの信用が必要
+		 */
+		public long getCreditThreshold() {
+			return 20;
 		}
 
 		/**
@@ -472,7 +484,7 @@ public class ProcessorProvementSample2019 {
 		public void receive(Node sender, Long data) {
 			Edge e = getEdge(sender);
 			//近傍ではない、または低信用なら受け取らない
-			if (e == null || e.getCredit() < creditThreshold)
+			if (e == null || e.getCredit() < getCreditThreshold())
 				return;
 			dataFromNeighbors.add(data);
 		}
@@ -482,6 +494,10 @@ public class ProcessorProvementSample2019 {
 		 * @param result	回答
 		 */
 		public void receive(Node responder, ResultSample result) {
+			//回答受付中でなければ拒否
+			if (!accept)
+				return;
+
 			//回答者が近傍一覧にあるかチェックする
 			Edge edge = getEdge(responder);
 			//さらに自分が送ったランダム値に依存した問題を解いたかをチェックする
@@ -512,7 +528,7 @@ public class ProcessorProvementSample2019 {
 					//信用を追加する。実際は多数の問題を同時に解く等してまとめて大量の信用を獲得できる
 					edge.addCredit(10);
 					Node n = responder;
-					if(n.isDummy() || n.isOverCount() || n.isSpam()) {
+					if (n.isDummy() || n.isOverCount() || n.isSpam()) {
 						//スパム攻撃は近傍にも答えを送るので正常に信用を獲得できる場合がある
 						//スパム攻撃が拒否されるのは近傍以外に送った場合
 						//System.out.println("悪意ノードのデータが通過");
@@ -532,12 +548,16 @@ public class ProcessorProvementSample2019 {
 		public void receive(Node sender, String rndStr) {
 			//ランダム値の長さはソフトウェアの定数によって制限される
 			//この制限が全ランダム値の長さから近傍の近傍数の取得を可能にする
-			if(rndStr == null || rndStr.length() != rndStrLen)
+			if (rndStr == null || rndStr.length() != rndStrLen)
 				return;
 			Edge e = getEdge(sender);
 			if (e == null)
 				return;
 			e.setRndStrFromNeighbor(rndStr);
+		}
+
+		public void setAccept(boolean accept) {
+			this.accept = accept;
 		}
 
 		public void setDummy(boolean dummy) {
