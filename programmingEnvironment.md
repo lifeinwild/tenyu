@@ -791,7 +791,7 @@ P2P PKIはサーバーモードを設定できて、エンドユーザー環境�
 
     「interfaceの実装の交換可能性はプログラムが潜在的に様々なバージョンを実現する唯一の方法です(The combinatorial freedom just mentioned seems to be the only way in which we can make a program as part of a family or "in many (potential) versions" without the labour involved increasing proportional to the number of members of the family)。(The family becomes the set of those selections from a given collection of pearls that can be strung into a fitting necklace.)。」  
 
-    エドガーダイクストラは今日のDIフレームワークのようなinterfaceを作りまくり実装を任意に選択できるプログラミングを構想していた。この件について[Neckless言語](#Neckless言語_解釈_説明)Neckless言語として後述。
+    エドガーダイクストラは今日のDIフレームワークのようなinterfaceを作りまくり実装を任意に選択できるプログラミングを構想していた。[Neckless言語](#Neckless言語_解釈_説明)
 
     Simulaは構造化プログラミングに分類されていますが、既にクラスを扱っていました。
     https://ja.wikipedia.org/wiki/Simula
