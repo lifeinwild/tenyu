@@ -1207,7 +1207,7 @@ https://github.com/lifeinwild/tenyu/blob/master/src/sample/java/bei7473p5254d69j
 https://github.com/lifeinwild/tenyu/blob/master/src/sample/java/bei7473p5254d69jcuat/tenyu/sample/CPUProvementSample2018.java
 
 プロセッサ証明と分散合意の相補性のサンプルコード。異常排除型だが信用によるダミーノードの排除は選挙型にも応用可能
-https://github.com/lifeinwild/tenyu/blob/master/
+https://github.com/lifeinwild/tenyu/blob/master/src/sample/java/bei7473p5254d69jcuat/tenyu/sample/ProcessorProvementSample2019.java
   
 ## ノード、エッジという言葉  
 以降P2P技術に関する項目におけるノード、エッジという言葉はP2Pネットワークのノードやエッジです。
