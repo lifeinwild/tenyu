@@ -780,12 +780,13 @@ P2P PKIはサーバーモードを設定できて、エンドユーザー環境�
 
     「interface振る舞いを実装したクラスとそれによる実装の選択可能性は(Pearls and necklace)抽象的な部分が残され実装を選択しきっていないプログラムへ実装の選択というある種の設定値を与える作業である(give a clear status to an "incomplete program")、不完全な実装とはそのinterfaceと実装の繰り返しの下部実装を排除した場合の上部実装である。(consisting of the top half of a necklace;)。下部実装はコンピューターで実装可能であり上部実装はそのプログラムとみなせます(it can be regarded as a complete program to be executed by a suitable machine (of which the bottom half of the necklace gives a feasible implementation))このとき上部実装は下部実装に拠らず意味的に確立している(As such, the correctness of the upper half of the necklace can be established regardless of the choice of the bottom half)。」  
 
-    エドガーダイクストラはその上部実装を、下部実装を実装したコンピューターの"マニュアル"と表現した。マニュアルは機械の操作手順のようなニュアンスだろう。マニュアルという表現が与える印象は、その下部実装コンピューターは汎用コンピューターというニュアンスから離れてそれを操作する事がマニュアルと表現されうるような高次機能を提供する機械を意味しているということ。
+    エドガーダイクストラはその上部実装を、下部実装を実装したコンピューターの"マニュアル"と表現した。マニュアルは機械の操作手順のようなニュアンスだろう。マニュアルという表現が与える印象は、その下部実装コンピューターは汎用コンピューターというニュアンスから離れてそれを操作する事がマニュアルと表現されうるような特定目的の汎用性が限定された機械の操作手順ということ。
     そして完全にJavaのinterfaceに相当する概念に言及している。  
 
     「上部実装と下部実装の間を切断できます(Between two successive pearls we can make a "cut",)。上部実装は下部実装が提供する機械の操作手順です(which is a manual for a machine provided by the part of the necklace below the cut and used by the program represented by the part of the necklace above the cut.)。その操作手順は上部実装と下部実装の間の規格を意味します(This manual serves as an interface between the two parts of the necklace.)。我々はそれを上部と下部の間の規格(data representation as an interface between operations)として捉えるよりも要件の変化に適応するためのプログラムの修正における実装の交換性を確保する(ensuring the combinatorial freedom required for program adaptation)ために役立つと考えます。」  
 
-    data representationはオブジェクトの振る舞いobject behaviorというニュアンスだろう。一時の場面に着目すれば下部実装が上部実装に対して見せるものはオブジェクトの振る舞いだが、より長期的に捉えれば実はそれは下部実装の交換可能性である、と。
+    data representationはオブジェクトの振る舞いobject behaviorというニュアンスだろう。一時の場面に着目すれば下部実装が上部実装に対して見せるものはオブジェクトの振る舞いだが、より長期的に捉えれば実はそれは下部実装の交換可能性である、と。  
+    規格というと機械の連携のためというニュアンスで、それは例えばABIなども含まれ広く連携のための概念だが、要件の変化に耐えるための実装の交換性という捉え方はソフトウェアプロジェクトの一生がイメージされている。  
     エドガーダイクストラは1つのソースコード上で各interfaceの実装クラスを選択した時のその実装クラス群を家族familyと呼んでいるようだ。注意点として家族は同じインターフェースの実装クラス群ではない。1つのソースコード上の全interfaceにおける実装クラスの選択の結果が家族である。つまりDIフレームワークが提供する一括的な実装の選択、その結果がfamily。  
 
     「interfaceの実装の交換可能性はプログラムが潜在的に様々なバージョンを実現する唯一の方法です(The combinatorial freedom just mentioned seems to be the only way in which we can make a program as part of a family or "in many (potential) versions" without the labour involved increasing proportional to the number of members of the family)。(The family becomes the set of those selections from a given collection of pearls that can be strung into a fitting necklace.)。」  
