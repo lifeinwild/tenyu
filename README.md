@@ -1193,7 +1193,7 @@ Tenyuの連合型MMOが示す新たな解決策
 # P2P技術  
 Tenyuはプロセッサ証明と分散合意という独自のP2P技術によって桁違いの性能と省電力をセキュリティを保ちつつ実現します。  
 
-Tenyu独自P2P技術教程
+Tenyu独自P2P技術教程。これらサンプルコードを順番に読み、いくつかの用語解説を読めば分かると思います。
 
 分散合意模擬動作。異常排除型と選挙型
 https://github.com/lifeinwild/tenyu/blob/master/src/sample/java/bei7473p5254d69jcuat/tenyu/sample/DistributedVoteSample2015.java
