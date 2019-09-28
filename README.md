@@ -1240,7 +1240,7 @@ Tenyuはプロセッサ証明と分散合意という独自のP2P技術によっ
 
 Tenyu独自P2P技術教程。これらサンプルコードを順番に読み、いくつかの用語解説を読めば分かると思います。
 
-[分散合意](#分散合意)模擬動作。[異常排除型](#異常排除型)と[選挙型](#選挙型)
+[分散合意](#分散合意)模擬動作。[異常排除型](#異常排除型)と[選挙型](#選挙)
 https://github.com/lifeinwild/tenyu/blob/master/src/sample/java/bei7473p5254d69jcuat/tenyu/sample/DistributedVoteSample2015.java
 
 分散合意によって不正値を信じ込んだノードが正常値へと回復する動作を示す。[異常排除型](#異常排除型)
@@ -1251,7 +1251,7 @@ https://github.com/lifeinwild/tenyu/blob/master/src/sample/java/bei7473p5254d69j
 https://github.com/lifeinwild/tenyu/blob/master/src/sample/java/bei7473p5254d69jcuat/tenyu/sample/CPUProvementTestSample2018.java
 https://github.com/lifeinwild/tenyu/blob/master/src/sample/java/bei7473p5254d69jcuat/tenyu/sample/CPUProvementSample2018.java
 
-[分散合意とプロセッサ証明の相補性](#分散合意とプロセッサ証明の相補性)のサンプルコード。[異常排除型](#異常排除型)だが信用による[ダミーノード](#ダミーノード)の排除は[選挙型](#選挙型)にも応用可能
+[分散合意とプロセッサ証明の相補性](#分散合意とプロセッサ証明の相補性)のサンプルコード。[異常排除型](#異常排除型)だが信用による[ダミーノード](#ダミーノード)の排除は[選挙型](#選挙)にも応用可能
 https://github.com/lifeinwild/tenyu/blob/master/src/sample/java/bei7473p5254d69jcuat/tenyu/sample/ProcessorProvementSample2019.java
   
 ## ノード、エッジという言葉  
