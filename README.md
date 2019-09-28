@@ -1396,6 +1396,8 @@ TenyuのP2Pネットワークは定められた日時に[選挙](#選挙)を実�
 [続き](#ストーリー)
 
 ## ストーリー
+[サンプルコード](https://github.com/lifeinwild/tenyu/blob/master/src/sample/java/bei7473p5254d69jcuat/tenyu/sample/ProcessorProvementSample2019.java)
+
 最初、全ノードは互いを全く信用していません。  
 つまり[全体運営者](#全体運営者)が居ないし、仮想通貨残高など価値ある[承認情報](#承認情報)が一切無く、そのままでは新たに承認情報を作成していく事もできません。
 ただし相互にアドレス情報を交換してP2Pネットワークを形成します。
