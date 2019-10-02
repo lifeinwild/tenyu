@@ -1157,6 +1157,7 @@ java bytecode
 - リフレクションや動的なクラスのロードをサポートする。
 
 AzulのfalconはLLVMによるJITでc2を置き換えたようだ。そしてc2より高性能化したと。
+追記：RoboVMもLLVMベースのJDKだったようだ。
 
 JDKはLLVMの最適化技術をどう取り込むか？
 OSがLLVMを標準搭載し、JDKのJITがbytecodeからLLVM IRを作り、OSがLLVM IRを機械語にして実行する。
