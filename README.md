@@ -29,9 +29,7 @@ Tenyuについて身近なたとえで説明すると
 
 現在賛同者を増やすために説明を試行錯誤しています。分からなかったところをissuesかtwitterのDMで教えてください。レビュー記事歓迎。
 
-[note](https://note.mu/lifeinwild/n/n222f2e79c75e)
 [twitter](https://twitter.com/lifeinwild)
-[hatenablog](https://lifeinwild1.hatenablog.com/entry/2019/09/27/135417?_ga=2.156494840.236788421.1569559812-1362957773.1569559812)
 
 # 目次  
 - [目的](#目的)
