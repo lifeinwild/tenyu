@@ -1156,7 +1156,7 @@ java bytecode
 - CPU命令セット及びOSの間で移植性がある実行バイナリを作れる。
 - リフレクションや動的なクラスのロードをサポートする。
 
-AzulのfalconはLLVMによるJITでc2を置き換えたようだ。そしてc2より高性能化したと。
+AzulのfalconはLLVMによるJITでc2を置き換えたようだ。そしてc2より高性能化したと。  
 追記：RoboVMもLLVMベースのJDKだったようだ。
 
 JDKはLLVMの最適化技術をどう取り込むか？

@@ -669,7 +669,7 @@ https://web.cs.ucdavis.edu/~filkov/papers/lang_github.pdf
 もし今後Windowsから他OSへの大規模な移行が起きるとWindowsアプリケーションは実行されなくなります。
 Javaベースならそのような変化に強い。
 
-falcon jitが示したようにjavaの大幅な高速化は可能です。
+falcon jitが示したようにjavaの大幅な高速化は可能です。[LLVMベースのJDK](https://github.com/lifeinwild/tenyu/blob/master/programmingEnvironment.md#LLVM%E3%81%A8JDK_%E8%80%83%E5%AF%9F_%E6%A1%88_%E3%83%A1%E3%83%A2)というアイデアが非常に重要です。そのアイデアは何度か実装されており、まだ既存JDKを置き換えるほど普及していませんが、それが普及すればJavaの性能は飛躍的に向上します。クロスプラットフォームを維持する事も容易になるでしょう。
 
 Javaは使用者が多く創発的現象に期待するなら妥当な選択です。
 
