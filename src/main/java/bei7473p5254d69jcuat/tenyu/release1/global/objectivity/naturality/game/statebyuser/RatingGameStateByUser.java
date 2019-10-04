@@ -15,7 +15,7 @@ public class RatingGameStateByUser extends GameStateByUser
 
 	public static final int initialMatchCount = 0;
 
-	public static final int initialRating = 1600;
+	public static final int initialRating = 0;
 
 	/**
 	 * 最低でもこの数試合をこなさないと仮想通貨分配が生じない
