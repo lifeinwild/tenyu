@@ -13,12 +13,17 @@ import bei7473p5254d69jcuat.tenyu.sample.CPUProvementSample2018.*;
  * ダミーノード攻撃
  * 誰かが1台のPCで大量にP2Pソフトウェアを起動し、つまり大量のダミーノードを作り
  * ネットワークにそれらノードを潜り込ませ不正値を主張して攻撃する。
+ * つまり分散合意の局所的多数決で不正票を投じて収束値の操作を目指す。
  *
  * スパム攻撃
  * 近傍関係が無いノード（ランダム値を送ってきてない相手）に送信して信用を得ようとする攻撃。
+ * 信用を得る事ができたなら分散合意の収束値を操作しやすくなる。
  *
  * 過剰近傍攻撃
- * 膨大なノードと近傍関係を作り分散合意の収束値を操作しようとする攻撃
+ * 膨大なノードと近傍関係を作り分散合意の収束値を操作しようとする攻撃。
+ * プロセッサ証明による信用獲得は一度問題を解くだけで多くのノードの元で
+ * 信用を獲得できるので、近傍が増えるほど信用をまとめて獲得できる。
+ * それを利用して過剰な近傍を持つ事で分散合意の収束値の操作を目指す。
  *
  * @author exceptiontenyu@gmail.com
  *
@@ -50,11 +55,15 @@ public class ProcessorProvementSample2019 {
 	private static final int neighborMax = (int) (allNodeCount * 0.10);
 
 	/**
-	 * 全ノード一覧
+	 * P2Pネットワークの全ノード一覧
+	 * これは実際のP2Pネットワークでは作成不可能な情報だが、
+	 * サンプルコードは模擬的動作なので作成できる。
 	 */
 	private static final List<Node> allNodes = new ArrayList<>();
 
-	//善意のノードの数
+	/**
+	 * 善意ノード数
+	 */
 	private static final int goodNodeCount = (int) (allNodeCount * 0.25);
 
 	/**
@@ -84,9 +93,6 @@ public class ProcessorProvementSample2019 {
 	 * ﾌﾟﾛｾｯｻ証明
 	 */
 	private static void processorProvement() {
-		//本番用実装ではソフトウェアに開始日時が設定されていて
-		//その日時が来ると全ノードが一斉にプロセッサ証明を開始する
-
 		//近傍へのランダム値送信。それに依存して問題関数が作られる
 		for (Node n : allNodes) {
 			for (Edge e : n.getEdges()) {
@@ -96,7 +102,7 @@ public class ProcessorProvementSample2019 {
 				//ランダム値送信
 				e.getNeighbor().receive(n, rndStr);
 			}
-			//同時に回答受付開始
+			//ランダム値送信と同時に回答受付開始
 			n.setAccept(true);
 		}
 
@@ -177,7 +183,11 @@ public class ProcessorProvementSample2019 {
 		System.out.println("before sync 善意のﾉｰﾄﾞにおける正常値率=" + getRate());
 
 		//日々ﾌﾟﾛｾｯｻ証明を通じて各近傍の信用値を算出する。
-		//ﾀﾞﾐｰﾉｰﾄﾞは演算量を出せないので、ﾌﾟﾛｾｯｻ証明はﾀﾞﾐｰﾉｰﾄﾞに排除圧を与える。
+		//ﾀﾞﾐｰﾉｰﾄﾞは演算量を出せないので、ﾌﾟﾛｾｯｻ証明はﾀﾞﾐｰﾉｰﾄﾞに
+		//排除圧(局所的多数決における低票数ないし無視)を与える。
+
+		//本番用実装ではソフトウェアに開始日時が設定されていて
+		//その日時が来ると全ノードが一斉にプロセッサ証明を開始する
 		processorProvement();
 		//1日3回程度ﾌﾟﾛｾｯｻ証明が行われる
 		processorProvement();
@@ -363,6 +373,12 @@ public class ProcessorProvementSample2019 {
 
 		/**
 		 * 各近傍から受け取ったランダム値で問題関数を作成、回答する
+		 *
+		 * interactionと言っているのは近傍全体から情報（ランダム値）を受け取って
+		 * それに基づいて処理が発生し、結果を近傍全体に送信するから。
+		 * それがP2Pネットワークの各ノードの元で生じているわけで、
+		 * そのP2Pネットワーク上の描像を捉えると波が打ち寄せて帰るようなイメージになり
+		 * そのようなものを相互作用と呼んでいる。
 		 */
 		public void interactionProcessorProvement() {
 			try {
@@ -387,7 +403,7 @@ public class ProcessorProvementSample2019 {
 				//引数探索（演算量証明）
 				if (isDummy()) {
 					//System.out.println("ダミーノード攻撃");
-					//ダミーノードは回答計算できないのででたらめな答えを作成
+					//ダミーノードは回答計算できないのででたらめな答え（ここでは空の答え）を作成
 					SolveSample dummySolve = new SolveSample();
 					result = new ResultSample(dummySolve, totalProblemSrc);
 				} else {
@@ -430,7 +446,7 @@ public class ProcessorProvementSample2019 {
 		public void interactionSync(int turn) {
 			//本番用の動作では信用に基づいて重みをつけて（票数を差別化して）多数決するが
 			//サンプルコードではそれをしていない。
-			//このサンプルコードはいかにしてダミーノードが低信用となるかを示すものなので
+			//このサンプルコードはいかにしてダミーノードが低信用となるか（善意ノードと区別されるか）を示すものなので。
 
 			// 多数決の集計用Map
 			Map<Long, Integer> counts = new HashMap<Long, Integer>();
@@ -495,19 +511,27 @@ public class ProcessorProvementSample2019 {
 		 */
 		public void receive(Node responder, ResultSample result) {
 			//回答受付中でなければ拒否
+			//これによって特定時間しかプロセッサ証明を受け付けず
+			//それ以外の時間帯に稼働しても無駄に終わるから
+			//即ち特定の時間帯のみ演算量証明のためのフル稼働が行われ省電力、となる。
 			if (!accept)
 				return;
 
 			//回答者が近傍一覧にあるかチェックする
 			Edge edge = getEdge(responder);
-			//さらに自分が送ったランダム値に依存した問題を解いたかをチェックする
-			//これで相手が”今作成された問題に回答した”ことも確認できる
+			//さらに自分（出題者）が送ったランダム値に依存した問題を解いたかをチェックする
+			//これで相手（回答者）が”今作成された問題に回答した”ことも確認できる
 			if (edge == null || !result.getProblemSrc().getRndStr()
 					.contains(edge.getRndStr())) {
 				//ここに来た場合、スパム攻撃あるいは予め回答を計算済みの問題を解いたという事
 				//System.out.println("スパム攻撃検出");
 				return;
 			}
+
+			//※私が一度分散合意やプロセッサ証明を自分の中で没案にしていたというのは、
+			//この近傍の近傍数の証明的取得が可能であるという事に2年間も気付かなかったから。
+			//近傍は近傍数を過大に見せることは出来ても過小に見せれない。
+			//無理やり過少に見せてもプロセッサ証明で得をするような過少報告はできない。
 
 			//近傍の近傍数（同時に演算量証明しようとしているノードの数）
 			int neighborNeighborCount = result.getProblemSrc().getRndStr()
@@ -519,13 +543,14 @@ public class ProcessorProvementSample2019 {
 			}
 
 			try {
-				//問題関数を再現する
+				//回答者が解いた問題関数を再現する
 				CPUProvementSample2018 problem = new CPUProvementSample2018(
 						result.getProblemSrc());
 
 				//回答を検証する
+				//なお検証は回答より低コストで実行できる
 				if (problem.verify(result.getSolve())) {
-					//信用を追加する。実際は多数の問題を同時に解く等してまとめて大量の信用を獲得できる
+					//信用を追加する。実際は多数の問題を並列に解く等してまとめて大量の信用を獲得できる
 					edge.addCredit(10);
 					Node n = responder;
 					if (n.isDummy() || n.isOverCount() || n.isSpam()) {
