@@ -1452,7 +1452,7 @@ subjectivityパッケージに主観系のクラスがまとめられていま�
 https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/subjectivity
 
 ## 客観
-P2Pネットワークの全ノードで共有されるDBを客観とか統一値と呼ぶ場合があります。各ノードが客観全体を持ち、同値です。ここに仮想通貨残高や相互評価フローネットワークのエッジ等重要な承認情報が記録される。客観を高速更新できる事及び改ざんされないようにする事がこれら一連のP2P技術の主旨である。ソースコードのAdministratedObject系のクラスが相当します。例えばUserはそれを継承しているので客観DBに記録される事が分かります。  
+P2Pネットワークの全ノードで共有されるDBを客観とか統一値と呼ぶ場合があります。各ノードが客観全体を持ち、同値です。ここに仮想通貨残高や相互評価フローネットワークのエッジ等重要な承認情報が記録されます。客観を高速更新できる事及び改ざんされないようにする事がこれら一連のP2P技術の主旨です。ソースコードのAdministratedObject系のクラスが相当します。例えばUserはそれを継承しているので客観DBに記録される事が分かります。  
 https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/objectivity/AdministratedObject.java   
 objectivityパッケージに客観系のクラスがまとめられています。
 https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/objectivity
