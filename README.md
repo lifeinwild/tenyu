@@ -1402,34 +1402,34 @@ P2Pプラットフォーム確立のための技術。確立以降の多彩な�
     - [全体運営者](#全体運営者)  
     選挙によって選出され、共同主体の管理者になり、共同主体からエッジを作成します。その他Tenyu全体の設定値などを決めたり、BANの最終判断をします。  
     ここのmanagerListが全体運営者一覧です。複数居て、それぞれ影響力割合が設定されています。 
-    https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/objectivity/ObjectivityCore.java
+    https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/model/release1/objectivity/ObjectivityCore.java
   - [同調処理](#同調処理)
     - [整合性情報](#整合性情報)  
     - [一斉更新](#一斉更新)  
     - 客観DB不整合検出、ハッシュツリー  
     客観DBが不整合である事が判明した時、どの部分が不整合を起こしているのか効率良く特定する必要があります。そこを特定できたら近傍から正しい値を取得して自分の客観DBを上書きします。不正な値を教えられても客観DB全体のハッシュ値が分かっているので正しいハッシュ値になるまで繰り返し同調処理が行われます。  
     このHashStoreクラスはハッシュツリーを提供し、不整合箇所を効率良く特定できます。 
-    https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/db/store/HashStore.java
+    https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/db/store/satellite/HashStore.java
   - 近傍の自動追加  
   各ノードは近傍一覧を持ちますが、P2Pソフトウェアが自動的にP2Pネットワークを探索してアドレス交換を実施し、近傍を追加します。最初近傍は少しも信用されておらず局所的多数決において主張値をほぼ無視されます。プロセッサ証明を通じて徐々に信用が高まります。他に友人のノード等を手動で追加する事もできて、そのようなノードは演算量証明無しで強く信用します。このような演算量証明以外の信用ソースを持つという性質は分散合意ベースだからこそ可能になります。主観に基づく信用強化が可能です。分散合意ベースで信用は局所的多数決において使用されるだけだから可能です。自分が友人として追加した近傍について、つまり主観情報について、他のノードやP2Pネットワークから何らかの証明を得る必要はありません。 
   ここのperiodicGetAddressesが近傍の自動追加を行います。主観情報は他のノードに伝わる事が無いと言いましたが、細かい事を言えばこれはその例外です。自分が知っているノードのアドレスを他のノードに教えるという動作をします。これによってP2Pネットワークを探索可能になります。 
-  https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/subjectivity/Subjectivity.java
+  https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/model/release1/subjectivity/Subjectivity.java
   - 近傍の定期削除  
   各ノードは独自の近傍一覧を持ちますが、それはレイテンシの悪さや同じ時間帯にオンラインにならない等の理由で定期的に削除され、近傍一覧は洗練されていきます。ここのrankingAndRemoveがそれを行っています。近傍から定期的に演算量証明を通じて信用値を獲得しないと近傍関係を削除されてしまうので、ダミーノードに対して常に排除圧がかかっています。  
-  https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/subjectivity/UpdatableNeighborList.java
+  https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/model/release1/subjectivity/UpdatableNeighborList.java
 
 - P2Pプラットフォームが確立しさえすれば実現性に問題が無い多彩な機能   
 この文書に書かれている事は大まかにいうと、P2P技術（P2Pプラットフォームの確立過程及び継続的保護システム）と、そのP2Pプラットフォームで何をするかという事に分かれます。以下、後者についての説明です。基本的に客観DBの内容は自由であり、C/S同様にほとんど任意のサービスを実現できると思っておいておおよそ間違いありません。
   - ユーザー登録  
   紹介制です。既存ユーザーの紹介が無ければ登録できません。こうする事で、BANされた人が繰り返しユーザー登録するのが困難になります。不正者を繰り返し紹介する人もBANされるからです。  
   Userクラス  
-  https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/objectivity/naturality/User.java   
+  https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/model/release1/objectivity/individuality/User.java   
   User登録メッセージ  
-  https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/request/gui/right/user/UserRegistration.java  
+  https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/communication/request/gui/right/user/UserRegistration.java  
   - [相互評価フローネットワーク](#相互評価フローネットワーク)  
     - [相互評価フローネットワークのノード](#ノードとエッジの種類)  
     様々な種類があり、種類毎に管理者になる方法が違います。ソースコード上ではSocialityがそれで、客観DBに記録されます。SocialityにWalletがありそこに仮想通貨残高がある事を確認してください。これはUserだけでなく共同主体やWebページ等が仮想通貨残高を持ちうるという事で、いわば法人のような非人間が残高を持ちうるということです。
-    https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/objectivity/sociality/Sociality.java
+    https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/model/release1/objectivity/sociality/Sociality.java
       - 共同主体ノード  
       選挙によって全体運営者になる事で管理者になれます。相互評価フローネットワークの根本にあるノードで、ここから経路ができてフローが流れ込むと仮想通貨分配を受けれます。
       - ユーザーノード  
@@ -1437,21 +1437,21 @@ P2Pプラットフォーム確立のための技術。確立以降の多彩な�
       - Webノード   
       誰かが未登録のURLについてURL証明をするか、他のノードが未登録のURLにエッジを作成した場合に作成されます。
         - [URL証明](#URL証明)   
-        任意のWebページをTenyuのシステムに登録し、相互評価フローネットワーク上のWebノードを作成できます。https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/middle/takeoverserver/urlprovement/URLProvementServer.java 
+        任意のWebページをTenyuのシステムに登録し、相互評価フローネットワーク上のWebノードを作成できます。https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/model/release1/middle/takeoverserver/urlprovement/URLProvementServer.java
       - レーティングゲームノード  
       [レーティングゲーム](#レーティングゲーム)が登録された時に登録され、その登録者が管理者になります。
       - 常駐空間ゲームノード  
       [常駐空間ゲーム](#常駐空間ゲーム)が登録された時に登録され、その登録者が管理者になります。
     - エッジ  
     貢献を記述します。例えばフリーソフト→ライブラリというようなエッジが作られます。 
-    https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/objectivity/sociality/Edge.java
+    https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/model/release1/objectivity/sociality/Edge.java
   - [仮想通貨分配](#仮想通貨分配)  
     - [無責任支払い](#無責任支払い)  
   - [連合型MMO](#連合型MMO)   
     - [レーティングゲーム](#レーティングゲーム)  
-    https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/objectivity/naturality/game/RatingGame.java
+    https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/model/release1/objectivity/individuality/game/RatingGame.java
     - [常駐空間ゲーム](#常駐空間ゲーム)  
-    https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/objectivity/naturality/game/StaticGame.java
+    https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/model/release1/objectivity/individuality/game/StaticGame.java
 - Tenyutalk   
 この概念は後回しで問題無いと思います。
 これはユーザー中心コンピューティングのためのシステムで、peoplewareと呼ばれていた概念をユーザー中心に変えるものです。  
@@ -1465,18 +1465,18 @@ https://japan.cnet.com/article/20361105/2/
 基本的に他のノードと共有されない。
 例えば近傍の各ノードをどれくらい信用するかという情報は主観として扱われる。  
 subjectivityパッケージに主観系のクラスがまとめられています。ここにP2PNodeやP2PEdgeがある事を確認してください。それらクラスは相互評価フローネットワークと無関係です。P2Pプラットフォームの確立過程、つまりP2P技術が駆使される段階では主観系のクラスが主に使用されます。
-https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/subjectivity
+https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcuat/tenyu/model/release1/subjectivity
 
 ## 客観
 P2Pネットワークの全ノードで共有されるDBを客観とか統一値と呼ぶ場合があります。各ノードが客観全体を持ち、同値です。ここに仮想通貨残高や相互評価フローネットワークのエッジ等重要な承認情報が記録されます。客観を高速更新できる事及び改ざんされないようにする事がこれら一連のP2P技術の主旨です。ソースコードのAdministratedObject系のクラスが相当します。例えばUserはそれを継承しているので客観DBに記録される事が分かります。  
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/objectivity/AdministratedObject.java   
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/model/release1/objectivity/AdministratedObject.java   
 objectivityパッケージに客観系のクラスがまとめられています。
-https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/objectivity
+https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcuat/tenyu/model/release1/objectivity
 
 ## 局所的多数決
 自分の近傍と何らかの事柄について多数決をする。[分散合意](#分散合意)はこれを繰り返す。局所的多数決は、平均や中央値を作成する場合もあるし、通常の多数決のように一致ベースで各選択肢の票数を集計する場合もあります。[選挙](#選挙)は平均（異常値の排除等もあるが）で、[同調処理](#同調処理)は一致ベースの集計で最大得票の選択肢を採用します。  
 これのinteractionメソッド等は局所的多数決の実装例です。なお局所的多数決はもともと相互作用関数と呼んでいたので、メソッド名がinteraction(相互作用)という名前になっています。
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/vote/PowerVoteStatement.java
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/communication/mutual/vote/PowerVoteStatement.java
   
 ## ダミーノード
 健全に演算量証明できないノード。典型的には1台のPCで大量に実行されたノード。ダミーノードが[分散合意](#分散合意)において影響力を持つようでは[同調処理](#同調処理)が操作されて[客観](#客観)は改ざんされてしまうし[選挙](#選挙)は操作されてしまう。
@@ -1485,11 +1485,11 @@ https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcu
 主観的な信用は、近傍のノードをどれくらい信用するか、つまり[分散合意の局所的多数決](#局所的多数決)でその近傍の主張値にどれくらいの票数を与えるか、を決定する数値である。  
 信用は大部分[プロセッサ証明](#プロセッサ証明)を通じた演算量証明によって増加する。[分散合意](#分散合意)が局所的多数決のみでP2Pネットワーク全体での同調ができるという性質をもたらすので信用は[主観](#主観)で良いという事になります。主観一般の改竄不可能性及び分散合意における主観的な信用で良いという性質は即ち演算量証明以外に改ざん困難な信用ソースを持ちうる事を意味する。例えば友人のノードを強く信用する等できる。 
 getImpressionはそのノードへの主観的な信用を返す。 
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/subjectivity/P2PEdgeBase.java
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/model/release1/subjectivity/P2PEdgeBase.java
 
 ## 整合性情報
 客観はUserStoreやSocialityStoreなど様々な多彩な機能のためのストアを持ちますが、各ストアは自前のハッシュツリーを持ち、各ストアの最上位ハッシュ値を集めた整合性情報を近傍とやり取りします。それによって[客観](#客観)DB全体の整合性をチェックできます。近傍と現在の整合性情報について[局所的多数決](#局所的多数決)を行い、正しい整合性情報（各種ストアの最上位ハッシュ値）を特定し、自分の客観がずれていたら修正します。不整合を起こしている箇所はハッシュツリーによって効率良く特定されます。 
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/middle/catchup/Integrity.java
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/model/release1/middle/catchup/Integrity.java
 
 ## 全体的なイメージ
 各ノードは**普段**近傍と[客観](#客観)DBについて**各々のタイミングで随時**[同調処理](#同調処理)しています。
@@ -1542,7 +1542,7 @@ TenyuのP2Pネットワークは定められた日時に[選挙](#選挙)を実�
 
 A。基盤ソフトウェアは[プロセッサ証明](#プロセッサ証明)を実施する日時を定数として持っています。プロセッサ証明はある種の演算量証明で、しかしいつでも受け付けられるわけではなく定数によって決められた時間帯しか受け付けられないので、8時間おきに2分程度の処理が発生するだけです。この点で四六時中演算量を投入し続ける従来のP2P技術より省電力です。さらに、この点で演算量を証明する（何時間でも演算して量で勝負する）というよりもプロセッサを所有している事（特定の時間帯における演算ペース）を証明していると言えます。  
 その日時が来ると全ノードは一斉に近傍にランダム値を含む問題作成情報を送ります。問題作成情報は日時や作成者やランダム値が含まれた、具体的にはここに定義されている情報です。
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/processorprovement/ProblemSrc.java  
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/communication/mutual/processorprovement/ProblemSrc.java  
 問題作成情報とはプロセッサ証明の問題関数を作成するための情報です。問題関数は、任意のハッシュ値から作成できて、それに正しい回答を作成する事でプロセッサ性能が伴っている事を証明できます。  
 
 各ノードが自分だけの問題（近傍から送られたランダム値に依存した問題）を解くので、ブロックチェーンのように共通の問題を解くわけではありません。  
@@ -1553,13 +1553,14 @@ B。各ノードは通常多数の近傍を持っているので多数の問題�
 ここのinteractionメソッドは近傍から多数の問題作成情報を受け取り、それらを総合して1つの問題作成情報を作成し、
 139 CPUProvement.parallelSolve
 から呼び出されるCPUProvementクラスは問題作成情報からハッシュ値を作成してハッシュ値から問題関数を作成し、それの返値が特定の値になる引数を探索します。その探索された引数が回答情報になります。  
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/processorprovement/RandomString.java  
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/communication/mutual/processorprovement/ProblemSrc.java
+  
 ここの217 generateProblemがハッシュ値から問題を作成します。そのメソッドのコメントに書かれているのは作成される問題関数の性質。hは元とするハッシュ値。cNはクラス名。  
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/processorprovement/CPUProvement.java   
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/communication/mutual/processorprovement/CPUProvement.java   
 このように近傍から寄せられた多数の問題作成情報からただ1つの総合された問題作成情報を作りそこから問題関数を作り、つまりただ1つの問題関数を解くだけで全ての近傍において演算量証明ができるということは、近傍数の増加に反比例して1ノードあたりの演算量証明が低下するという事が無くなります。もし1つ1つの近傍毎に異なる問題を解いていたら近傍を増やすのが難しくなり、近傍数が制限され過ぎると孤立するノードを多発させP2Pネットワークを脆弱にします。とはいえ問題を簡単にし過ぎるのもP2Pネットワークが[ダミーノード](#ダミーノード)に攻撃されるリスクを高めます。演算量証明のために近傍数に深刻な制限をもたらしてはいけないということで、全近傍でまとめて演算量証明できるというアイデアが必要でした。
 
 回答を作成できたら近傍に送りますが、ここの182で回答の確認をしています。相手が送ってきた回答が相手が計算した問題に対して正しい事と、その問題が自分がその時作成したランダム値から作られた事を確認できれば、その回答がその時計算された事が分かり、相手がプロセッサを伴っている事が分かります。  
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/processorprovement/Answer.java
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/communication/mutual/processorprovement/Answer.java
 
 問題関数を作る時問題作成情報に任意の値を加える事ができます。結局ハッシュ値を作れればいいのと、問題作成情報のランダム値に近傍が送信してきたランダム値が含まれてさえいればその近傍の元で有効であり、他の情報に依存してはならないという制約はないからです。
 例えばコード中でparallelNumberという変数がありますが、近傍からただ1つランダム値を受け取るだけで、そこに勝手に番号を加えてハッシュ値を変化させ、各ハッシュ値からそれぞれ問題関数を作成し、多数の問題関数への回答を計算しまとめて回答する事で信用を大幅に高める事ができます。問題作成情報に問題の番号を回答者側で勝手に加える事で複数の問題関数を作成できるということです。
@@ -1568,7 +1569,7 @@ https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcu
 問題関数は引数を取ります。その出力が特定の範囲になるような引数を探索します。
 引数探索より引数の検算の方が簡単にできるので、解くのは難しく確かめるのは簡単という事になります。つまり回答の検証処理は楽になりボトルネックにならなくなります。
 ここの228から検証処理があります。  
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/processorprovement/Answer.java
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/communication/mutual/processorprovement/Answer.java
 
 問題関数はAにおいてランダム値に依存している事から予め作成しておく事ができません。即ち予め回答を計算しておく事もできません。
 そして問題を解いたら近傍に回答として送信します。  
@@ -1579,18 +1580,18 @@ https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcu
 このとき、AとBから、その回答を送ってきたノードは今その計算をして回答をしたのだと分かります。
 そうして初めて全く相互に信用していなかったノードが互いを少し信用します。
 231でスコアインクリメント、115でノードnが今回獲得したスコア、138でノードの信用更新。  
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/processorprovement/Answer.java
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/communication/mutual/processorprovement/Answer.java
 
 **なお信用は継続的に、徐々に変化していくものです**。  
 ここの168 updateProcessorScoreの実装が示すように、新たに獲得した信用によって既存の信用値が徐々に変化していきます。  
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/subjectivity/P2PEdgeBase.java  
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/model/release1/subjectivity/P2PEdgeBase.java  
 102 getImpressionの返値はノードの信用を大部分決定します。  
 ここの284 creditメソッドで最終的なノードの信用値を取得できます。  
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/subjectivity/P2PEdge.java
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/model/release1/subjectivity/P2PEdge.java
 
 Cの重要性について。回答に含められたランダム値の長さによって、近傍の近傍数を知る事ができて、その近傍数は過少報告が防止されています。近傍の近傍数をある意味で証明的に取得できるという事です。
 187から近傍の近傍数を確認しています。  
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/processorprovement/Answer.java  
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/communication/mutual/processorprovement/Answer.java  
 Bは1つの問題関数を解くだけで複数の近傍において信用が得られる事を意味します。
 そうであれば、多くのノードの近傍となる事でP2Pネットワークにおいて大きな信用を獲得できます。
 しかし、Cによって、回答を受け取ったノードは回答者がいくつの近傍に対してまとめて回答を送信したかが分かります。
@@ -1628,7 +1629,7 @@ https://github.com/lifeinwild/tenyu/blob/master/src/sample/java/bei7473p5254d69j
 https://github.com/lifeinwild/tenyu/blob/master/src/sample/java/bei7473p5254d69jcuat/tenyu/sample/DistributedVoteSample2018.java    
 
 次のコードは基盤ソフトウェアの実装における分散合意のコードです。これ以外に[同調処理](#同調処理)も分散合意です。getTurnCountMaxは20回局所的多数決を繰り返す事を示しています。interactionは局所的多数決の実装です。PowerVoteは複数の選択肢に合計値が1.0になる実数値をつける処理です。それは各選択肢の重みづけという事であり、PowerVoteさえあれば様々な意思決定が可能になります。全体運営者候補AとBが居てAが0.7、Bが0.3の影響力を持つ、というようなある種の影響力配分が可能です。あるいは最大値を獲得したAのみが特別な権限を持つようにする事もできます。PowerVoteさえあれば一通りのアンケートや意思決定的な処理ができるということです。  
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/vote/PowerVoteStatement.java
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/communication/mutual/vote/PowerVoteStatement.java
 
 ## 分散合意の種類
 [分散合意](#分散合意)は2種類あります。  
@@ -1679,7 +1680,7 @@ https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcu
 
 [全体運営者](#全体運営者)の選出や任意の内容のアンケート等ができます。これらP2P技術によって、選挙を不正に操作する事は技術的にできません。
 PowerVoteがその実装です。
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/vote/PowerVoteSequence.java
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/communication/mutual/vote/PowerVoteSequence.java
   
 選挙による全体運営者選出によって、[メッセージ受付サーバ](#メッセージ受付サーバ)等の特別な役割を担うノードをP2Pネットワーク全体で認可できます。なお全体運営者は選挙で選ばれた時に自動的にメッセージ受付サーバの候補に加えられます。
 
@@ -1689,7 +1690,7 @@ P2Pネットワークを使って何をするかを考えた時、特別な決�
 ここに選挙の1実装があります。このPowerVoteという機能は、複数の選択肢についてそれぞれの選択肢の影響力をP2Pネットワーク全体で決定します。その中で最大の影響力となったものを採用してもいいし、上位いくつかの選択肢を採用してもいいし、全体運営者の候補を選択肢としてそれぞれの影響力を算出する事にも使えます。
 133で信用が取得され、145で信用が低い意見は除外されます。ここで信用はプロセッサ証明によって得られた近傍の信用です。
 170で次のターンの自分の主張値が設定されます。このような局所的多数決を20ターンも繰り返せばP2Pネットワークがどれほど巨大でも全体で多数決した場合と同じ結果をどのノードにおいても持つ事になります。  
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/vote/PowerVoteStatement.java
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/communication/mutual/vote/PowerVoteStatement.java
 
 ## メッセージ拡散
 [一斉更新](#一斉更新)においてある程度まとまったメッセージリスト（UserMessageList)を一斉に反映するという話がありましたが、そのメッセージ（UserRightRequest)の拡散処理は2種類の実装方法が考えられました。
@@ -1699,14 +1700,14 @@ https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcu
 
 ## メッセージ受付サーバ
 メッセージ受付サーバは[客観](#客観)DBを更新するための電子署名つきメッセージを受け付けるサーバで、一旦そこで溜め込まれてから数万件まとめてP2Pネットワークに[拡散](#メッセージ拡散)される、というようになっている。インターネットがブロードキャストを提供するならメッセージ受付サーバを無くして耐障害性を飛躍的に高めれるが、現状のインターネットの機能だとどうやらメッセージ受付サーバを置く方が合理的という事になる。  
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/middle/takeoverserver/usermessagelist/UserMessageListServer.java
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/model/release1/middle/takeoverserver/usermessagelist/UserMessageListServer.java
 
 ## ターン
 ※セキュリティ上[同調処理](#同調処理)でターン概念が不要であるという認識はTenyuのP2P技術において最も捉えるのが難しいと思います。しかもそれは[一斉更新](#一斉更新)を裏で支える重要な仕組みです。P2Pネットワークでノードがオンラインになったりオフラインになったりする描像、そしてオンラインになったノードが[客観](#客観)遅れを自分のタイミングで修正していく描像を捉え全体として多数派の客観が同値なまま推移する描像を捉える必要があります。
 
 [分散合意](#分散合意)は[局所的多数決](#局所的多数決)を数回繰り返すが、[平均型](#平均型)では各ノードがベストエフォートで最速実行するのではなく、ターンがあり、速く通信が終わったノードは次のターンの開始時間が来るまで待機する。  
 ここの285 sleepUntilでそのターンの終了時間が来るまで待機します。  
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/TurnBaseMessage.java  
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/communication/mutual/TurnBaseMessage.java  
 
 あるいは分散合意のサンプルコードでもターンがあります。
 https://github.com/lifeinwild/tenyu/blob/master/src/sample/java/bei7473p5254d69jcuat/tenyu/sample/DistributedVoteSample2015.java
@@ -1725,19 +1726,19 @@ https://github.com/lifeinwild/tenyu/blob/master/src/sample/java/bei7473p5254d69j
 
 そしてもう1つの要点は、**客観DBの内容である重要な[承認情報](#承認情報)は大部分が誰かユーザーの電子署名を根拠に作成・更新された情報だ**というものです。例えば仮想通貨の送金は送金者の電子署名があれば堅牢という事になります。プロフィールの更新はそのユーザーの署名があれば堅牢という事になります。つまり本人または特権を担当している者の電子署名がついたメッセージを受け取ると各ノードはそれを受け入れて客観を更新します。  
 これはUserRightRequestクラスが扱います。  
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/request/gui/right/UserRightRequest.java    
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/communication/request/gui/right/UserRightRequest.java  
 客観DBに含まれる情報の中でこのようなユーザーの権利的ではない情報は、現在の全体運営者情報など選挙を通じて作成される情報です。  
 
 ということで、一斉更新における客観DBの更新は、同値なUserRightRequestの一覧を全ノードが持ち、同時に反映するという事です。  
 これがその一覧を表現するクラスです。  
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/right/UserMessageList.java   
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/communication/mutual/right/UserMessageList.java   
 これが反映処理のインターフェースです。  
-https://github.com/lifeinwild/tenyu/blob/6ca008366d7d4a4b4d8fa79d00e113928773a9a6/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/request/UserMessageListRequestI.java
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/communication/request/UserMessageListRequestI.java
 
 一斉更新ではある程度メッセージを溜め込んでから（UserMessageList）一斉に反映します。反映タイミングは全ノード同時でなければならず、実際2分に1回しかありません。さらにメッセージリストは全ノードで同値である必要があります。メッセージが一部のノードにしか届いていないという事があってはならないという事です。  
 
 一斉更新はこのあたりのコードに書かれていますが、同調処理とのタイミング問題の解決等極めて複雑です。  
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/mutual/right/ObjectivityUpdateSequence.java
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/communication/mutual/right/ObjectivityUpdateSequence.java
 
 **TenyuのP2P技術が従来技術と比較して桁違いに高性能である（ノードの性能をほぼストレートに発揮できるというP2Pネットワークとしてほぼ上限のスループット）という事になるのは、主に一斉更新によるものです**。（その背景には同調処理による客観DBの同調などがあって一斉更新は成立しているし、同調処理の背景には[分散合意やプロセッサ証明](#分散合意とプロセッサ証明の相補性)がある）
 
@@ -1750,17 +1751,17 @@ https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcu
 なお同調処理を通じて客観が更新される（近傍と同調される）のは一部の遅れたノードが追いつくための補助的な処理であり、客観は主に[一斉更新](#一斉更新)によって更新されます。同調処理の存在意義はオフライン状態から復帰したノードが遅れを取り戻すためにあります。ネットワーク全体が何らかの攻撃に晒されて客観DBの不整合が大規模に生じた場合でも同調処理によってP2Pネットワーク全体で客観DBが同値になります。
 
 cathcupパッケージに同調処理系のクラスがまとめられていますが、このあたりは極めて複雑な並列処理です。 
-https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/middle/catchup   
+https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcuat/tenyu/model/release1/middle/catchup   
 
 客観DBは全ノードで同値である事が期待され、仮想通貨残高など重要な承認情報が記録されるところなので、ノード毎に異なってはいけません。そのため定期的に同調処理が発生して客観DBを同値にします。
 Tenyu基盤ソフトウェアのDBはHashStoreという機能によってDB全体のハッシュ値を高速に取得できます。  
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/db/store/HashStore.java
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/db/store/satellite/HashStore.java
 そして近傍ノードと現在のDBのハッシュ値について局所的多数決を行いながら、もし不整合があれば食い違っている部分を効率良く特定できます。
 この同調処理における[局所的多数決](#局所的多数決)でも[プロセッサ証明](#プロセッサ証明)で得た[信用](#主観的な信用)が使用されます。そうすると、もし同調処理において嘘のハッシュ値を近傍に伝えてP2Pネットワークの多数のノードを騙そうとした場合、まず多数のノードで信用を得る必要があり、それにはP2Pネットワークの過半数のノードの合計プロセッサ性能を上回るプロセッサ性能を長期間用いる必要があります。長期間用いる必要があるのは近傍ノードへの信用が継続的に蓄積されるものだからです。
 
 同調処理は極めて入り組んだ並列処理です。
 同調処理関連のクラスはcatchupパッケージにあります。  
-https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/communication/request/catchup
+https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcuat/tenyu/model/release1/middle/catchup
 
 同調処理も一種の分散合意とみなせます。プロセッサ証明によって助けられた局所的多数決の繰り返し、それによる全体で多数決した場合と同じ結果になるという共通の性質があります。ただし各ノードそれぞれのタイミングで随時行われているという点が特徴的です。
 
