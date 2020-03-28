@@ -303,8 +303,8 @@ https://snyk.io/blog/jvm-ecosystem-report-2018/
 - 単に時間が足りてない。いずれJava9+にする。
 - Java9+への移行作業が難しい。使用しているライブラリがJigsawに対応していない等。
 - 自己完結型を求めていない。  
-https://qiita.com/kazumura/items/50f041054572ceffe994  
-＞(B) JPMS(Jigsaw)の否定  
+  https://qiita.com/kazumura/items/50f041054572ceffe994  
+  >(B) JPMS(Jigsaw)の否定  
 
 JPMSは自己完結型を推進する仕組みです。
 
