@@ -343,7 +343,7 @@ javaはnull安全がありませんが例外処理や静的解析ツールで補
 
 # Glb
 TenyuはGlbという特殊なクラスを使用しています。  
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/release1/global/Glb.java  
+https://github.com/lifeinwild/tenyu/blob/master/src/main/java/glb/Glb.java
 
 私のおぼろげな記憶によれば、これは昔某社で見かけたアイデアであり私の発想ではありません。
 Glbはプロセスにただ1つのクラスで、グローバル状態を管理し、インスタンスが作られずstaticメンバーで構成され、特殊な仕組みは一切なくとても単純なものです。
