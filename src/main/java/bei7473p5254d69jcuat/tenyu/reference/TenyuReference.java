@@ -1,16 +1,12 @@
 package bei7473p5254d69jcuat.tenyu.reference;
 
-import bei7473p5254d69jcuat.tenyu.*;
 import bei7473p5254d69jcuat.tenyu.db.*;
+import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.*;
-import glb.*;
 
 /**
  * 参照
- *
- * ObjectStore前提
- * 常にどこかのObjectStoreから取得する
+ * このオブジェクトの状態に従い、どこかの{@link ObjectStore}からオブジェクトを取得する。
  *
  * 具象クラスで返値の型を具体的なものにする。
  *

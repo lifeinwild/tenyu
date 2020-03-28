@@ -37,7 +37,7 @@ public abstract class CreativeObjectStore<T1 extends CreativeObjectDBI,
 	}
 
 	/**
-	 * TODO KVSにおいて正しくソートされるか？
+	 * TODO KVSにおいてバージョン順にソートされるか？
 	 */
 	private StoreInfo firstIdVersionToId;
 	private StoreInfo uploaderUserIdToIds;

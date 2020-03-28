@@ -2,7 +2,6 @@ package bei7473p5254d69jcuat.tenyutalk.reference;
 
 import java.util.*;
 
-import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyutalk.model.release1.*;
@@ -17,6 +16,8 @@ import jetbrains.exodus.env.*;
  * ハッシュ値を含むので偽のデータを流し込まれる恐れが無い。
  * 参照オブジェクト作成時点で正しい動作を確認できた場合、
  * その後も正しく動作し続ける。
+ * デメリットとして、参照作成時点でバージョンを決定する必要があり、
+ * 自動的に最新版を参照するような動作をしない。
  *
  * 関連：{@link TenyutalkReferenceFlexible}
  *
