@@ -281,7 +281,7 @@ Pythonは機械学習に使われますがそのコアな部分はネイティ�
   - クロスプラットフォーム◎  
   - 汎用目的◎  
   - 多言語〇  
-  - WEBのようにオンラインからコードをDLして実行する普及した仕組みがありません。ただしSecurityManager、AccessController、カスタムPermission等を使ってWEBのようなオンラインからのコードのDL及びサンドボックス実行に耐えるシステムを構築可能です。
+  - WEBのようにネットからコードをDLして実行する普及した仕組みがありません。ただしSecurityManager、AccessController、カスタムPermission等を使ってWEBのようなネットからのコードのDL及びサンドボックス実行するシステムを構築可能です。
 
 # 仮想デスクトップによるreproducible_builds証明_案
 このような機能があればreproducible buildsを証明できそうです。
