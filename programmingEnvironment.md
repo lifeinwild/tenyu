@@ -1229,7 +1229,8 @@ https://www.oracle.com/webfolder/technetwork/jp/javamagazine/Java-SO17-Modules.p
 - Javaセキュリティアーキテクチャ  
   https://docs.oracle.com/javase/jp/1.3/guide/security/spec/security-spec.doc1.html
 - [ファイル操作などシステム系処理の権限](https://docs.oracle.com/javase/jp/1.3/guide/security/spec/security-spec.doc3.html#19802)
-- [カスタム権限](https://docs.oracle.com/javase/tutorial/security/userperm/index.html)
+- [カスタム権限](https://docs.oracle.com/javase/tutorial/security/userperm/index.html)  
+  カスタム権限にメンバー変数を持たせてPermission#implies()をオーバーライドすれば大抵の要求に対応出来ると思う。文脈中の権限数が増えすぎるとパフォーマンスの問題が生じる可能性があるので、少しの広い範囲を許可する権限を付与して、セキュリティが問われる各メソッドは狭い範囲の権限を要求してimpliesでtrueにするというような方法で文脈中の権限数を低く抑えるべきだろう。
 - 権限付与  
   ポリシーファイルまたはSecurityManagerを継承したカスタムクラスを作りメソッドをオーバーライドする。あるいはPolicy.setPolicy()でprogramaticallyに権限付与できる。
 - （自分の）メソッド単位でのアクセス拒否。(少なくともJava8では）JDKのクラスがそうしているように各メソッドの内部でSecurityManagerでチェックするコードを書く。アノテーションで簡単に出来そうな気がするがそういう書き方が紹介されていないあたりたぶんできない。
