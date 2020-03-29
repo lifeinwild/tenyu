@@ -1234,7 +1234,7 @@ https://www.oracle.com/webfolder/technetwork/jp/javamagazine/Java-SO17-Modules.p
   ポリシーファイルまたはSecurityManagerを継承したカスタムクラスを作りメソッドをオーバーライドする。あるいはPolicy.setPolicy()でprogramaticallyに権限付与できる。
 - （自分の）メソッド単位でのアクセス拒否。(少なくともJava8では）JDKのクラスがそうしているように各メソッドの内部でSecurityManagerでチェックするコードを書く。アノテーションで簡単に出来そうな気がするがそういう書き方が紹介されていないあたりたぶんできない。
 - オブジェクト単位でのアクセス拒否。[GuardedObject](https://docs.oracle.com/javase/jp/8/docs/api/java/security/GuardedObject.html)
-- スレッドまたはスレッドグループ単位での権限付与。どうやらスレッド単位の権限付与はない。[SecurityManager#checkAccess](https://docs.oracle.com/javase/jp/7/api/java/lang/SecurityManager.html#checkAccess(java.lang.ThreadGroup))はスレッド優先度の変更やユーザースレッドの作成の権限があるかを調べているだけで、スレッドに任意の（例えばファイル操作）権限があるかを調べるというものではない。しかしJavaのセキュリティアーキテクチャは、そのスレッドのコードパスに応じてスレッドに権限付与されているという捉え方ができるかもしれない。
+- スレッドまたはスレッドグループ単位での権限付与。どうやらスレッドまたはスレッドグループ単位の権限付与はない。[SecurityManager#checkAccess](https://docs.oracle.com/javase/jp/7/api/java/lang/SecurityManager.html#checkAccess(java.lang.ThreadGroup))はスレッド優先度の変更やユーザースレッドの作成の権限があるかを調べているだけで、スレッドに任意の（例えばファイル操作）権限があるかを調べるというものではない。恐らくこのメソッドはオーバーライド用に定義されている。しかしJavaのセキュリティアーキテクチャは、そのスレッドの経由クラスに応じてスレッドに権限付与されているという捉え方ができるかもしれない。
 - [jar単位での権限付与](http://www.ne.jp/asahi/hishidama/home/tech/java/security.html#h_syntax)
 
 基本的にjarに権限付与して、そのjar内のクラスを経由したスレッドはそのjarに与えられた権限内で動作するので、他のjarに新たな権限があってもアクセス拒否される。  
