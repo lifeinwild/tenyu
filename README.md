@@ -1568,7 +1568,7 @@ TenyuのP2Pネットワークは定められた日時に[選挙](#選挙)を実�
   [ProblemSrcクラス](https://github.com/lifeinwild/tenyu/blob/master/src/sample/java/bei7473p5254d69jcuat/tenyu/sample/CPUProvementSample2018.java)のgetHash()
 4. ハッシュ値から問題関数を作成  
   例えば[このサンプルコード](https://github.com/lifeinwild/tenyu/blob/master/src/sample/java/bei7473p5254d69jcuat/tenyu/sample/CPUProvementSample2018.java)の756行目でハッシュ値から問題関数を作成している。  
-  ここで問題関数がこの時近傍が作成したランダム値に依存しているので、問題関数を予め計算しておく事が不可能だったとそのランダム値を作成した近傍の元で証明される。予め計算しておけない事の証明は定められた時間外に演算量証明しようとしても無駄であることを意味し、省電力となる。
+  ここで問題関数がこの時近傍が作成したランダム値に依存しているので、問題関数を予め計算しておく事が不可能だったとそのランダム値を作成した近傍の元で証明される。予め計算しておけない事の証明は定められた時間内で演算するしかないことを意味し、省電力となる。
 5. 引数探索。各ノードは近傍から届いたランダム値から作成された問題関数を解く。  
   [CPUProvementクラス](https://github.com/lifeinwild/tenyu/blob/master/src/sample/java/bei7473p5254d69jcuat/tenyu/sample/CPUProvementSample2018.java)のparallelSolve()やsolve()が実行されるということ。  
   本番用コードでは[RandomStringStatementクラス](https://github.com/lifeinwild/tenyu/blob/61a2918467795d28cbc9ddb9f3b608a400bd84a0/src/main/java/bei7473p5254d69jcuat/tenyu/communication/mutual/processorprovement/RandomString.java)#interaction()の後半がこの動作をする。
