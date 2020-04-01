@@ -1491,9 +1491,9 @@ P2Pプラットフォーム確立のための技術。確立以降の多彩な�
 他に私が用いる可能性のある独自用語はここに書かれています。[programmingEnvironment.md](https://github.com/lifeinwild/tenyu/blob/master/programmingEnvironment.md)
 
 ## 主観
-各ノードの手元でのみ扱われる情報。即ちアタッカーがアクセスする事すらできず改ざんのリスクは一切ありません。
+各ノードの手元でのみ扱われる情報。即ち攻撃者がアクセスする事すらできず改ざんのリスクは一切ありません。
 基本的に他のノードと共有されない。
-例えば近傍の各ノードをどれくらい信用するかという情報は主観として扱われる。  
+例えば[近傍の各ノードをどれくらい信用するかという情報は主観として扱われる](#主観的な信用)。  
 subjectivityパッケージに主観系のクラスがまとめられています。ここにP2PNodeやP2PEdgeがある事を確認してください。それらクラスは相互評価フローネットワークと無関係です。P2Pプラットフォームの確立過程、つまりP2P技術が駆使される段階では主観系のクラスが主に使用されます。
 https://github.com/lifeinwild/tenyu/tree/master/src/main/java/bei7473p5254d69jcuat/tenyu/model/release1/subjectivity
 
