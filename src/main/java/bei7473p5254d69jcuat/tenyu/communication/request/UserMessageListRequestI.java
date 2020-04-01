@@ -1,10 +1,11 @@
 package bei7473p5254d69jcuat.tenyu.communication.request;
 
+import bei7473p5254d69jcuat.tenyu.communication.mutual.right.*;
 import bei7473p5254d69jcuat.tenyu.communication.packaging.SignedPackage.*;
 import jetbrains.exodus.env.*;
 
 /**
- * UserMessageListの要素になりうるメッセージ
+ * {@link UserMessageList}の要素になりうるメッセージ
  *
  * @author exceptiontenyu@gmail.com
  *

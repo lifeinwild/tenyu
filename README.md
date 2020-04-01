@@ -1727,7 +1727,7 @@ P2Pネットワークを使って何をするかを考えた時、特別な決�
 https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/communication/mutual/vote/PowerVoteStatement.java
 
 ## メッセージ拡散
-[一斉更新](#一斉更新)においてある程度まとまったメッセージリスト（UserMessageList)を一斉に反映するという話がありましたが、そのメッセージ（UserRightRequest)の拡散処理は2種類の実装方法が考えられました。
+[一斉更新](#一斉更新)においてある程度まとまった[メッセージリスト](https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/communication/mutual/right/UserMessageList.java)を一斉に反映するという話がありましたが、[その要素であるメッセージ](https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/communication/request/UserMessageListRequestI.java)の拡散処理は2種類の実装方法が考えられました。
 
 - [純粋P2P型](#純粋P2P型のみでメッセージ拡散するには)
 - [メッセージ受付サーバ型](#メッセージ受付サーバ)
@@ -1759,8 +1759,7 @@ https://github.com/lifeinwild/tenyu/blob/master/src/sample/java/bei7473p5254d69j
 [同調処理](#同調処理)によって全ノードで[客観](#客観)DBが同値に保たれますが、逆にそのせいで一部のノードが客観DBを更新するだけでは即座に古い値に巻き戻ります。だから客観DBの更新は「一斉更新」が必要になります。一斉に客観DBを更新すれば巻き戻りません。  
 
 そしてもう1つの要点は、**客観DBの内容である重要な[承認情報](#承認情報)は大部分が誰かユーザーの電子署名を根拠に作成・更新された情報だ**というものです。例えば仮想通貨の送金は送金者の電子署名があれば堅牢という事になります。プロフィールの更新はそのユーザーの署名があれば堅牢という事になります。つまり本人または特権を担当している者の電子署名がついたメッセージを受け取ると各ノードはそれを受け入れて客観を更新します。  
-これはUserRightRequestクラスが扱います。  
-https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/communication/request/gui/right/UserRightRequest.java  
+これは[UserRightRequestIクラス](https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/communication/request/UserMessageListRequestI.java)が扱います。  
 客観DBに含まれる情報の中でこのようなユーザーの権利的ではない情報は、現在の全体運営者情報など選挙を通じて作成される情報です。  
 
 ということで、一斉更新における客観DBの更新は、同値なUserRightRequestの一覧を全ノードが持ち、同時に反映するという事です。  
@@ -1769,7 +1768,7 @@ https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcu
 これが反映処理のインターフェースです。  
 https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/communication/request/UserMessageListRequestI.java
 
-一斉更新ではある程度メッセージを溜め込んでから（UserMessageList）一斉に反映します。反映タイミングは全ノード同時でなければならず、実際2分に1回しかありません。さらにメッセージリストは全ノードで同値である必要があります。メッセージが一部のノードにしか届いていないという事があってはならないという事です。  
+一斉更新では[ある程度メッセージを溜め込んでから](https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/communication/mutual/right/UserMessageList.java)一斉に反映します。反映タイミングは全ノード同時でなければならず、実際2分に1回しかありません。さらにメッセージリストは全ノードで同値である必要があります。メッセージが一部のノードにしか届いていないという事があってはならないという事です。  
 
 一斉更新はこのあたりのコードに書かれていますが、同調処理とのタイミング問題の解決等極めて複雑です。  
 https://github.com/lifeinwild/tenyu/blob/master/src/main/java/bei7473p5254d69jcuat/tenyu/communication/mutual/right/ObjectivityUpdateSequence.java
