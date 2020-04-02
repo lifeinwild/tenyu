@@ -707,11 +707,11 @@ OOPという言葉で指定される意味には、コンピュータのメタ�
      that the abstract statements operating upon the original abstract data structure  
      もともとあった抽象データ構造（メンバー変数群）に依存していた抽象文（メソッド）は  
      have to be redefined  
-     リファクタリングされなければならない  
+     洗練されなければならない  
      in terms of algorithmic refinements operating upon the new data structures in terms of which it was decided to represent the original abstract data structure.  
      元のデータ構造を代替すると判断された新しいデータ構造（メンバー変数群）で機能するアルゴリズムの面で。  
      Such a joint refinement of data structure and associated statements  
-     そのようなデータ構造（メンバー変数群）と関連付けられた文（メソッド）の連動的リファクタリングは  
+     そのようなデータ構造（メンバー変数群）と関連付けられた文（メソッド）の連動的洗練は  
      should be an isolated unit of the program text:  
      プログラムの独立したユニット（＝クラス）でなければならない：  
      it embodies the immediate consequences of an (independent) design decision  
