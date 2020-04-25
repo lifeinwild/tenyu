@@ -563,11 +563,9 @@ public class CPUProvementSample2018 {
 				+ "	'm', 'l', 'G', 'b', 'g', 'k', 'n', 'Y' };" + crlf;
 
 		r += "		for(int i=0; i<lVar.length; i++)" + crlf;
-		r += "			lVar[i] += argL;" + crlf;
+		r += "			lVar[i] += argL + cVar[i]; " + crlf;
 		r += "		for(int i=0; i<dVar.length; i++)" + crlf;
-		r += "			dVar[i] += argD;" + crlf;
-		r += "		for(int i=1; i<cVar.length; i++)" + crlf;
-		r += "			cVar[i] += cVar[i] + cVar[i-1];" + crlf;
+		r += "			dVar[i] += argD; " + crlf;
 
 		r += "		for(int j=0; j<" + loop + ";j++){" + crlf;
 		for (int i = 0; i < internalFuncCount; i++) {
