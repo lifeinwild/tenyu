@@ -31,7 +31,7 @@ import jetbrains.exodus.env.*;
  *
  */
 public class DistributedTradable extends IndividualityObject
-		implements DistributedTradableDBI {
+		implements DistributedTradableI {
 
 	/**
 	 * 所有権移転時に現在の所有者はこの文字列に署名する

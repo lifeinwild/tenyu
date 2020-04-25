@@ -16,7 +16,7 @@ import jetbrains.exodus.*;
 import jetbrains.exodus.env.*;
 
 public class FreeKVPairStore
-		extends AdministratedObjectStore<FreeKVPairDBI, FreeKVPair> {
+		extends AdministratedObjectStore<FreeKVPairI, FreeKVPair> {
 	public static final String modelName = FreeKVPair.class.getSimpleName();
 	/**
 	 * FreeKVPairのKeyからidへのインデックス。
@@ -51,14 +51,14 @@ public class FreeKVPairStore
 	}
 
 	@Override
-	protected boolean createAdministratedObjectConcrete(FreeKVPairDBI u)
+	protected boolean createAdministratedObjectConcrete(FreeKVPairI u)
 			throws Exception {
 		return util.put(keyToId, cnvS(u.getKey()), cnvL(u.getId()));
 	}
 
 	@Override
 	protected boolean dbValidateAtUpdateAdministratedObjectConcrete(
-			FreeKVPairDBI updated, FreeKVPairDBI old, ValidationResult r) {
+			FreeKVPairI updated, FreeKVPairI old, ValidationResult r) {
 		boolean b = true;
 		if (Glb.getUtil().notEqual(updated.getKey(), old.getKey())) {
 			if (getIdByKey(updated.getKey()) != null) {
@@ -70,13 +70,13 @@ public class FreeKVPairStore
 	}
 
 	@Override
-	protected boolean deleteAdministratedObjectConcrete(FreeKVPairDBI u)
+	protected boolean deleteAdministratedObjectConcrete(FreeKVPairI u)
 			throws Exception {
 		return util.remove(keyToId, cnvS(u.getKey()));
 	}
 
 	@Override
-	public boolean existAdministratedObjectConcrete(FreeKVPairDBI u,
+	public boolean existAdministratedObjectConcrete(FreeKVPairI u,
 			ValidationResult vr) {
 		boolean b = true;
 		if (getIdByKey(u.getKey()) == null) {
@@ -105,13 +105,13 @@ public class FreeKVPairStore
 
 	@Override
 	public boolean isSupport(Object o) {
-		if (o instanceof bei7473p5254d69jcuat.tenyu.model.promise.objectivity.other.FreeKVPairDBI)
+		if (o instanceof bei7473p5254d69jcuat.tenyu.model.promise.objectivity.other.FreeKVPairI)
 			return true;
 		return false;
 	}
 
 	@Override
-	public boolean noExistAdministratedObjectConcrete(FreeKVPairDBI u,
+	public boolean noExistAdministratedObjectConcrete(FreeKVPairI u,
 			ValidationResult vr) {
 		boolean b = true;
 		if (getIdByKey(u.getKey()) != null) {
@@ -122,8 +122,8 @@ public class FreeKVPairStore
 	}
 
 	@Override
-	protected boolean updateAdministratedObjectConcrete(FreeKVPairDBI updated,
-			FreeKVPairDBI old) throws Exception {
+	protected boolean updateAdministratedObjectConcrete(FreeKVPairI updated,
+			FreeKVPairI old) throws Exception {
 		if (Glb.getUtil().notEqual(updated.getKey(), old.getKey())) {
 			if (old.getKey() != null) {
 				if (!util.remove(keyToId, cnvS(old.getKey())))

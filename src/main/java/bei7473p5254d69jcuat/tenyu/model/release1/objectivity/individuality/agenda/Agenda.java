@@ -22,7 +22,7 @@ import jetbrains.exodus.env.*;
  *
  */
 public class Agenda extends IndividualityObject
-		implements AgendaDBI {
+		implements AgendaI {
 
 	/**
 	 * 議題の内容。
@@ -134,7 +134,7 @@ public class Agenda extends IndividualityObject
 
 	@Override
 	public Long getSpecialMainAdministratorId() {
-		return IdObjectDBI.getVoteId();
+		return IdObjectI.getVoteId();
 	}
 
 	public long getStartHistoryIndex() {

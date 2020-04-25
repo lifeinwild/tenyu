@@ -9,12 +9,12 @@ import glb.*;
 import jetbrains.exodus.env.*;
 
 public class WebGui extends
-		IndividualityObjectGui<WebDBI, Web, Web, WebStore, WebGui, WebTableItem> {
+		IndividualityObjectGui<WebI, Web, Web, WebStore, WebGui, WebTableItem> {
 	public WebGui(String name, String id) {
 		super(name, id);
 	}
 
-	public static class WebTableItem extends IndividualityObjectTableItem<WebDBI, Web> {
+	public static class WebTableItem extends IndividualityObjectTableItem<WebI, Web> {
 
 		public WebTableItem(Web src) {
 			super(src);

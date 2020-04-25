@@ -9,7 +9,7 @@ import glb.*;
 import jetbrains.exodus.env.*;
 
 public class EdgeLogGui extends
-		AdministratedObjectGui<EdgeLogDBI,
+		AdministratedObjectGui<EdgeLogI,
 				EdgeLog,
 				EdgeLog,
 				EdgeLogStore,
@@ -21,7 +21,7 @@ public class EdgeLogGui extends
 	}
 
 	public static class EdgeLogTableItem
-			extends AdministratedObjectTableItem<EdgeLogDBI, EdgeLog> {
+			extends AdministratedObjectTableItem<EdgeLogI, EdgeLog> {
 
 		public EdgeLogTableItem(EdgeLog src) {
 			super(src);

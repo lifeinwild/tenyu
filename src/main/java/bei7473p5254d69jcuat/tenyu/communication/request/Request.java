@@ -64,14 +64,6 @@ public abstract class Request extends MessageContent {
 	}
 
 	public boolean setRes(Message res) {
-		if (this.res != null) {
-			Glb.debug(new Exception(
-					"レスポンスがnullじゃない。リクエストのインスタンスを使いまわしていないかチェック resContent="
-							+ res.getContent() + " req=" + this));
-			return false;
-		} else {
-			Glb.debug("res=" + res);
-		}
 		this.res = res;
 		return true;
 	}

@@ -11,14 +11,14 @@ import javafx.scene.layout.*;
 import jetbrains.exodus.env.*;
 
 public class SocialityGui extends
-		AdministratedObjectGui<SocialityDBI,
+		AdministratedObjectGui<SocialityI,
 				Sociality,
 				Sociality,
 				SocialityStore,
 				SocialityGui,
 				SocialityTableItem> {
 	public static class SocialityTableItem
-			extends AdministratedObjectTableItem<SocialityDBI, Sociality> {
+			extends AdministratedObjectTableItem<SocialityI, Sociality> {
 
 		public SocialityTableItem(Sociality src) {
 			super(src);

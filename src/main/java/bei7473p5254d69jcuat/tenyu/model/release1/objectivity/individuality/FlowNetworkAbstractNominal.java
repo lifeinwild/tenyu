@@ -19,7 +19,7 @@ import jetbrains.exodus.env.*;
  *
  */
 public class FlowNetworkAbstractNominal extends IndividualityObject
-		implements FlowNetworkAbstractNominalDBI {
+		implements FlowNetworkAbstractNominalI {
 
 	public static boolean createSequence(Transaction txn,
 			FlowNetworkAbstractNominal u, boolean specifiedId,
@@ -56,12 +56,12 @@ public class FlowNetworkAbstractNominal extends IndividualityObject
 
 	@Override
 	public Long getSpecialMainAdministratorId() {
-		return IdObjectDBI.getNullId();//作成当初null、その後ユーザーが設定される
+		return IdObjectI.getNullId();//作成当初null、その後ユーザーが設定される
 	}
 
 	@Override
 	public Long getSpecialRegistererId() {
-		return IdObjectDBI.getVoteId();
+		return IdObjectI.getVoteId();
 	}
 
 	@Override

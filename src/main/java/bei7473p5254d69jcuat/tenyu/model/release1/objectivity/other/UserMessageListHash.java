@@ -19,7 +19,7 @@ import jetbrains.exodus.env.*;
  *
  */
 public class UserMessageListHash extends AdministratedObject
-		implements UserMessageListHashDBI {
+		implements UserMessageListHashI {
 	public static List<Long> getAdministratorUserIdCreateStatic() {
 		return null;//自動的に作成される
 	}
@@ -40,7 +40,7 @@ public class UserMessageListHash extends AdministratedObject
 	public UserMessageListHash(UserMessageList l, long historyIndex) {
 		this.hash = l.hash();
 		this.historyIndex = historyIndex;
-		this.registererUserId = IdObjectDBI.getSystemId();
+		this.registererUserId = IdObjectI.getSystemId();
 	}
 
 	public List<Long> getAdministratorUserIdCreate() {
@@ -67,12 +67,12 @@ public class UserMessageListHash extends AdministratedObject
 
 	@Override
 	public Long getSpecialMainAdministratorId() {
-		return IdObjectDBI.getNullId();
+		return IdObjectI.getNullId();
 	}
 
 	@Override
 	public Long getSpecialRegistererId() {
-		return IdObjectDBI.getSystemId();
+		return IdObjectI.getSystemId();
 	}
 
 	@Override

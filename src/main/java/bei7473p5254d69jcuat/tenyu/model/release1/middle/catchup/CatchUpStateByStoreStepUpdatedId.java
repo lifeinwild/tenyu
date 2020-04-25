@@ -114,7 +114,7 @@ public class CatchUpStateByStoreStepUpdatedId
 					+ 1; historyIndex <= majorityHistoryIndex; historyIndex++) {
 				try {
 					//DBにあるか
-					IdObjectStore<? extends IdObjectDBI,
+					IdObjectStore<? extends IdObjectI,
 							?> s = storeName.getStore(txn);
 					CatchUpUpdatedIDList l = s.getCatchUpUpdatedIDListStore()
 							.get((Long) historyIndex);

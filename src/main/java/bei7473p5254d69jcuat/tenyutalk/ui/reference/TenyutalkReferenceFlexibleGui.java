@@ -1,9 +1,9 @@
 package bei7473p5254d69jcuat.tenyutalk.ui.reference;
 
-import bei7473p5254d69jcuat.tenyutalk.model.release1.*;
+import bei7473p5254d69jcuat.tenyutalk.model.promise.*;
 import bei7473p5254d69jcuat.tenyutalk.reference.*;
 
-public class TenyutalkReferenceFlexibleGui<V extends CreativeObject>
+public class TenyutalkReferenceFlexibleGui<V extends CreativeObjectI>
 		extends TenyutalkReferenceBaseGui<V> {
 
 	public TenyutalkReferenceFlexibleGui(String name, String cssIdPrefix) {

@@ -7,7 +7,7 @@ import bei7473p5254d69jcuat.tenyu.ui.common.*;
 import javafx.beans.property.*;
 
 public class RatingGameStateByUserTableItem extends
-		AdministratedObjectTableItem<RatingGameStateByUserDBI,
+		AdministratedObjectTableItem<RatingGameStateByUserI,
 				RatingGameStateByUser>
 		implements TableRow<RatingGameStateByUser> {
 	private User srcUser;

@@ -17,7 +17,7 @@ import jetbrains.exodus.*;
 import jetbrains.exodus.env.*;
 
 public class StaticGameEquipmentClassStore
-		extends IndividualityObjectStore<StaticGameEquipmentClassDBI,
+		extends IndividualityObjectStore<StaticGameEquipmentClassI,
 				StaticGameEquipmentClass> {
 	public static final String modelName = StaticGameEquipmentClass.class
 			.getSimpleName();
@@ -52,7 +52,7 @@ public class StaticGameEquipmentClassStore
 
 	@Override
 	protected boolean createIndividualityObjectConcrete(
-			StaticGameEquipmentClassDBI o) throws Exception {
+			StaticGameEquipmentClassI o) throws Exception {
 		if (!util.put(getGameIdToIdStore(), cnvL(o.getStaticGameId()),
 				cnvL(o.getId()))) {
 			return false;
@@ -62,8 +62,8 @@ public class StaticGameEquipmentClassStore
 
 	@Override
 	protected boolean dbValidateAtUpdateIndividualityObjectConcrete(
-			StaticGameEquipmentClassDBI updated,
-			StaticGameEquipmentClassDBI old, ValidationResult r) {
+			StaticGameEquipmentClassI updated,
+			StaticGameEquipmentClassI old, ValidationResult r) {
 		boolean b = true;
 		Long updatedGameId = updated.getStaticGameId();
 		Long oldGameId = old.getStaticGameId();
@@ -81,7 +81,7 @@ public class StaticGameEquipmentClassStore
 
 	@Override
 	protected boolean deleteIndividualityObjectConcrete(
-			StaticGameEquipmentClassDBI o) throws Exception {
+			StaticGameEquipmentClassI o) throws Exception {
 		if (!util.deleteDupSingle(getGameIdToIdStore(),
 				cnvL(o.getStaticGameId()), cnvL(o.getId())))
 			return false;
@@ -106,7 +106,7 @@ public class StaticGameEquipmentClassStore
 
 	@Override
 	protected boolean existIndividualityObjectConcrete(
-			StaticGameEquipmentClassDBI o, ValidationResult vr)
+			StaticGameEquipmentClassI o, ValidationResult vr)
 			throws Exception {
 		boolean b = true;
 		if (!existByGameId(o.getStaticGameId(), o.getId())) {
@@ -143,12 +143,12 @@ public class StaticGameEquipmentClassStore
 
 	@Override
 	public boolean isSupport(Object o) {
-		return o instanceof StaticGameEquipmentClassDBI;
+		return o instanceof StaticGameEquipmentClassI;
 	}
 
 	@Override
 	protected boolean noExistIndividualityObjectConcrete(
-			StaticGameEquipmentClassDBI o, ValidationResult vr)
+			StaticGameEquipmentClassI o, ValidationResult vr)
 			throws Exception {
 		boolean b = true;
 		if (existByGameId(o.getStaticGameId(), o.getId())) {
@@ -161,8 +161,8 @@ public class StaticGameEquipmentClassStore
 
 	@Override
 	protected boolean updateIndividualityObjectConcrete(
-			StaticGameEquipmentClassDBI updated,
-			StaticGameEquipmentClassDBI old) throws Exception {
+			StaticGameEquipmentClassI updated,
+			StaticGameEquipmentClassI old) throws Exception {
 		Long updatedGameId = updated.getStaticGameId();
 		Long oldGameId = old.getStaticGameId();
 		Long rId = old.getId();

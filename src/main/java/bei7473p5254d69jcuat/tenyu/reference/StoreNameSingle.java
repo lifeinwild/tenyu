@@ -23,18 +23,18 @@ public enum StoreNameSingle implements StoreNameEnum {
 	MIDDLE(txn -> new MiddleStore(txn), MiddleStore.modelName),
 	P2P_DEFENSE(txn -> new P2PDefenseStore(txn), P2PDefenseStore.modelName),;
 	private final Function<Transaction,
-			IdObjectStore<? extends IdObjectDBI, ?>> getStore;
+			IdObjectStore<? extends IdObjectI, ?>> getStore;
 	private final String modelname;
 
 	private StoreNameSingle(
 			Function<Transaction,
-					IdObjectStore<? extends IdObjectDBI, ?>> getStore,
+					IdObjectStore<? extends IdObjectI, ?>> getStore,
 			String modelname) {
 		this.getStore = getStore;
 		this.modelname = modelname;
 	}
 
-	public IdObjectStore<? extends IdObjectDBI, ?> getStore(Transaction txn) {
+	public IdObjectStore<? extends IdObjectI, ?> getStore(Transaction txn) {
 		return getStore.apply(txn);
 	}
 

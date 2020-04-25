@@ -9,7 +9,7 @@ import glb.*;
 import jetbrains.exodus.env.*;
 
 public class StaticGameEquipmentClassGui extends
-		IndividualityObjectGui<RatingGameEquipmentClassDBI,
+		IndividualityObjectGui<RatingGameEquipmentClassI,
 				RatingGameEquipmentClass,
 				RatingGameEquipmentClass,
 				RatingGameEquipmentClassStore,
@@ -21,7 +21,7 @@ public class StaticGameEquipmentClassGui extends
 	}
 
 	public static class StaticGameEquipmentClassTableItem
-			extends IndividualityObjectTableItem<RatingGameEquipmentClassDBI,
+			extends IndividualityObjectTableItem<RatingGameEquipmentClassI,
 					RatingGameEquipmentClass> {
 
 		public StaticGameEquipmentClassTableItem(RatingGameEquipmentClass src) {

@@ -2,9 +2,7 @@ package bei7473p5254d69jcuat.tenyu.model.release1.middle.catchup;
 
 import java.util.*;
 
-import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.reference.*;
-import glb.*;
 
 /**
  * User等の多数のオブジェクトを格納する客観系ストアの同調処理

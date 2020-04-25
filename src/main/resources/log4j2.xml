@@ -7,7 +7,7 @@
         <Console name="console" target="SYSTEM_OUT">
             <PatternLayout pattern="${loglayout}" />
         </Console>
-        <RollingFile name="file" fileName="log/Tenyu.log" filePattern="log/backup/Tenyu-%d{yyyy-MM-dd}-%i.zip">
+        <RollingFile name="file" fileName="data/log/Tenyu.log" filePattern="data/log/backup/Tenyu-%d{yyyy-MM-dd}-%i.zip">
         <PatternLayout pattern="${loglayout}"/>
         <Policies>
             <OnStartupTriggeringPolicy />
@@ -16,7 +16,7 @@
         </Policies>
         <DefaultRolloverStrategy max="10"/>
         </RollingFile>
-        <RollingFile name="error_file" fileName="log/Tenyu_error.log" filePattern="log/backup/Tenyu_error-%d{yyyy-MM-dd}-%i.zip">
+        <RollingFile name="error_file" fileName="data/log/Tenyu_error.log" filePattern="data/log/backup/Tenyu_error-%d{yyyy-MM-dd}-%i.zip">
         <PatternLayout pattern="${loglayout}"/>
         <Policies>
             <OnStartupTriggeringPolicy />

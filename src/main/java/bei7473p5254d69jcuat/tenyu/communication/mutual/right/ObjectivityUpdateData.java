@@ -13,7 +13,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class ObjectivityUpdateData implements ObjectivityUpdateDataDBI {
+public class ObjectivityUpdateData implements ObjectivityUpdateDataI {
 	private List<ObjectivityUpdateDataElement> procFromOtherModules;
 	private UserMessageList messages;
 	private List<ObjectivityUpdateDataElement> processedSuperiors;

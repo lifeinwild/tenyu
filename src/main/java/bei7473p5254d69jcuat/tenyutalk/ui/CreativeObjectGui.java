@@ -5,7 +5,7 @@ import bei7473p5254d69jcuat.tenyutalk.db.*;
 import bei7473p5254d69jcuat.tenyutalk.model.promise.*;
 import bei7473p5254d69jcuat.tenyutalk.model.release1.*;
 
-public abstract class CreativeObjectGui<T1 extends CreativeObjectDBI,
+public abstract class CreativeObjectGui<T1 extends CreativeObjectI,
 		T2 extends T1,
 		T3 extends CreativeObject,
 		S extends CreativeObjectStore<T1, T2>,

@@ -8,7 +8,6 @@ import bei7473p5254d69jcuat.tenyu.communication.request.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.HasUserMessageList.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.catchup.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.catchup.GetUserMessageList.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.middle.Middle.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.catchup.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.takeoverserver.usermessagelist.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.subjectivity.*;
@@ -139,16 +138,13 @@ public class UserMessageListDiffusion
 		//自分がメインサーバならメッセージリストを設定する
 		//ここからP2Pネットワークに拡散されていく
 		UserMessageListServer main = Glb.getMiddle().getUserMessageListServer();
-		//同調状況が混沌の場合、サーバが新たなメッセージリストを流さない。
-		//一旦同調状況が落ち着いてから再度更新をスタートさせる。
-		if (main.isStarted() && Glb.getMiddle().getObjeCatchUp()
-				.getCurrentCircumstance() != ObjectivityCircumstance.CHAOS) {
+		if (main.isStarted()) {
+			//Note:同調状況が混沌の場合、サーバが新たなメッセージリストを流さない。
 			UserMessageList l = main.getAndNewMessageList();
 			if (l == null) {
 				Glb.getLogger()
 						.warn("UserMessageList is null. getCurrentCircumstance="
-								+ Glb.getMiddle().getObjeCatchUp()
-										.getCurrentCircumstance());
+								+ Glb.getSubje().getCurrentCircumstance());
 			} else if (l.size() == 0) {
 				Glb.getLogger().info("UserMessageList#count() is zero.");
 			} else {

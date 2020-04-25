@@ -31,7 +31,7 @@ import jetbrains.exodus.env.*;
  *
  */
 public abstract class AdministratedObject extends IdObject
-		implements AdministratedObjectDBI {
+		implements AdministratedObjectI {
 	/**
 	 * 管理者のユーザーID
 	 *
@@ -43,17 +43,16 @@ public abstract class AdministratedObject extends IdObject
 	 * 管理者は当然この客観オブジェクトの編集権限を持つ。
 	 * しかしこの管理者と社会性の管理者は、多くの場合同じだが、データとしては分けられている。
 	 */
-	protected Long mainAdministratorUserId = IdObjectDBI.getNullId();
+	protected Long mainAdministratorUserId = IdObjectI.getNullId();
 
 	/**
 	 * 基本的に、この情報を登録したユーザーのID。
-	 * ただし実際には登録者として設定されたユーザーのBANまたは削除に応じて
-	 * このオブジェクトもBANまたは削除されるという連鎖的削除において参照される情報である。
-	 * Webなどで最初の登録者から変更される場合がある。
+	 *
+	 * しかし{@link Web}などで最初の登録者から変更される場合がある。
 	 *
 	 * 客観コア、抽象ノード名目等一部のオブジェクトは特殊な登録者が設定される。
 	 */
-	protected Long registererUserId = IdObjectDBI.getNullId();
+	protected Long registererUserId = IdObjectI.getNullId();
 
 	@Override
 	public boolean equals(Object obj) {
@@ -101,6 +100,10 @@ public abstract class AdministratedObject extends IdObject
 	@Override
 	public Long getRegistererUserId() {
 		return registererUserId;
+	}
+
+	public User getRegistererUser() {
+		return Glb.getObje().getUser(us -> us.get(registererUserId));
 	}
 
 	/**
@@ -188,8 +191,8 @@ public abstract class AdministratedObject extends IdObject
 		//各モデルクラスにおいてid==0でなければ登録者IDはNullIdではない。
 		//複雑な条件なので長期的に見てこの条件が成立し続けるのか分からないので
 		//ログだけ出して処理を止めずに続行する。
-		if (id != null && id != IdObjectDBI.getFirstId()
-				&& registererUserId < IdObjectDBI.getFirstId()) {
+		if (id != null && id != IdObjectI.getFirstId()
+				&& registererUserId < IdObjectI.getFirstId()) {
 			Glb.getLogger().warn(new Exception("Invalid registererUserId"));
 		}
 		*/
@@ -286,7 +289,7 @@ public abstract class AdministratedObject extends IdObject
 	 */
 	protected void validateMainAdministratorNotNullId(ValidationResult r) {
 		if (mainAdministratorUserId == null
-				|| mainAdministratorUserId.equals(IdObjectDBI.getNullId())) {
+				|| mainAdministratorUserId.equals(IdObjectI.getNullId())) {
 			r.add(Lang.ADMINISTRATEDOBJECT_ADMINISTRATOR, Lang.ERROR_EMPTY);
 		}
 	}
@@ -325,8 +328,8 @@ public abstract class AdministratedObject extends IdObject
 	abstract protected boolean validateReferenceAdministratedObjectConcrete(
 			ValidationResult r, Transaction txn) throws Exception;
 
-	public abstract AdministratedObjectStore<? extends AdministratedObjectDBI,
-			? extends AdministratedObjectDBI> getStore(Transaction txn);
+	public abstract AdministratedObjectStore<? extends AdministratedObjectI,
+			? extends AdministratedObjectI> getStore(Transaction txn);
 
 	@Override
 	abstract public AdministratedObjectGui<?, ?, ?, ?, ?, ?> getGui(

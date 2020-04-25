@@ -16,7 +16,7 @@ import jetbrains.exodus.*;
 import jetbrains.exodus.env.*;
 
 public class DistributedVoteStore
-		extends IndividualityObjectStore<DistributedVoteDBI, DistributedVote> {
+		extends IndividualityObjectStore<DistributedVoteI, DistributedVote> {
 	public static final String modelName = DistributedVote.class
 			.getSimpleName();
 
@@ -62,26 +62,26 @@ public class DistributedVoteStore
 	}
 
 	@Override
-	protected boolean createIndividualityObjectConcrete(DistributedVoteDBI o)
+	protected boolean createIndividualityObjectConcrete(DistributedVoteI o)
 			throws Exception {
 		return true;
 	}
 
 	@Override
 	protected boolean dbValidateAtUpdateIndividualityObjectConcrete(
-			DistributedVoteDBI updated, DistributedVoteDBI old,
+			DistributedVoteI updated, DistributedVoteI old,
 			ValidationResult r) {
 		return true;
 	}
 
 	@Override
-	protected boolean deleteIndividualityObjectConcrete(DistributedVoteDBI o)
+	protected boolean deleteIndividualityObjectConcrete(DistributedVoteI o)
 			throws Exception {
 		return true;
 	}
 
 	@Override
-	protected boolean existIndividualityObjectConcrete(DistributedVoteDBI o,
+	protected boolean existIndividualityObjectConcrete(DistributedVoteI o,
 			ValidationResult vr) throws Exception {
 		return true;
 	}
@@ -99,11 +99,11 @@ public class DistributedVoteStore
 
 	@Override
 	public boolean isSupport(Object o) {
-		return o instanceof DistributedVoteDBI;
+		return o instanceof DistributedVoteI;
 	}
 
 	@Override
-	protected boolean noExistIndividualityObjectConcrete(DistributedVoteDBI o,
+	protected boolean noExistIndividualityObjectConcrete(DistributedVoteI o,
 			ValidationResult vr) throws Exception {
 		return true;
 	}
@@ -115,8 +115,8 @@ public class DistributedVoteStore
 	}
 
 	@Override
-	protected boolean updateIndividualityObjectConcrete(DistributedVoteDBI updated,
-			DistributedVoteDBI old) throws Exception {
+	protected boolean updateIndividualityObjectConcrete(DistributedVoteI updated,
+			DistributedVoteI old) throws Exception {
 		return true;
 	}
 }

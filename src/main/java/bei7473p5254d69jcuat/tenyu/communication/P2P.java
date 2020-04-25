@@ -358,7 +358,7 @@ public class P2P implements GlbMemberDynamicState {
 	}
 
 	/**
-	 * 同期、レスポンス有り、P2PEdge
+	 * 非同期、レスポンス有り、P2PEdge
 	 * 最終通信日時が更新される
 	 */
 	public RequestFutureP2PEdge requestAsync(Message m, P2PEdge to) {
@@ -659,8 +659,8 @@ public class P2P implements GlbMemberDynamicState {
 						new Exception());
 				return null;
 			}
-			return Message.build((MessageContent) req).packaging(req.createPackage())
-					.finish();
+			return Message.build((MessageContent) req)
+					.packaging(req.createPackage()).finish();
 		}, role.getAdminNodes(), Glb.getMiddle().getCachedServer(rName),
 				role.getId(),
 				id -> Glb.getMiddle().removeCachedServer(rName, id),
@@ -1324,6 +1324,14 @@ public class P2P implements GlbMemberDynamicState {
 		protected void channelRead0(ChannelHandlerContext ctx, Object in)
 				throws Exception {
 			try {
+				/*
+				if (Glb.getConf().isDevOrTest()) {
+					Glb.getLogger()
+							.info("channelRead0 response:" + in + " request:"
+									+ reqM + " send:" + send,
+									new Exception());
+				}
+				*/
 				channelRead0Internal(ctx, in);
 			} catch (Exception e) {
 				Glb.getLogger().error("", e);
@@ -1334,6 +1342,22 @@ public class P2P implements GlbMemberDynamicState {
 
 		protected void channelRead0Internal(ChannelHandlerContext ctx,
 				Object in) throws Exception {
+			//対応するリクエストが無い場合異常
+			Request req = getReq();
+			if (req == null)
+				return;
+
+			//既に処理済みのレスポンスは処理しない。
+			if (req.getRes() != null) {
+				//２回channelRead0が呼び出されでもしなければここには来ない
+				Glb.debug(new Exception(
+						"レスポンスが既にある。リクエストのインスタンスを使いまわしていないかハンドラが２回呼び出されていないかチェック resContent="
+								+ req.getRes().getContent() + " req=" + req));
+				return;
+			} else {
+				Glb.debug("res=" + req.getRes());
+			}
+
 			Object o = deserialize(in);
 
 			if (o == null || !(o instanceof Message)) {
@@ -1386,10 +1410,9 @@ public class P2P implements GlbMemberDynamicState {
 
 			Response res = (Response) c;
 
-			if (getReq() == null || !res.isValid(getReq())
-					|| !getReq().isValid(res)) {
+			if (req == null || !res.isValid(req) || !req.isValid(res)) {
 				if (res instanceof StandardResponse) {
-					getReq().exceptionCaught((StandardResponse) res);
+					req.exceptionCaught((StandardResponse) res);
 				}
 
 				Glb.debug(() -> "invalid response: "
@@ -1398,9 +1421,8 @@ public class P2P implements GlbMemberDynamicState {
 			}
 
 			res.setReq(reqM);
-			//Nettyが複数回同じメッセージの受信ハンドラを呼び出すのかここに複数回来る事がある
-			if (!getReq().setRes(message)) {
-				return;//2回目以降何もせず終わる
+			if (!req.setRes(message)) {
+				return;
 			}
 
 			Glb.debug(() -> "call received(): " + c.getClass().getSimpleName()
@@ -1513,6 +1535,7 @@ public class P2P implements GlbMemberDynamicState {
 				if (code == null) {
 					code = ResultCode.DEFAULT;
 				}
+				//SUCCESSならメッセージクラスの責任で返信したと想定する
 				if (code != ResultCode.SUCCESS) {
 					Glb.debug("StandardResponse code=" + code);
 					StandardResponse res = new StandardResponse(code);

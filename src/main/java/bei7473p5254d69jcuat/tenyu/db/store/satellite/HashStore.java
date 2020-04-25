@@ -153,7 +153,7 @@ public class HashStore extends ObjectStore<byte[], HashStoreValue>
 
 	}
 	*/
-	private static ByteIterable meaningLessKey = cnvL(IdObjectDBI.getFirstId());
+	private static ByteIterable meaningLessKey = cnvL(IdObjectI.getFirstId());
 
 	/**
 	 * key : data
@@ -748,7 +748,7 @@ public class HashStore extends ObjectStore<byte[], HashStoreValue>
 		ByteIterable bi = util.get(getLastIdStoreInfo(), meaningLessKey);
 		//最初lastIdはnullでその場合最初のID-1を設定して計算を合わせる
 		if (bi == null)
-			return IdObjectDBI.getFirstId() - 1;
+			return IdObjectI.getFirstId() - 1;
 		return cnvL(bi);
 	}
 

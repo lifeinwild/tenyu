@@ -47,7 +47,7 @@ public class UpdatableNeighborList extends ReadonlyNeighborList {
 	 * @return	近傍を追加可能か
 	 */
 	public boolean isAddable() {
-		return getNeighborsSize() < neighborMax;
+		return size() < neighborMax;
 	}
 
 	public P2PEdge addNeighbor(byte[] pubKey, int nodeNumber, AddrInfo addr) {
@@ -198,7 +198,7 @@ public class UpdatableNeighborList extends ReadonlyNeighborList {
 	public void rankingAndRemove() {
 		//削除する近傍一覧
 		List<P2PEdge> removeList = new ArrayList<>();
-		int over = getNeighborsSize() - neighborThreshold;
+		int over = size() - neighborThreshold;
 
 		//総件数が閾値以下なら何も削除しない
 		if (over <= 0)
@@ -315,5 +315,7 @@ public class UpdatableNeighborList extends ReadonlyNeighborList {
 	public P2PEdge updateOrCreateNeighbor(P2PNode latest) {
 		return updateOrCreateNeighbor(new P2PEdge(latest));
 	}
+
+
 
 }

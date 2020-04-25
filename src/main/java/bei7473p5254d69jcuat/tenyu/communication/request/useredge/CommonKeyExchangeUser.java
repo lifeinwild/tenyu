@@ -160,7 +160,7 @@ public class CommonKeyExchangeUser extends Request
 		//受信した情報
 		Long signerUserId = validated.getMessage().getUserId();
 		User signer = Glb.getObje().getUser(us -> us.get(signerUserId));
-		byte[] serialized = Glb.getConf().decryptByPrivateKey(keyType,
+		byte[] serialized = Glb.getConf().getKeys().decryptByPrivateKey(keyType,
 				encrypted);
 		CommonKeyInfo cki = CommonKeyInfo.deserialize(serialized);
 
@@ -230,7 +230,7 @@ public class CommonKeyExchangeUser extends Request
 		@Override
 		public boolean received(ChannelHandlerContext ctx, Received validated) {
 			//受信した情報
-			byte[] decrypted = Glb.getConf().decryptByPrivateKey(keyType,
+			byte[] decrypted = Glb.getConf().getKeys().decryptByPrivateKey(keyType,
 					encrypted);
 			CommonKeyInfo cki = CommonKeyInfo.deserialize(decrypted);
 

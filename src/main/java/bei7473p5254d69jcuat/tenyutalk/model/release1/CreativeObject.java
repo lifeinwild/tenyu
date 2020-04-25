@@ -3,17 +3,14 @@ package bei7473p5254d69jcuat.tenyutalk.model.release1;
 import java.nio.*;
 import java.util.*;
 
-import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.satellite.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
 import bei7473p5254d69jcuat.tenyutalk.*;
 import bei7473p5254d69jcuat.tenyutalk.db.*;
 import bei7473p5254d69jcuat.tenyutalk.model.promise.*;
-import bei7473p5254d69jcuat.tenyutalk.model.release1.other.*;
 import bei7473p5254d69jcuat.tenyutalk.reference.*;
 import bei7473p5254d69jcuat.tenyutalk.ui.*;
 import glb.*;
@@ -21,7 +18,7 @@ import glb.util.*;
 import jetbrains.exodus.env.*;
 
 public abstract class CreativeObject extends IndividualityObject
-		implements CreativeObjectDBI {
+		implements CreativeObjectI {
 	/**
 	 * 最大キャッシュノード数
 	 */
@@ -48,6 +45,10 @@ public abstract class CreativeObject extends IndividualityObject
 		return cacheMax;
 	}
 
+	public static int getReadsignsmax() {
+		return readSignsMax;
+	}
+
 	public static int getReferredsmax() {
 		return referredsMax;
 	}
@@ -55,13 +56,6 @@ public abstract class CreativeObject extends IndividualityObject
 	public static int getRefersmax() {
 		return refersMax;
 	}
-
-	/**
-	 * チャット
-	 * バージョンアップに伴い引き継がれない
-	 * しかしGUIにおいて過去バージョンのチャットを表示することは可能だろう
-	 */
-	private Chat chat = new Chat();
 
 	/**
 	 * 公開日時証明のための読み取った人達による電子署名一覧
@@ -107,12 +101,6 @@ public abstract class CreativeObject extends IndividualityObject
 	private boolean publicationTimestamp = false;
 
 	/**
-	 * このオブジェクトをアップロードしたユーザーのID
-	 * {@link SelfHosting}なのでホストでもある
-	 */
-	private Long uploaderUserId;
-
-	/**
 	 * 公開範囲
 	 * 読み取り制限
 	 */
@@ -142,6 +130,13 @@ public abstract class CreativeObject extends IndividualityObject
 		return readSigns.add(sign);
 	}
 
+	/**
+	 * @return	このバージョン（このオブジェクト）をアップロードしたユーザーのID
+	 */
+	public Long getUploaderThisVersion() {
+		return getRegistererUserId();
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -152,11 +147,6 @@ public abstract class CreativeObject extends IndividualityObject
 			return false;
 		CreativeObject other = (CreativeObject) obj;
 		if (activePublication != other.activePublication)
-			return false;
-		if (chat == null) {
-			if (other.chat != null)
-				return false;
-		} else if (!chat.equals(other.chat))
 			return false;
 		if (firstId == null) {
 			if (other.firstId != null)
@@ -187,11 +177,6 @@ public abstract class CreativeObject extends IndividualityObject
 			return false;
 		if (!Arrays.equals(sign, other.sign))
 			return false;
-		if (uploaderUserId == null) {
-			if (other.uploaderUserId != null)
-				return false;
-		} else if (!uploaderUserId.equals(other.uploaderUserId))
-			return false;
 		if (version == null) {
 			if (other.version != null)
 				return false;
@@ -206,7 +191,6 @@ public abstract class CreativeObject extends IndividualityObject
 
 	private List<Long> getAdministrators() {
 		List<Long> r = new ArrayList<>();
-		r.add(uploaderUserId);
 		r.add(getMainAdministratorUserId());
 		return r;
 	}
@@ -255,6 +239,10 @@ public abstract class CreativeObject extends IndividualityObject
 	abstract public CreativeObjectGui<?, ?, ?, ?, ?, ?> getGui(String guiName,
 			String cssIdPrefix);
 
+	public List<NominalSignature> getReadSigns() {
+		return readSigns;
+	}
+
 	public List<TenyutalkReferenceSecure<?>> getReferreds() {
 		return referreds;
 	}
@@ -288,7 +276,10 @@ public abstract class CreativeObject extends IndividualityObject
 	}
 
 	/**
-	 * このメソッドが抽象クラスで実装された場合、
+	 * {@link CreativeObject}は電子署名を使って
+	 * 作者署名や公開日時証明のための読み取ったことを示す署名などをやるが、
+	 * そのような場合の署名対象となるデータを取得する。
+	 *
 	 * 子クラスは署名において依存させたい情報がある場合オーバーライドする。
 	 *
 	 * thisをシリアライズして返値とするようなことをすると、
@@ -300,7 +291,7 @@ public abstract class CreativeObject extends IndividualityObject
 	 * @return	電子署名の対象となるデータ
 	 */
 	public byte[] getSignTarget() {
-		Long uploaderUserId = getUploaderUserId();
+		Long uploaderUserId = getRegistererUserId();
 		String name = getName();
 		byte[] nameB = name.getBytes(Glb.getConst().getCharsetNio());
 		Long id = getId();
@@ -313,8 +304,8 @@ public abstract class CreativeObject extends IndividualityObject
 		return signTarget;
 	}
 
-	abstract public CreativeObjectStore<? extends IndividualityObjectDBI,
-			? extends IndividualityObjectDBI> getStore(Transaction txn);
+	abstract public CreativeObjectStore<? extends IndividualityObjectI,
+			? extends IndividualityObjectI> getStore(Transaction txn);
 
 	/**
 	 * TODO もっと上のレベル
@@ -323,10 +314,6 @@ public abstract class CreativeObject extends IndividualityObject
 	 */
 	public CookieStore getStoreCookie(Transaction txn) {
 		return new CookieStore(getConcreteClassName(), txn);
-	}
-
-	public Long getUploaderUserId() {
-		return uploaderUserId;
 	}
 
 	public GeneralVersioning getVersion() {
@@ -338,7 +325,6 @@ public abstract class CreativeObject extends IndividualityObject
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + activePublication;
-		result = prime * result + ((chat == null) ? 0 : chat.hashCode());
 		result = prime * result + ((firstId == null) ? 0 : firstId.hashCode());
 		result = prime * result + (publicationTimestamp ? 1231 : 1237);
 		result = prime * result
@@ -348,10 +334,17 @@ public abstract class CreativeObject extends IndividualityObject
 		result = prime * result + ((refers == null) ? 0 : refers.hashCode());
 		result = prime * result + ((scope == null) ? 0 : scope.hashCode());
 		result = prime * result + Arrays.hashCode(sign);
-		result = prime * result
-				+ ((uploaderUserId == null) ? 0 : uploaderUserId.hashCode());
 		result = prime * result + ((version == null) ? 0 : version.hashCode());
 		return result;
+	}
+
+	/**
+	 * このオブジェクトの公開範囲に含まれているか
+	 * @param downloader	DLを要求した人
+	 * @return	DL可能か（スコープ内か）
+	 */
+	public boolean isDownloadable(User downloader) {
+		return scope.contains(downloader.getId());
 	}
 
 	public boolean isPublicationTimestamp() {
@@ -400,6 +393,10 @@ public abstract class CreativeObject extends IndividualityObject
 		this.publicationTimestamp = publicationTimestamp;
 	}
 
+	public void setReadSigns(List<NominalSignature> readSigns) {
+		this.readSigns = readSigns;
+	}
+
 	public void setReferreds(List<TenyutalkReferenceSecure<?>> referreds) {
 		this.referreds = referreds;
 	}
@@ -416,10 +413,6 @@ public abstract class CreativeObject extends IndividualityObject
 		this.sign = sign;
 	}
 
-	public void setUploaderUserId(Long uploaderUserId) {
-		this.uploaderUserId = uploaderUserId;
-	}
-
 	public void setVersion(GeneralVersioning version) {
 		this.version = version;
 	}
@@ -433,6 +426,16 @@ public abstract class CreativeObject extends IndividualityObject
 				() -> getSignNominalRead(), () -> getSignTarget());
 	}
 
+	@Override
+	public String toString() {
+		return "CreativeObject [readSigns=" + readSigns + ", version=" + version
+				+ ", referreds=" + referreds + ", refers=" + refers
+				+ ", activePublication=" + activePublication
+				+ ", publicationTimestamp=" + publicationTimestamp + ", scope="
+				+ scope + ", sign=" + Arrays.toString(sign) + ", firstId="
+				+ firstId + "]";
+	}
+
 	private boolean validateAtCommonIndividualityObjectConcrete(
 			ValidationResult r) {
 		boolean b = true;
@@ -441,48 +444,42 @@ public abstract class CreativeObject extends IndividualityObject
 			b = false;
 		}
 		if (referreds == null) {
-			r.add(Lang.VERSIONED_REFERREDS, Lang.ERROR_EMPTY);
+			r.add(Lang.REFERREDS, Lang.ERROR_EMPTY);
 			b = false;
 		}
 		if (refers == null) {
-			r.add(Lang.VERSIONED_REFERS, Lang.ERROR_EMPTY);
+			r.add(Lang.REFERS, Lang.ERROR_EMPTY);
 			b = false;
 		}
 		if (activePublication < activePublicationMin) {
-			r.add(Lang.VERSIONED_ACTIVEPUBLICATION, Lang.ERROR_TOO_FEW);
+			r.add(Lang.CREATIVE_OBJECT_ACTIVE_PUBLICATION, Lang.ERROR_TOO_FEW);
 			b = false;
 		} else if (activePublication > activePublicationMax) {
-			r.add(Lang.VERSIONED_ACTIVEPUBLICATION, Lang.ERROR_TOO_BIG);
+			r.add(Lang.CREATIVE_OBJECT_ACTIVE_PUBLICATION, Lang.ERROR_TOO_BIG);
 			b = false;
-		}
-		if (uploaderUserId == null) {
-			r.add(Lang.VERSIONED_UPLOADER_USERID, Lang.ERROR_EMPTY);
-			b = false;
-		} else {
-			if (!IdObject.validateIdStandard(uploaderUserId)) {
-				r.add(Lang.VERSIONED_UPLOADER_USERID, Lang.ERROR_INVALID,
-						"uploaderUserId=" + uploaderUserId);
-				b = false;
-			}
 		}
 		if (readSigns == null) {
-			r.add(Lang.VERSIONED_READ_SIGNS, Lang.ERROR_EMPTY);
+			r.add(Lang.READ_SIGNS, Lang.ERROR_EMPTY);
 			b = false;
 		} else {
 			if (readSigns.size() > readSignsMax) {
-				r.add(Lang.VERSIONED_READ_SIGNS, Lang.ERROR_TOO_MANY);
+				r.add(Lang.READ_SIGNS, Lang.ERROR_TOO_MANY);
 				b = false;
 			}
 		}
 
 		//nameのnullチェックは別のクラスで行われている
 		if (name != null && name.contains(Glb.getConst().getFileSeparator())) {
-			r.add(Lang.VERSIONED_NAME, Lang.ERROR_INVALID, "name=" + name);
+			r.add(Lang.CREATIVE_OBJECT, Lang.NAME, Lang.ERROR_INVALID,
+					"name=" + name);
 			b = false;
 		}
 
 		return b;
 	}
+
+	protected abstract boolean validateAtCreateCreativeObjectConcrete(
+			ValidationResult r);
 
 	@Override
 	protected boolean validateAtCreateIndividualityObjectConcrete(
@@ -515,8 +512,8 @@ public abstract class CreativeObject extends IndividualityObject
 		return b;
 	}
 
-	protected abstract boolean validateAtCreateCreativeObjectConcrete(
-			ValidationResult r);
+	protected abstract boolean validateAtUpdateChangeCreativeObjectConcrete(
+			ValidationResult r, Object old);
 
 	@Override
 	protected boolean validateAtUpdateChangeIndividualityObjectConcrete(
@@ -530,21 +527,14 @@ public abstract class CreativeObject extends IndividualityObject
 		}
 		CreativeObject old2 = (CreativeObject) old;
 
-		if (uploaderUserId.equals(old2.getUploaderUserId())) {
-			r.add(Lang.VERSIONED_UPLOADER_USERID, Lang.ERROR_UNALTERABLE,
-					"uploaderUserId=" + uploaderUserId + " uploaderUserId2="
-							+ old2.getUploaderUserId());
-			b = false;
-		}
-
 		if (!validateAtUpdateChangeCreativeObjectConcrete(r, old)) {
 			b = false;
 		}
 		return b;
 	}
 
-	protected abstract boolean validateAtUpdateChangeCreativeObjectConcrete(
-			ValidationResult r, Object old);
+	protected abstract boolean validateAtUpdateCreativeObjectConcrete(
+			ValidationResult r);
 
 	@Override
 	protected boolean validateAtUpdateIndividualityObjectConcrete(
@@ -577,13 +567,13 @@ public abstract class CreativeObject extends IndividualityObject
 		return b;
 	}
 
-	protected abstract boolean validateAtUpdateCreativeObjectConcrete(
-			ValidationResult r);
-
 	@Override
 	public boolean validateNameSub(ValidationResult r) {
 		return true;
 	}
+
+	public abstract boolean validateReferenceCreativeObjectConcrete(
+			ValidationResult r, Transaction txn) throws Exception;
 
 	@Override
 	public boolean validateReferenceIndividualityObjectConcrete(
@@ -604,13 +594,6 @@ public abstract class CreativeObject extends IndividualityObject
 				break;
 			}
 		}
-		UserStore us = new UserStore(txn);
-		if (us.get(uploaderUserId) == null) {
-			r.add(Lang.VERSIONED_UPLOADER_USERID,
-					Lang.ERROR_DB_NOTFOUND_REFERENCE,
-					"uploaderUserId=" + uploaderUserId);
-			b = false;
-		}
 		for (NominalSignature sign : readSigns) {
 			if (!sign.validateReference(r, txn)) {
 				b = false;
@@ -623,40 +606,6 @@ public abstract class CreativeObject extends IndividualityObject
 		if (!validateReference(r, txn))
 			b = false;
 		return b;
-	}
-
-	public abstract boolean validateReferenceCreativeObjectConcrete(
-			ValidationResult r, Transaction txn) throws Exception;
-
-	@Override
-	public String toString() {
-		return "Versioned [chat=" + chat + ", readSigns=" + readSigns
-				+ ", version=" + version + ", referreds=" + referreds
-				+ ", refers=" + refers + ", activePublication="
-				+ activePublication + ", publicationTimestamp="
-				+ publicationTimestamp + ", uploaderUserId=" + uploaderUserId
-				+ ", scope=" + scope + ", sign=" + Arrays.toString(sign)
-				+ ", firstId=" + firstId + "]";
-	}
-
-	public Chat getChat() {
-		return chat;
-	}
-
-	public void setChat(Chat chat) {
-		this.chat = chat;
-	}
-
-	public List<NominalSignature> getReadSigns() {
-		return readSigns;
-	}
-
-	public void setReadSigns(List<NominalSignature> readSigns) {
-		this.readSigns = readSigns;
-	}
-
-	public static int getReadsignsmax() {
-		return readSignsMax;
 	}
 
 }

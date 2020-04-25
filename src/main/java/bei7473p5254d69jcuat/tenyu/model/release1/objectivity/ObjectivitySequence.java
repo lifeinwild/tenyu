@@ -80,7 +80,7 @@ public class ObjectivitySequence {
 	 * @return				作成処理に成功したか
 	 * @throws Exception
 	 */
-	public static <T1 extends IndividualityObjectDBI,
+	public static <T1 extends IndividualityObjectI,
 			T2 extends T1> boolean createSequence(Transaction txn, T1 n,
 					boolean specifiedId, long historyIndex,
 					IndividualityObjectStore<T1, T2> ns, Long admin, Long registerer,
@@ -102,7 +102,7 @@ public class ObjectivitySequence {
 
 		//この場合管理者不在になるので、後から管理者を設定する手段が用意されている必要がある
 		if (admin == null)
-			admin = IdObjectDBI.getNullId();
+			admin = IdObjectI.getNullId();
 
 		if (type == NodeType.USER && registerer == null)
 			registerer = nid;

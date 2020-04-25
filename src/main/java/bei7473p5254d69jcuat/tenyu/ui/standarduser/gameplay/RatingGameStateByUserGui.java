@@ -8,7 +8,7 @@ import glb.*;
 import jetbrains.exodus.env.*;
 
 public class RatingGameStateByUserGui extends
-		AdministratedObjectGui<RatingGameStateByUserDBI,
+		AdministratedObjectGui<RatingGameStateByUserI,
 				RatingGameStateByUser,
 				RatingGameStateByUser,
 				RatingGameStateByUserStore,

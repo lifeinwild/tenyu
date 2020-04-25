@@ -23,7 +23,7 @@ import jetbrains.exodus.env.*;
  *
  */
 public class RatingGameMatch extends AdministratedObject
-		implements RatingGameMatchDBI, Unreferenciable {
+		implements RatingGameMatchI, Unreferenciable {
 
 	public static NodeIdentifierUser getRndPlayer(List<Team> teams) {
 		List<NodeIdentifierUser> players = new ArrayList<>();

@@ -9,6 +9,7 @@ import bei7473p5254d69jcuat.tenyu.communication.request.useredge.*;
 import bei7473p5254d69jcuat.tenyu.db.store.single.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.middle.Middle.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.subjectivity.P2PNode.*;
 import bei7473p5254d69jcuat.tenyu.reference.*;
@@ -47,7 +48,7 @@ import jetbrains.exodus.env.*;
  *
  */
 public class Subjectivity extends IdObject
-		implements ChainVersionup, GlbMemberDynamicState, SubjectivityDBI {
+		implements ChainVersionup, GlbMemberDynamicState, SubjectivityI {
 	public static final int neighborMax = 2000;
 
 	public static final String modelName = Subjectivity.class.getSimpleName();
@@ -72,6 +73,15 @@ public class Subjectivity extends IdObject
 	}
 
 	private transient long commonKeyExchangeInterval = 1000L * 60 * 60;
+	private transient long getCandidacyListInterval = CandidacyList.diffusionInterval;
+
+	public void setCandidacyList(CandidacyList candidacyList) {
+		this.candidacyList = candidacyList;
+	}
+
+	public void setGetCandidacyListInterval(long getCandidacyListInterval) {
+		this.getCandidacyListInterval = getCandidacyListInterval;
+	}
 
 	public void setCommonKeyExchangeInterval(long commonKeyExchangeInterval) {
 		this.commonKeyExchangeInterval = commonKeyExchangeInterval;
@@ -91,6 +101,96 @@ public class Subjectivity extends IdObject
 	 */
 	protected P2PNode me = new P2PNode();
 
+	private P2PNetworkObservationByNode observation = new P2PNetworkObservationByNode();
+
+	/**
+	 * meがnullなら最新化して返すが、ある場合そのまま返す
+	 * @return
+	 */
+	public P2PNode getMeSimple() {
+		if (me == null)
+			me = getMe();
+		return me;
+	}
+
+	/**
+	 * あるノードから見たP2Pネットワークの状況
+	 * 定点観測のようなイメージ
+	 *
+	 * @author exceptiontenyu@gmail.com
+	 *
+	 */
+	public static class P2PNetworkObservationByNode {
+		/**
+		 * 近傍の混乱状況の推移
+		 * 近傍との意見の食い違い率を混乱状況として捉える
+		 */
+		private RateTransition neighborChaos = new RateTransition();
+
+		/**
+		 * 近傍のオンライン率の推移
+		 */
+		private RateTransition onlineRate = new RateTransition();
+
+		public P2PNetworkObservationByNode() {
+			//２週間以内にネットワークの分断が復旧すると考える
+			//その期間を超えるとネットワークの分断が生じていても
+			//ObjectivityCircumstanceがUNITYになり客観更新が再開する。
+			//TODO それより長い場合の分断への対策。例えばメッセージ受付サーバが手動で客観更新を停止する機能が必要か
+			int weekMin = 10080;
+			int twoWeekMin = 2 * weekMin;
+			int max = twoWeekMin / 20;//20はperidiocNotificationのintervalが２０分に１度である事から来ている
+			//対応可能期間を延ばすとmaxが増加し通信量が増える
+			neighborChaos.setMax(max);
+			onlineRate.setMax(max);
+		}
+
+		public RateTransition getNeighborChaos() {
+			return neighborChaos;
+		}
+
+		public RateTransition getOnlineRate() {
+			return onlineRate;
+		}
+
+		public double getTotalDamage() {
+			return neighborChaos.getDamage() + onlineRate.getDamage();
+		}
+
+		public boolean addNeighborChaos(Double value) {
+			return neighborChaos.add(value);
+		}
+
+		public boolean addOnlineRate(Double value) {
+			return onlineRate.add(value);
+		}
+	}
+
+	public P2PNetworkObservationByNode getObservation() {
+		return observation;
+	}
+
+	/**
+	 * @return	このノードから見た現在のP2Pネットワークの状況
+	 */
+	public ObjectivityCircumstance getCurrentCircumstance() {
+		int count = 0;
+		double totalDamage = 0;
+		for(P2PEdge e : neighborList.getNeighborsUnsafe()) {
+			if(e.getNode().getObservation() == null) {
+				continue;
+			}
+			totalDamage += observation.getTotalDamage();
+			count++;
+		}
+		double aveDamage = totalDamage / count;
+		//TODO この閾値は妥当か？
+		if (aveDamage > 0.5) {
+			return ObjectivityCircumstance.CHAOS;
+		}
+		return ObjectivityCircumstance.UNITY;
+	}
+
 	/**
 	 * 更新可能近傍リスト。
 	 * サブネットワークはここから更新不可の近傍リストを作成して使用する。
@@ -98,6 +198,11 @@ public class Subjectivity extends IdObject
 	 */
 	private UpdatableNeighborList neighborList = new UpdatableNeighborList(1000,
 			neighborMax);
+
+	/**
+	 * 全体運営者の立候補者リスト
+	 */
+	private CandidacyList candidacyList = new CandidacyList();
 
 	/**
 	 * 近傍の更新間隔
@@ -117,6 +222,11 @@ public class Subjectivity extends IdObject
 	 * 近傍の削除と増加処理を行う
 	 */
 	private transient ScheduledFuture<?> periodicGetAddresses = null;
+
+	/**
+	 * 立候補者リストを近傍から取得する
+	 */
+	private transient ScheduledFuture<?> periodicGetCandidacyList = null;
 
 	/**
 	 * 定期的に近傍に自分の状態を伝える
@@ -219,9 +329,9 @@ public class Subjectivity extends IdObject
 		Conf c = Glb.getConf();
 		AddrInfo addr = c.getAddrInfo(null);
 		me.setAddrInfo(addr);
-		me.setPubKey(
-				new ByteArrayWrapper(c.getMyStandardPublicKey().getEncoded()));
-		me.setType(c.getMyStandardKeyType());
+		me.setPubKey(new ByteArrayWrapper(
+				c.getKeys().getMyStandardPublicKey().getEncoded()));
+		me.setType(c.getKeys().getMyStandardKeyType());
 		me.setNodeNumber(Glb.getConf().getNodeNumber());
 	}
 
@@ -284,6 +394,9 @@ public class Subjectivity extends IdObject
 				.scheduleAtFixedRate(() -> {
 					try {
 						PeriodicNotification.send(neighborList);
+
+						//ついでに近傍のオンライン率推移の計測を行う
+						observation.addOnlineRate(neighborList.getOnlineRate());
 					} catch (Exception e) {
 						Glb.getLogger().error("", e);
 					}
@@ -304,6 +417,24 @@ public class Subjectivity extends IdObject
 						Glb.getLogger().error("", e);
 					}
 				}, initialWaitGetAddress, getAddressesInterval,
+						TimeUnit.MILLISECONDS);
+
+		//立候補者リスト取得
+		long initialWaitGetCandidacyList = initialWait;
+		if (periodicGetCandidacyList != null) {
+			periodicGetCandidacyList.cancel(false);
+			initialWaitGetCandidacyList += getCandidacyListInterval;
+		}
+		periodicGetCandidacyList = Glb.getExecutorPeriodic()
+				.scheduleAtFixedRate(() -> {
+					try {
+						Glb.getLogger()
+								.info("periodic getCandidacyList started.");
+						candidacyList.updateFromNeighbors();
+					} catch (Exception e) {
+						Glb.getLogger().error("", e);
+					}
+				}, initialWaitGetCandidacyList, getCandidacyListInterval,
 						TimeUnit.MILLISECONDS);
 
 		//仮リストクリア
@@ -373,6 +504,10 @@ public class Subjectivity extends IdObject
 		}
 		if (periodicGetAddresses != null) {
 			periodicGetAddresses.cancel(false);
+			cancel = true;
+		}
+		if (periodicGetCandidacyList != null) {
+			periodicGetCandidacyList.cancel(false);
 			cancel = true;
 		}
 		if (periodicClear != null) {
@@ -458,4 +593,7 @@ public class Subjectivity extends IdObject
 		return StoreNameSingle.SUBJECTIVITY;
 	}
 
+	public CandidacyList getCandidacyList() {
+		return candidacyList;
+	}
 }

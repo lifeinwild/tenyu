@@ -1,6 +1,7 @@
 package bei7473p5254d69jcuat.tenyu.reference;
 
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.ui.*;
 import glb.*;
@@ -8,7 +9,8 @@ import glb.util.*;
 import jetbrains.exodus.env.*;
 
 /**
- * UserやWeb等を参照するためのクラス
+ * UserやWeb等客観を参照するためのクラス
+ * どのノードも持っている（久々にネットワークに参加して同調しきる前とか例外もある）データ。
  *
  * @author exceptiontenyu@gmail.com
  *
@@ -19,8 +21,8 @@ public class TenyuReferenceSimple<V extends IdObject>
 	/**
 	 * ストア名
 	 */
-
 	private StoreNameEnum storeName;
+
 	/**
 	 * オブジェクトのストア内ID
 	 */
@@ -33,6 +35,22 @@ public class TenyuReferenceSimple<V extends IdObject>
 	public TenyuReferenceSimple(Long id, StoreNameEnum storeName) {
 		this.id = id;
 		this.storeName = storeName;
+	}
+
+	@Override
+	public String getNotificationMessage() {
+		StringBuilder sb = new StringBuilder();
+		V o = getObj();
+		String d = Glb.getUtil().getLocalDateStr(o.getCreateDate());
+		sb.append(" ").append(d);
+		if (o instanceof IndividualityObjectI) {
+			IndividualityObjectI io = (IndividualityObjectI) o;
+			sb.append(io.getName()).append(" ").append(io.getExplanation());
+		} else {
+			sb.append("id=").append(o.getId()).append(" ")
+					.append(o.getClass().getSimpleName());
+		}
+		return sb.substring(0, notificationMessagesMax);
 	}
 
 	@Override
@@ -54,8 +72,8 @@ public class TenyuReferenceSimple<V extends IdObject>
 			if (tmp == null || !(tmp instanceof IdObjectStore))
 				return null;
 			@SuppressWarnings("unchecked")
-			IdObjectStore<? extends IdObjectDBI,
-					V> s = (IdObjectStore<? extends IdObjectDBI, V>) tmp;
+			IdObjectStore<? extends IdObjectI,
+					V> s = (IdObjectStore<? extends IdObjectI, V>) tmp;
 			return s.get(getId());
 		});
 	}

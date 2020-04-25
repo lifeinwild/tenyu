@@ -17,7 +17,7 @@ import jetbrains.exodus.*;
 import jetbrains.exodus.env.*;
 
 public class RatingGameEquipmentClassStore
-		extends IndividualityObjectStore<RatingGameEquipmentClassDBI,
+		extends IndividualityObjectStore<RatingGameEquipmentClassI,
 				RatingGameEquipmentClass> {
 	public static final String modelName = RatingGameEquipmentClass.class
 			.getSimpleName();
@@ -52,7 +52,7 @@ public class RatingGameEquipmentClassStore
 
 	@Override
 	protected boolean createIndividualityObjectConcrete(
-			RatingGameEquipmentClassDBI o) throws Exception {
+			RatingGameEquipmentClassI o) throws Exception {
 		if (!util.put(getGameIdToIdStore(), cnvL(o.getRatingGameId()),
 				cnvL(o.getId()))) {
 			return false;
@@ -62,8 +62,8 @@ public class RatingGameEquipmentClassStore
 
 	@Override
 	protected boolean dbValidateAtUpdateIndividualityObjectConcrete(
-			RatingGameEquipmentClassDBI updated,
-			RatingGameEquipmentClassDBI old, ValidationResult r) {
+			RatingGameEquipmentClassI updated,
+			RatingGameEquipmentClassI old, ValidationResult r) {
 		boolean b = true;
 		Long updatedGameId = updated.getRatingGameId();
 		Long oldGameId = old.getRatingGameId();
@@ -81,7 +81,7 @@ public class RatingGameEquipmentClassStore
 
 	@Override
 	protected boolean deleteIndividualityObjectConcrete(
-			RatingGameEquipmentClassDBI o) throws Exception {
+			RatingGameEquipmentClassI o) throws Exception {
 		if (!util.deleteDupSingle(getGameIdToIdStore(),
 				cnvL(o.getRatingGameId()), cnvL(o.getId())))
 			return false;
@@ -106,7 +106,7 @@ public class RatingGameEquipmentClassStore
 
 	@Override
 	protected boolean existIndividualityObjectConcrete(
-			RatingGameEquipmentClassDBI o, ValidationResult vr)
+			RatingGameEquipmentClassI o, ValidationResult vr)
 			throws Exception {
 		boolean b = true;
 		if (!existByGameId(o.getRatingGameId(), o.getId())) {
@@ -143,12 +143,12 @@ public class RatingGameEquipmentClassStore
 
 	@Override
 	public boolean isSupport(Object o) {
-		return o instanceof RatingGameEquipmentClassDBI;
+		return o instanceof RatingGameEquipmentClassI;
 	}
 
 	@Override
 	protected boolean noExistIndividualityObjectConcrete(
-			RatingGameEquipmentClassDBI o, ValidationResult vr)
+			RatingGameEquipmentClassI o, ValidationResult vr)
 			throws Exception {
 		boolean b = true;
 		if (existByGameId(o.getRatingGameId(), o.getId())) {
@@ -161,8 +161,8 @@ public class RatingGameEquipmentClassStore
 
 	@Override
 	protected boolean updateIndividualityObjectConcrete(
-			RatingGameEquipmentClassDBI updated,
-			RatingGameEquipmentClassDBI old) throws Exception {
+			RatingGameEquipmentClassI updated,
+			RatingGameEquipmentClassI old) throws Exception {
 		Long updatedGameId = updated.getRatingGameId();
 		Long oldGameId = old.getRatingGameId();
 		Long rId = old.getId();

@@ -17,7 +17,7 @@ import jetbrains.exodus.*;
 import jetbrains.exodus.env.*;
 
 public class ObjectivityCoreStore
-		extends IndividualityObjectStore<ObjectivityCoreDBI, ObjectivityCore>
+		extends IndividualityObjectStore<ObjectivityCoreI, ObjectivityCore>
 		implements SingleObjectStore {
 
 	private static transient ObjectivityCore cache;
@@ -78,26 +78,26 @@ public class ObjectivityCoreStore
 	}
 
 	@Override
-	protected boolean createIndividualityObjectConcrete(ObjectivityCoreDBI o)
+	protected boolean createIndividualityObjectConcrete(ObjectivityCoreI o)
 			throws Exception {
 		return true;
 	}
 
 	@Override
 	protected boolean dbValidateAtUpdateIndividualityObjectConcrete(
-			ObjectivityCoreDBI updated, ObjectivityCoreDBI old,
+			ObjectivityCoreI updated, ObjectivityCoreI old,
 			ValidationResult r) {
 		return true;
 	}
 
 	@Override
-	protected boolean deleteIndividualityObjectConcrete(ObjectivityCoreDBI o)
+	protected boolean deleteIndividualityObjectConcrete(ObjectivityCoreI o)
 			throws Exception {
 		return true;
 	}
 
 	@Override
-	protected boolean existIndividualityObjectConcrete(ObjectivityCoreDBI o,
+	protected boolean existIndividualityObjectConcrete(ObjectivityCoreI o,
 			ValidationResult vr) throws Exception {
 		return true;
 	}
@@ -109,14 +109,14 @@ public class ObjectivityCoreStore
 	}
 
 	@Override
-	protected boolean noExistIndividualityObjectConcrete(ObjectivityCoreDBI o,
+	protected boolean noExistIndividualityObjectConcrete(ObjectivityCoreI o,
 			ValidationResult vr) throws Exception {
 		return true;
 	}
 
 	@Override
-	protected boolean updateIndividualityObjectConcrete(ObjectivityCoreDBI updated,
-			ObjectivityCoreDBI old) throws Exception {
+	protected boolean updateIndividualityObjectConcrete(ObjectivityCoreI updated,
+			ObjectivityCoreI old) throws Exception {
 		return true;
 	}
 

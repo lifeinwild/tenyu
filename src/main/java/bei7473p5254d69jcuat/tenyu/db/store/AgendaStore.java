@@ -15,7 +15,7 @@ import glb.util.*;
 import jetbrains.exodus.*;
 import jetbrains.exodus.env.*;
 
-public class AgendaStore extends IndividualityObjectStore<AgendaDBI, Agenda> {
+public class AgendaStore extends IndividualityObjectStore<AgendaI, Agenda> {
 	public static final String modelName = Agenda.class.getSimpleName();
 	private static final StoreInfo statusToId = new StoreInfo(
 			modelName + "_statusToId_Dup", StoreConfig.WITH_DUPLICATES);
@@ -112,7 +112,7 @@ public class AgendaStore extends IndividualityObjectStore<AgendaDBI, Agenda> {
 	}
 
 	@Override
-	protected boolean createIndividualityObjectConcrete(AgendaDBI o)
+	protected boolean createIndividualityObjectConcrete(AgendaI o)
 			throws Exception {
 		if (!util.put(statusToId, cnvI(o.getStatus().getNum()),
 				cnvL(o.getId()))) {
@@ -123,7 +123,7 @@ public class AgendaStore extends IndividualityObjectStore<AgendaDBI, Agenda> {
 
 	@Override
 	protected boolean dbValidateAtUpdateIndividualityObjectConcrete(
-			AgendaDBI updated, AgendaDBI old, ValidationResult r) {
+			AgendaI updated, AgendaI old, ValidationResult r) {
 		boolean b = true;
 		Integer updatedStatus = updated.getStatus().getNum();
 		Integer oldStatus = old.getStatus().getNum();
@@ -138,7 +138,7 @@ public class AgendaStore extends IndividualityObjectStore<AgendaDBI, Agenda> {
 	}
 
 	@Override
-	protected boolean deleteIndividualityObjectConcrete(AgendaDBI o)
+	protected boolean deleteIndividualityObjectConcrete(AgendaI o)
 			throws Exception {
 		if (!util.deleteDupSingle(statusToId, cnvI(o.getStatus().getNum()),
 				cnvL(o.getId())))
@@ -154,7 +154,7 @@ public class AgendaStore extends IndividualityObjectStore<AgendaDBI, Agenda> {
 	}
 
 	@Override
-	protected boolean existIndividualityObjectConcrete(AgendaDBI o,
+	protected boolean existIndividualityObjectConcrete(AgendaI o,
 			ValidationResult vr) throws Exception {
 		boolean b = true;
 		if (!existByStatus(o.getStatus(), o.getId())) {
@@ -182,11 +182,11 @@ public class AgendaStore extends IndividualityObjectStore<AgendaDBI, Agenda> {
 
 	@Override
 	public boolean isSupport(Object o) {
-		return o instanceof AgendaDBI;
+		return o instanceof AgendaI;
 	}
 
 	@Override
-	protected boolean noExistIndividualityObjectConcrete(AgendaDBI o,
+	protected boolean noExistIndividualityObjectConcrete(AgendaI o,
 			ValidationResult vr) throws Exception {
 		boolean b = true;
 		if (existByStatus(o.getStatus(), o.getId())) {
@@ -197,8 +197,8 @@ public class AgendaStore extends IndividualityObjectStore<AgendaDBI, Agenda> {
 	}
 
 	@Override
-	protected boolean updateIndividualityObjectConcrete(AgendaDBI updated,
-			AgendaDBI old) throws Exception {
+	protected boolean updateIndividualityObjectConcrete(AgendaI updated,
+			AgendaI old) throws Exception {
 		Integer updatedStatus = updated.getStatus().getNum();
 		Integer oldStatus = old.getStatus().getNum();
 		Long rId = old.getId();

@@ -97,7 +97,7 @@ public class PowerVoteConfirmationStatement
 		if (result == null)
 			return;
 
-		DistributedVoteManager man = Glb.getMiddle().getDistributedManager();
+		DistributedVoteManager man = Glb.getMiddle().getDistributedVoteManager();
 		if (man == null)
 			return;
 

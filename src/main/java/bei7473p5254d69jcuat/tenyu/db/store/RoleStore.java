@@ -15,7 +15,7 @@ import glb.util.*;
 import jetbrains.exodus.*;
 import jetbrains.exodus.env.*;
 
-public class RoleStore extends IndividualityObjectStore<RoleDBI, Role> {
+public class RoleStore extends IndividualityObjectStore<RoleI, Role> {
 	public static final String modelName = Role.class.getSimpleName();
 
 	public static StoreInfo getMainStoreInfoStatic() {
@@ -61,23 +61,23 @@ public class RoleStore extends IndividualityObjectStore<RoleDBI, Role> {
 	}
 
 	@Override
-	protected boolean createIndividualityObjectConcrete(RoleDBI o) throws Exception {
+	protected boolean createIndividualityObjectConcrete(RoleI o) throws Exception {
 		return true;
 	}
 
 	@Override
-	protected boolean dbValidateAtUpdateIndividualityObjectConcrete(RoleDBI updated,
-			RoleDBI old, ValidationResult r) {
+	protected boolean dbValidateAtUpdateIndividualityObjectConcrete(RoleI updated,
+			RoleI old, ValidationResult r) {
 		return true;
 	}
 
 	@Override
-	protected boolean deleteIndividualityObjectConcrete(RoleDBI o) throws Exception {
+	protected boolean deleteIndividualityObjectConcrete(RoleI o) throws Exception {
 		return true;
 	}
 
 	@Override
-	protected boolean existIndividualityObjectConcrete(RoleDBI o, ValidationResult vr)
+	protected boolean existIndividualityObjectConcrete(RoleI o, ValidationResult vr)
 			throws Exception {
 		return true;
 	}
@@ -95,17 +95,17 @@ public class RoleStore extends IndividualityObjectStore<RoleDBI, Role> {
 
 	@Override
 	public boolean isSupport(Object o) {
-		return o instanceof RoleDBI;
+		return o instanceof RoleI;
 	}
 
 	@Override
-	protected boolean noExistIndividualityObjectConcrete(RoleDBI o, ValidationResult vr)
+	protected boolean noExistIndividualityObjectConcrete(RoleI o, ValidationResult vr)
 			throws Exception {
 		return true;
 	}
 
 	@Override
-	protected boolean updateIndividualityObjectConcrete(RoleDBI updated, RoleDBI old)
+	protected boolean updateIndividualityObjectConcrete(RoleI updated, RoleI old)
 			throws Exception {
 		return true;
 	}

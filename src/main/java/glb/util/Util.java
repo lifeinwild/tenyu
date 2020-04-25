@@ -8,6 +8,7 @@ import java.nio.file.*;
 import java.security.*;
 import java.security.spec.*;
 import java.time.*;
+import java.time.format.*;
 import java.util.*;
 import java.util.Map.*;
 import java.util.concurrent.*;
@@ -64,6 +65,29 @@ public class Util {
 	public boolean validateAtUpdate(Collection<? extends Storable> storables,
 			ValidationResult r) {
 		return validateCollection(storables, r, e -> e.validateAtUpdate(r));
+	}
+
+	/**
+	 * @param d
+	 * @return	dの規模。Double.MIN_VALUEを1とし、量が１０倍になるごとに+1され、
+	 * Double.MAX_VALUEで632となる。
+	 * ある程度コストがかかり、MAX_VALUEを入力して１００万回実行に８秒程度。
+	 */
+	public int getScaleForNumber(double d) {
+		int r = 0;
+		for (; d > 0; r++) {
+			d /= 10;
+		}
+		return r;
+	}
+
+	/**
+	 * シグモイド関数
+	 * @param x
+	 * @return
+	 */
+	public double sigmoid(double x) {
+		return (1 / (1 + Math.pow(Math.E, (-1 * x))));
 	}
 
 	/**
@@ -151,6 +175,30 @@ public class Util {
 		return r.toString();
 	}
 
+	public LocalDate getLocalDate(long date, ZoneOffset offset) {
+		return LocalDateTime.ofEpochSecond(date, 1000, offset).toLocalDate();
+	}
+
+	/**
+	 * @param date		エポックミリ秒
+	 * @param offset	タイムゾーン
+	 * @return	日時 "yyyy/MM/dd HH:mm:ss"
+	 */
+	public String getLocalDateStr(long d, ZoneId z) {
+		Instant in = Instant.ofEpochMilli(d);
+		DateTimeFormatter f = DateTimeFormatter
+				.ofPattern("yyyy/MM/dd HH:mm:ss");
+		return LocalDateTime.ofInstant(in, z).format(f);
+	}
+
+	public String getLocalDateStr(long d) {
+		return getLocalDateStr(d, ZoneId.systemDefault());
+	}
+
+	public long getEpochMilli() {
+		return System.currentTimeMillis();
+	}
+
 	/**
 	 * 年と月が同じ限り同じ値を返す。UTC
 	 * @return	日以下が無視されたミリ秒
@@ -163,21 +211,47 @@ public class Util {
 	}
 
 	/**
+	 * @return	時以下が無視されたミリ秒
+	 */
+	public long getEpochMilliIgnoreHours() {
+		LocalDateTime now = java.time.LocalDateTime.now(Clock.systemUTC());
+		long milli = LocalDateTime
+				.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 1, 1)
+				.atZone(ZoneId.of("UTC")).toInstant().toEpochMilli();
+		return milli;
+	}
+
+	/**
 	 * このメソッドを使用すると多数のノードで全く同じ日時値をそれぞれ自力で（通信無しで）取得できる。
-	 * @return	秒以下が無視されたグローバルに値が一致する現在日時のミリ秒表現
+	 * @param expectedSec	この秒の前後で必ず全ノードで一致する（ノード毎に値がずれるタイミングをこの秒から離れた秒にする）。
+	 * @return	秒以下が無視された全ノードで値が一致する現在日時のミリ秒表現
+	 * ノード間の時計のずれが３０秒以内であれば全ノードで一致する。
 	 */
 	public long getEpochMilliIgnoreSeconds(int expectedSec) {
+		return getEpochMilliIgnoreSeconds(expectedSec, 30);
+	}
+
+	/**
+	 * @param expectedSec
+	 * @param tolerance	これを大きくすると全ノードで返値が一致する確率が上がる。
+	 * 言い換えればノード間の時計のずれに強くなる。しかし、
+	 * 返値が変化する周期が長くなるので、例えば１分に１回返値が変化してほしいなら
+	 * 30以下を指定する必要がある。
+	 *
+	 * @return
+	 */
+	public long getEpochMilliIgnoreSeconds(int expectedSec, int tolerance) {
 		LocalDateTime now = java.time.LocalDateTime.now(Clock.systemUTC());
 		int min = now.getMinute();
 		int sec = now.getSecond();
-		int toleranceMin = expectedSec - 15;
+		int toleranceMin = expectedSec - tolerance;
 		if (toleranceMin < 0) {
 			int threshold = 60 + toleranceMin;
 			if (sec > threshold) {
 				min++;
 			}
 		}
-		int toleranceMax = expectedSec + 15;
+		int toleranceMax = expectedSec + tolerance;
 		if (toleranceMax > 60) {
 			int threshold = toleranceMax - 60;
 			if (sec < threshold) {

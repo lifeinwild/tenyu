@@ -23,7 +23,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class RatingGame extends IndividualityObject implements RatingGameDBI {
+public class RatingGame extends IndividualityObject implements RatingGameI {
 	public static final int teamMax = 2000;
 
 	public static boolean createSequence(Transaction txn, RatingGame rg,

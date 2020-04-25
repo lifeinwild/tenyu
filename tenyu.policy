@@ -1,0 +1,11 @@
+grant codeBase "file:./Tenyu.jar" {
+	permission java.security.AllPermission;
+};
+grant codeBase "file:./system/-" {
+};
+grant codeBase "file:./trusted/-" {
+};
+grant codeBase "file:./friend/-" {
+};
+grant codeBase "file:./anonymouse/-" {
+};

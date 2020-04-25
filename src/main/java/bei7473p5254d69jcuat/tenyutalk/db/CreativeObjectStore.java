@@ -14,7 +14,7 @@ import glb.util.*;
 import jetbrains.exodus.*;
 import jetbrains.exodus.env.*;
 
-public abstract class CreativeObjectStore<T1 extends CreativeObjectDBI,
+public abstract class CreativeObjectStore<T1 extends CreativeObjectI,
 		T2 extends T1> extends IndividualityObjectStore<T1, T2> {
 	public static final StoreInfo getFirstIdVersionToIdStoreStatic(
 			String storeName, String userName) {
@@ -40,7 +40,6 @@ public abstract class CreativeObjectStore<T1 extends CreativeObjectDBI,
 	 * TODO KVSにおいてバージョン順にソートされるか？
 	 */
 	private StoreInfo firstIdVersionToId;
-	private StoreInfo uploaderUserIdToIds;
 	private StoreInfo publicationTimestampToIds;
 
 	protected CreativeObjectStore(Transaction txn) {
@@ -48,7 +47,6 @@ public abstract class CreativeObjectStore<T1 extends CreativeObjectDBI,
 		String userName = Glb.getMiddle().getMe().getName();
 		firstIdVersionToId = getFirstIdVersionToIdStoreStatic(getName(),
 				userName);
-		uploaderUserIdToIds = getUploaderUserIdStoreStatic(getName(), userName);
 		publicationTimestampToIds = getPublicationTimestampStoreStatic(
 				getName(), userName);
 	}
@@ -169,22 +167,10 @@ public abstract class CreativeObjectStore<T1 extends CreativeObjectDBI,
 				o.getVersion());
 	}
 
-	public List<Long> getIdsByUploaderUserId(Long uploaderUserId) {
-		return util.getDup(uploaderUserIdToIds, cnvL(uploaderUserId),
-				bi -> cnvL(bi));
-	}
-
 	public List<Long> getIdsByPublicationTimestamp(
 			boolean publicationTimestamp) {
 		return util.getDup(publicationTimestampToIds,
 				cnvBo(publicationTimestamp), bi -> cnvL(bi));
-	}
-
-	public boolean existByUploaderUserId(Long uploaderUserId, Long id) {
-		if (uploaderUserId == null || id == null)
-			return false;
-		return util.getDupSingle(uploaderUserIdToIds, cnvL(uploaderUserId),
-				cnvL(id), bi -> cnvL(bi)) != null;
 	}
 
 	public boolean existByPublicationTimestamp(boolean publicationTimestamp,
@@ -222,9 +208,6 @@ public abstract class CreativeObjectStore<T1 extends CreativeObjectDBI,
 				idBi)) {
 			throw new IOException("Failed to put. o=" + o);
 		}
-		if (!util.put(uploaderUserIdToIds, cnvL(o.getUploaderUserId()), idBi)) {
-			throw new IOException("Failed to put. o=" + o);
-		}
 
 		if (!util.put(publicationTimestampToIds,
 				cnvBo(o.isPublicationTimestamp()), idBi)) {
@@ -243,17 +226,7 @@ public abstract class CreativeObjectStore<T1 extends CreativeObjectDBI,
 		if (Glb.getUtil().notEqual(updated.getVersion(), old.getVersion())) {
 			Long existId = getLatestIdOfFirstIdMajorMinorPatch(updated);
 			if (existId != null) {
-				r.add(Lang.VERSIONED_VERSION, Lang.ERROR_DB_EXIST,
-						"updated=" + updated);
-				b = false;
-			}
-		}
-		if (Glb.getUtil().notEqual(updated.getUploaderUserId(),
-				old.getUploaderUserId())) {
-			if (existByUploaderUserId(updated.getUploaderUserId(),
-					updated.getId())) {
-				r.add(Lang.VERSIONED_UPLOADER_USERID, Lang.ERROR_DB_EXIST,
-						"updated=" + updated);
+				r.add(Lang.VERSION, Lang.ERROR_DB_EXIST, "updated=" + updated);
 				b = false;
 			}
 		}
@@ -261,8 +234,8 @@ public abstract class CreativeObjectStore<T1 extends CreativeObjectDBI,
 				old.isPublicationTimestamp())) {
 			if (existByPublicationTimestamp(updated.isPublicationTimestamp(),
 					updated.getId())) {
-				r.add(Lang.VERSIONED_PUBLICATION_TIMESTAMP, Lang.ERROR_DB_EXIST,
-						"updated=" + updated);
+				r.add(Lang.CREATIVE_OBJECT_PUBLICATION_TIMESTAMP,
+						Lang.ERROR_DB_EXIST, "updated=" + updated);
 				b = false;
 			}
 		}
@@ -279,10 +252,6 @@ public abstract class CreativeObjectStore<T1 extends CreativeObjectDBI,
 			throw new IOException("Failed to deleteDupSingle");
 		}
 
-		if (!util.deleteDupSingle(uploaderUserIdToIds,
-				cnvL(o.getUploaderUserId()), idBi)) {
-			throw new IOException("Failed to deleteDupSingle");
-		}
 		if (!util.deleteDupSingle(publicationTimestampToIds,
 				cnvBo(o.isPublicationTimestamp()), idBi)) {
 			throw new IOException("Failed to deleteDupSingle");
@@ -302,18 +271,13 @@ public abstract class CreativeObjectStore<T1 extends CreativeObjectDBI,
 				|| getLatestIdOfFirstIdMajor(o) == null
 				|| getLatestIdOfFirstIdMajorMinor(o) == null
 				|| getLatestIdOfFirstIdMajorMinorPatch(o) == null) {
-			vr.add(Lang.VERSIONED_VERSION, Lang.ERROR_DB_NOTFOUND);
-			b = false;
-		}
-		if (!existByUploaderUserId(o.getUploaderUserId(), o.getId())) {
-			vr.add(Lang.VERSIONED_UPLOADER_USERID, Lang.ERROR_DB_NOTFOUND,
-					"o=" + o);
+			vr.add(Lang.VERSION, Lang.ERROR_DB_NOTFOUND);
 			b = false;
 		}
 		if (!existByPublicationTimestamp(o.isPublicationTimestamp(),
 				o.getId())) {
-			vr.add(Lang.VERSIONED_PUBLICATION_TIMESTAMP, Lang.ERROR_DB_NOTFOUND,
-					"o=" + o);
+			vr.add(Lang.CREATIVE_OBJECT_PUBLICATION_TIMESTAMP,
+					Lang.ERROR_DB_NOTFOUND, "o=" + o);
 			b = false;
 		}
 		return b;
@@ -324,7 +288,6 @@ public abstract class CreativeObjectStore<T1 extends CreativeObjectDBI,
 		List<StoreInfo> r = new ArrayList<>();
 		r.add(firstIdVersionToId);
 		r.add(publicationTimestampToIds);
-		r.add(uploaderUserIdToIds);
 		r.addAll(getStoresVersionedConcrete());
 		return r;
 	}
@@ -337,18 +300,13 @@ public abstract class CreativeObjectStore<T1 extends CreativeObjectDBI,
 				|| getLatestIdOfFirstIdMajor(o) != null
 				|| getLatestIdOfFirstIdMajorMinor(o) != null
 				|| getLatestIdOfFirstIdMajorMinorPatch(o) != null) {
-			vr.add(Lang.VERSIONED_VERSION, Lang.ERROR_DB_EXIST);
-			b = false;
-		}
-		if (existByUploaderUserId(o.getUploaderUserId(), o.getId())) {
-			vr.add(Lang.VERSIONED_UPLOADER_USERID, Lang.ERROR_DB_EXIST,
-					"o=" + o);
+			vr.add(Lang.VERSION, Lang.ERROR_DB_EXIST);
 			b = false;
 		}
 		if (existByPublicationTimestamp(o.isPublicationTimestamp(),
 				o.getId())) {
-			vr.add(Lang.VERSIONED_PUBLICATION_TIMESTAMP, Lang.ERROR_DB_EXIST,
-					"o=" + o);
+			vr.add(Lang.CREATIVE_OBJECT_PUBLICATION_TIMESTAMP,
+					Lang.ERROR_DB_EXIST, "o=" + o);
 			b = false;
 		}
 		return b;
@@ -367,20 +325,6 @@ public abstract class CreativeObjectStore<T1 extends CreativeObjectDBI,
 			}
 			if (!util.put(firstIdVersionToId, getFirstIdMajorMinorPatchKey(
 					updated.getFirstId(), updated.getVersion()), idBi))
-				throw new IOException("Failed to put");
-		}
-
-		if (Glb.getUtil().notEqual(updated.getUploaderUserId(),
-				old.getUploaderUserId())) {
-			if (old.getUploaderUserId() != null) {
-				if (!util.remove(uploaderUserIdToIds,
-						cnvL(old.getUploaderUserId())))
-					throw new IOException(
-							"Failed to remove in uploaderUserIdToIds. old="
-									+ old);
-			}
-			if (!util.put(uploaderUserIdToIds,
-					cnvL(updated.getUploaderUserId()), idBi))
 				throw new IOException("Failed to put");
 		}
 

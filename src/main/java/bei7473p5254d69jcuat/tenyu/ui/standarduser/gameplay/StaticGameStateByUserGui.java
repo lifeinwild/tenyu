@@ -9,7 +9,7 @@ import glb.*;
 import jetbrains.exodus.env.*;
 
 public class StaticGameStateByUserGui extends
-		AdministratedObjectGui<StaticGameStateByUserDBI,
+		AdministratedObjectGui<StaticGameStateByUserI,
 				StaticGameStateByUser,
 				StaticGameStateByUser,
 				StaticGameStateByUserStore,
@@ -21,7 +21,7 @@ public class StaticGameStateByUserGui extends
 	}
 
 	public static class StaticGameStateByUserTableItem
-			extends AdministratedObjectTableItem<StaticGameStateByUserDBI,
+			extends AdministratedObjectTableItem<StaticGameStateByUserI,
 					StaticGameStateByUser> {
 
 		public StaticGameStateByUserTableItem(StaticGameStateByUser src) {

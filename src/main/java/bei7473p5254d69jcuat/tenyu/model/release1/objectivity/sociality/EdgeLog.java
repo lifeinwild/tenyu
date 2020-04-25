@@ -19,7 +19,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class EdgeLog extends AdministratedObject implements EdgeLogDBI {
+public class EdgeLog extends AdministratedObject implements EdgeLogI {
 	public static final int commentMax = 1000;
 
 	public static int getCommentmax() {

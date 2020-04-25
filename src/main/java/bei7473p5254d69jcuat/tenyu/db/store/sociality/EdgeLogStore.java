@@ -17,7 +17,7 @@ import jetbrains.exodus.*;
 import jetbrains.exodus.env.*;
 
 public class EdgeLogStore
-		extends AdministratedObjectStore<EdgeLogDBI, EdgeLog> {
+		extends AdministratedObjectStore<EdgeLogI, EdgeLog> {
 	public static final String modelName = EdgeLog.class.getSimpleName();
 	private static final StoreInfo fromSocialityIdToId = new StoreInfo(
 			modelName + "_fromSocialityIdToId_Dup",
@@ -50,7 +50,7 @@ public class EdgeLogStore
 	}
 
 	@Override
-	protected boolean createAdministratedObjectConcrete(EdgeLogDBI o)
+	protected boolean createAdministratedObjectConcrete(EdgeLogI o)
 			throws Exception {
 		if (!util.put(fromSocialityIdToId, cnvL(o.getFromSocialityId()),
 				cnvL(o.getId())))
@@ -63,7 +63,7 @@ public class EdgeLogStore
 
 	@Override
 	protected boolean dbValidateAtUpdateAdministratedObjectConcrete(
-			EdgeLogDBI updated, EdgeLogDBI old, ValidationResult r) {
+			EdgeLogI updated, EdgeLogI old, ValidationResult r) {
 		boolean b = true;
 		if (Glb.getUtil().notEqual(updated.getFromSocialityId(),
 				old.getFromSocialityId())) {
@@ -88,7 +88,7 @@ public class EdgeLogStore
 	}
 
 	@Override
-	protected boolean deleteAdministratedObjectConcrete(EdgeLogDBI o)
+	protected boolean deleteAdministratedObjectConcrete(EdgeLogI o)
 			throws Exception {
 		if (!util.deleteDupSingle(fromSocialityIdToId,
 				cnvL(o.getFromSocialityId()), cnvL(o.getId())))
@@ -114,7 +114,7 @@ public class EdgeLogStore
 	}
 
 	@Override
-	protected boolean existAdministratedObjectConcrete(EdgeLogDBI o,
+	protected boolean existAdministratedObjectConcrete(EdgeLogI o,
 			ValidationResult vr) throws Exception {
 		boolean b = true;
 		if (!existByFromSocialityId(o.getFromSocialityId(), o.getId())) {
@@ -161,11 +161,11 @@ public class EdgeLogStore
 
 	@Override
 	public boolean isSupport(Object o) {
-		return o instanceof EdgeLogDBI;
+		return o instanceof EdgeLogI;
 	}
 
 	@Override
-	protected boolean noExistAdministratedObjectConcrete(EdgeLogDBI o,
+	protected boolean noExistAdministratedObjectConcrete(EdgeLogI o,
 			ValidationResult vr) throws Exception {
 		boolean b = true;
 		if (existByFromSocialityId(o.getFromSocialityId(), o.getId())) {
@@ -181,8 +181,8 @@ public class EdgeLogStore
 	}
 
 	@Override
-	protected boolean updateAdministratedObjectConcrete(EdgeLogDBI updated,
-			EdgeLogDBI old) throws Exception {
+	protected boolean updateAdministratedObjectConcrete(EdgeLogI updated,
+			EdgeLogI old) throws Exception {
 		if (Glb.getUtil().notEqual(updated.getFromSocialityId(),
 				old.getFromSocialityId())) {
 			if (old.getFromSocialityId() != null) {

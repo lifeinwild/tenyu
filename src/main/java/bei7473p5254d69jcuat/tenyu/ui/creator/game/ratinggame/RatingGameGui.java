@@ -18,14 +18,14 @@ import javafx.stage.*;
 import jetbrains.exodus.env.*;
 
 public class RatingGameGui extends
-		IndividualityObjectGui<RatingGameDBI,
+		IndividualityObjectGui<RatingGameI,
 				RatingGame,
 				RatingGame,
 				RatingGameStore,
 				RatingGameGui,
 				RatingGameTableItem> {
 	public static class RatingGameTableItem
-			extends IndividualityObjectTableItem<RatingGameDBI, RatingGame> {
+			extends IndividualityObjectTableItem<RatingGameI, RatingGame> {
 
 		public RatingGameTableItem(RatingGame src) {
 			super(src);
@@ -270,7 +270,7 @@ public class RatingGameGui extends
 	}
 
 	@Override
-	public GridPane buildSearch(SearchFuncs<RatingGameDBI, RatingGame> sf) {
+	public GridPane buildSearch(SearchFuncs<RatingGameI, RatingGame> sf) {
 		//総件数
 		buildCount(
 				DBUtil.countStatic(RatingGameStore.getMainStoreInfoStatic()));

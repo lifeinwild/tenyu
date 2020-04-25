@@ -3,6 +3,7 @@ package bei7473p5254d69jcuat.tenyu.ui.common;
 import java.util.*;
 import java.util.function.*;
 
+import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import glb.*;
 import glb.util.*;
@@ -217,7 +218,7 @@ public class GuiCommon {
 	}
 
 	/**
-	 * AdministratedObjectDBIのGUI部品を構築
+	 * {@link AdministratedObjectI}のGUI部品を構築
 	 *
 	 * @param builder
 	 * @param grid

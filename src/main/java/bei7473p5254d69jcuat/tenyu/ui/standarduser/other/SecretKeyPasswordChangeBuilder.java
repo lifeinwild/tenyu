@@ -20,7 +20,7 @@ public class SecretKeyPasswordChangeBuilder extends GuiBuilder {
 				gui.message(vr);
 			}
 			return r;
-		}, gui -> Glb.getConf()
+		}, gui -> Glb.getConf().getKeys()
 				.changeSecretKeyPassword(built.getNewPasswordInput().getText()),
 				gui -> built.clear(), null
 		));

@@ -7,10 +7,11 @@ import bei7473p5254d69jcuat.tenyu.model.release1.subjectivity.P2PNode.*;
 
 /**
  * UpdatableNeighborListはConcurrentHashMapを前提としていて、
- * synchronizedにしていない。
- * ConcurrentHashMapは他スレッドが書き込んだ値が見えるようになるまでに
- * かなり時間がかかる場合がある。
- * そこで、synchronized型を作った。このクラスはHashMapを前提とする。
+ * CHMの弱一貫性の問題がある。
+ *
+ * このクラスはHashMapを前提としていて厳密一貫性があるが、
+ * インターフェースをsynchronizedする必要がある。
+ *
  * @author exceptiontenyu@gmail.com
  *
  */

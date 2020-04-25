@@ -15,7 +15,7 @@ import glb.util.*;
 import jetbrains.exodus.env.*;
 
 public class StaticGameStateByUser extends AdministratedObject
-		implements StaticGameStateByUserDBI {
+		implements StaticGameStateByUserI {
 
 	/**
 	 * このユーザーのこのゲームにおける所持材料一覧

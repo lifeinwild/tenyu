@@ -25,7 +25,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class FreeKVPair extends AdministratedObject implements FreeKVPairDBI {
+public class FreeKVPair extends AdministratedObject implements FreeKVPairI {
 	private static final String delimiter = ".";
 	private static final String global = "global";
 

@@ -95,4 +95,10 @@ public class TeamParticipationGui extends ObjectGui<TeamParticipation> {
 
 	}
 
+	@Override
+	public void clear() {
+		// TODO 自動生成されたメソッド・スタブ
+
+	}
+
 }

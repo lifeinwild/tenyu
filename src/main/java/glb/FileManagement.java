@@ -26,6 +26,50 @@ public class FileManagement {
 	}
 
 	/**
+	 * @return	非アップロード系の、基盤ソフトウェアが作成するほとんどの動的なファイルはここ以下に作成される
+	 */
+	public String getDataDir() {
+		return "data/";
+	}
+
+	/**
+	 * @return	動的なjarファイルを置くフォルダ
+	 */
+	public String getJarDir() {
+		return getDynamicFileDir() + "jars/";
+	}
+
+	/**
+	 * @return	システム用jarを置くフォルダ
+	 */
+	public String getSystemJarDir() {
+		return getJarDir() + "system/";
+	}
+
+	/**
+	 * @return	信頼されたユーザーが作成したjarを置くフォルダ
+	 */
+	public String getTrustedJarDir() {
+		return getJarDir() + "trusted/";
+	}
+
+	/**
+	 * @return	友人ユーザーが作成したjarを置くフォルダ
+	 */
+	public String getFriendJarDir() {
+		return getJarDir() + "friend/";
+	}
+
+	/**
+	 * @return	匿名ユーザーが作成したjarを置くフォルダ
+	 */
+	public String getAnonymouseJarDir() {
+		return getJarDir() + "anonymouse/";
+	}
+
+	private final String policyFileName = "tenyu.policy";
+
+	/**
 	 * ファイル削除
 	 */
 	private boolean removeFile(Path file) {
@@ -55,10 +99,13 @@ public class FileManagement {
 	 * @return	基盤ソフトウェアの次期バージョンのファイルが置かれるフォルダ
 	 */
 	public String getPlatformFileDir() {
-		return getDynamicFileDir() + "/" + getPlatformFileDirSingle();
+		return getDynamicFileDir() + "/" + getPlatformFileDirName();
 	}
 
-	public String getPlatformFileDirSingle() {
+	/**
+	 * @return	次期バージョンのソフトウェアが作成されるフォルダ
+	 */
+	public String getPlatformFileDirName() {
 		return "platform/";
 	}
 
@@ -138,6 +185,8 @@ public class FileManagement {
 	 */
 	private boolean removeDir(Path dir) {
 		try {
+			//シンボリックリンクの場合リンク自体が削除されるが、仕様化されていない
+			//https://issues.apache.org/jira/browse/IO-576
 			FileUtils.deleteDirectory(dir.toFile());
 			return true;
 		} catch (Exception e) {
@@ -200,13 +249,43 @@ public class FileManagement {
 	public boolean remove(Path p) {
 		if (p == null || !isAppPathBoth(p))
 			return false;
+		return removeInternal(p, false);
+	}
 
-		return removeInternal(p);
+	/**
+	 * @return	実行ファイルの名前
+	 */
+	public String getExecutableJarName() {
+		return Glb.getConst().getAppName() + ".jar";
+	}
+
+	public String getCodeBaseOnIde() {
+		return "./target/classes/";
+	}
+
+	public String getPolicyFileName() {
+		return policyFileName;
+	}
+
+	/**
+	 * @param p
+	 * @return pがファイルなら削除する
+	 */
+	public boolean removeIfFile(Path p) {
+		if (p == null || !isAppPathBoth(p))
+			return false;
+		return removeInternal(p, true);
 	}
 
 	private boolean removeInternal(Path p) {
+		return removeInternal(p, false);
+	}
+
+	private boolean removeInternal(Path p, boolean onlyFile) {
 		File f = p.toFile();
 		if (f.isDirectory()) {
+			if (onlyFile)
+				return false;
 			return removeDir(p);
 		} else if (f.isFile()) {
 			return removeFile(p);
@@ -225,6 +304,24 @@ public class FileManagement {
 		subjeDirF.mkdir();
 		File keyDirF = get(getKeyDir());
 		keyDirF.mkdir();
+	}
+
+	/**
+	 * Glb.getConf()が設定されてから呼ぶ
+	 */
+	public void dirSetupAfterConf() {
+		File dynamicDirF = get(getDynamicFileDir());
+		dynamicDirF.mkdir();
+		File jarDirF = get(getJarDir());
+		jarDirF.mkdir();
+		File systemJarDirF = get(getSystemJarDir());
+		systemJarDirF.mkdir();
+		File trustedJarDirF = get(getTrustedJarDir());
+		trustedJarDirF.mkdir();
+		File friendJarDirF = get(getFriendJarDir());
+		friendJarDirF.mkdir();
+		File anonymouseJarDirF = get(getAnonymouseJarDir());
+		anonymouseJarDirF.mkdir();
 	}
 
 	public String getPublicKeyPath(KeyType type, String prefix) {
@@ -276,11 +373,11 @@ public class FileManagement {
 	}
 
 	public String getConfFile() {
-		return "tenyu.conf";
+		return getDataDir() + "tenyu.conf";
 	}
 
 	public String getKeyDir() {
-		return "key";
+		return getDataDir() + "key";
 	}
 
 	public String getKeyGenerated() {
@@ -288,11 +385,7 @@ public class FileManagement {
 	}
 
 	public String getFxmlPath() {
-		return "fxml/" + Glb.getConst().getAppName() + ".fxml";
-	}
-
-	public String getPropertyFileName() {
-		return Glb.getConst().getAppName();
+		return getDataDir() + "fxml/" + Glb.getConst().getAppName() + ".fxml";
 	}
 
 	public String getPrivateKeyFile() {
@@ -391,7 +484,7 @@ public class FileManagement {
 	}
 
 	public String getModelDir() {
-		return "model";
+		return getDataDir() + "model";
 	}
 
 	/**
@@ -402,11 +495,12 @@ public class FileManagement {
 	}
 
 	public String getLogMessagePropertyFilePath(String language) {
-		return "message_" + language.toLowerCase() + ".properties";
+		return getDataDir() + "message_" + language.toLowerCase()
+				+ ".properties";
 	}
 
 	public String getTypeSelectorIdLogPath() {
-		return "typeSelectorIdLog.txt";
+		return getDataDir() + "typeSelectorIdLog.txt";
 	}
 
 	/**
@@ -422,6 +516,10 @@ public class FileManagement {
 
 	public String getWriteBitsSuffix() {
 		return ".writeBits";
+	}
+
+	public String getCss() {
+		return getDataDir() + Glb.getConst().getAppName() + ".css";
 	}
 
 }

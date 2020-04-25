@@ -155,15 +155,15 @@ public abstract class MessageContent extends Communicatable {
 	/**
 	 * メッセージの有効期間
 	 */
-	protected static final long expiration = 2;
+	protected static final long expirationHistoryIndex = 2;
 
 	public static long getExpiration() {
-		return expiration;
+		return expirationHistoryIndex;
 	}
 
 	private boolean isValidCreateHistory() {
 		return Glb.getObje().getCore().getHistoryIndex()
-				- createHistoryIndex < expiration;
+				- createHistoryIndex < expirationHistoryIndex;
 	}
 
 	/**

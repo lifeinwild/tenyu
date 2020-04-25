@@ -50,13 +50,13 @@ public class LocalIpcAPI {
 	//署名関係
 	@JsonRpcMethod
 	public String getMyStandardPublicKeyType() {
-		return Glb.getConf().getMyStandardKeyType().name();
+		return Glb.getConf().getKeys().getMyStandardKeyType().name();
 	}
 
 	@JsonRpcMethod
 	public byte[] getMyPublicKeyBinary(
 			@JsonRpcParam("keyType") String keyType) {
-		return Glb.getConf().getMyPublicKey(KeyType.valueOf(keyType))
+		return Glb.getConf().getKeys().getMyPublicKey(KeyType.valueOf(keyType))
 				.getEncoded();
 	}
 

@@ -95,6 +95,14 @@ public class CatchUpStateIntegrity extends AbstractCatchUpState {
 			Glb.debug("teacher " + e.getTo());
 		}
 		teachers = new ReadonlyNeighborList(tmp);
+
+		//正しくない整合性情報を持っていた近傍の数を計測
+		try {
+			double invalidRate = teachers.size() / states.getRequests().size();
+			Glb.getSubje().getObservation().addNeighborChaos(invalidRate);
+		} catch (Exception e) {
+			Glb.getLogger().error("", e);
+		}
 		return r;
 	}
 

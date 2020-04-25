@@ -22,7 +22,7 @@ import jetbrains.exodus.env.*;
  *
  */
 public class URLProvementRegex extends IndividualityObject
-		implements URLProvementRegexDBI {
+		implements URLProvementRegexI {
 	/**
 	 * contentRegexesの最大件数
 	 */
@@ -87,12 +87,12 @@ public class URLProvementRegex extends IndividualityObject
 
 	@Override
 	public Long getSpecialMainAdministratorId() {
-		return IdObjectDBI.getVoteId();
+		return IdObjectI.getVoteId();
 	}
 
 	@Override
 	public Long getSpecialRegistererId() {
-		return IdObjectDBI.getVoteId();
+		return IdObjectI.getVoteId();
 	}
 
 	public String getUrlRegex() {

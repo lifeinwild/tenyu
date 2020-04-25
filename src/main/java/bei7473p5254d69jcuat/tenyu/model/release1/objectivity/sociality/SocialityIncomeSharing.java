@@ -21,7 +21,7 @@ import jetbrains.exodus.env.*;
  *
  */
 public class SocialityIncomeSharing extends AdministratedObject
-		implements SocialityIncomeSharingDBI {
+		implements SocialityIncomeSharingI {
 
 	public static Map<Long, Double> getSharingRate(Long senderSocialityId) {
 		Map<Long, Double> r = new HashMap<Long, Double>();

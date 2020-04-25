@@ -17,7 +17,7 @@ import jetbrains.exodus.*;
 import jetbrains.exodus.env.*;
 
 public class StaticGameMaterialClassStore
-		extends IndividualityObjectStore<StaticGameMaterialClassDBI,
+		extends IndividualityObjectStore<StaticGameMaterialClassI,
 				StaticGameMaterialClass> {
 	public static final String modelName = StaticGameMaterialClass.class
 			.getSimpleName();
@@ -52,7 +52,7 @@ public class StaticGameMaterialClassStore
 
 	@Override
 	protected boolean createIndividualityObjectConcrete(
-			StaticGameMaterialClassDBI o) throws Exception {
+			StaticGameMaterialClassI o) throws Exception {
 		if (!util.put(getGameIdToIdStore(), cnvL(o.getStaticGameId()),
 				cnvL(o.getId()))) {
 			return false;
@@ -62,7 +62,7 @@ public class StaticGameMaterialClassStore
 
 	@Override
 	protected boolean dbValidateAtUpdateIndividualityObjectConcrete(
-			StaticGameMaterialClassDBI updated, StaticGameMaterialClassDBI old,
+			StaticGameMaterialClassI updated, StaticGameMaterialClassI old,
 			ValidationResult r) {
 		boolean b = true;
 		Long updatedGameId = updated.getStaticGameId();
@@ -81,7 +81,7 @@ public class StaticGameMaterialClassStore
 
 	@Override
 	protected boolean deleteIndividualityObjectConcrete(
-			StaticGameMaterialClassDBI o) throws Exception {
+			StaticGameMaterialClassI o) throws Exception {
 		if (!util.deleteDupSingle(getGameIdToIdStore(),
 				cnvL(o.getStaticGameId()), cnvL(o.getId())))
 			return false;
@@ -106,7 +106,7 @@ public class StaticGameMaterialClassStore
 
 	@Override
 	protected boolean existIndividualityObjectConcrete(
-			StaticGameMaterialClassDBI o, ValidationResult vr)
+			StaticGameMaterialClassI o, ValidationResult vr)
 			throws Exception {
 		boolean b = true;
 		if (!existByGameId(o.getStaticGameId(), o.getId())) {
@@ -143,12 +143,12 @@ public class StaticGameMaterialClassStore
 
 	@Override
 	public boolean isSupport(Object o) {
-		return o instanceof StaticGameMaterialClassDBI;
+		return o instanceof StaticGameMaterialClassI;
 	}
 
 	@Override
 	protected boolean noExistIndividualityObjectConcrete(
-			StaticGameMaterialClassDBI o, ValidationResult vr)
+			StaticGameMaterialClassI o, ValidationResult vr)
 			throws Exception {
 		boolean b = true;
 		if (existByGameId(o.getStaticGameId(), o.getId())) {
@@ -160,7 +160,7 @@ public class StaticGameMaterialClassStore
 
 	@Override
 	protected boolean updateIndividualityObjectConcrete(
-			StaticGameMaterialClassDBI updated, StaticGameMaterialClassDBI old)
+			StaticGameMaterialClassI updated, StaticGameMaterialClassI old)
 			throws Exception {
 		Long updatedGameId = updated.getStaticGameId();
 		Long oldGameId = old.getStaticGameId();

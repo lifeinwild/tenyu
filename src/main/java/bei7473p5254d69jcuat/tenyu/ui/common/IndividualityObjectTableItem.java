@@ -5,14 +5,14 @@ import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
 import glb.*;
 import javafx.beans.property.*;
 
-public class IndividualityObjectTableItem<T1 extends IndividualityObjectDBI, T2 extends T1>
+public class IndividualityObjectTableItem<T1 extends IndividualityObjectI, T2 extends T1>
 		extends AdministratedObjectTableItem<T1, T2> {
 	private StringProperty explanation = new SimpleStringProperty();
 	private StringProperty name = new SimpleStringProperty();
 
 	public IndividualityObjectTableItem(T2 src) {
 		super(src);
-		updateIndividualityObjectDBITableItem();
+		updateIndividualityObjectITableItem();
 	}
 
 	public String getExplanation() {
@@ -58,10 +58,10 @@ public class IndividualityObjectTableItem<T1 extends IndividualityObjectDBI, T2 
 	@Override
 	public void update() {
 		super.update();
-		updateIndividualityObjectDBITableItem();
+		updateIndividualityObjectITableItem();
 	}
 
-	public void updateIndividualityObjectDBITableItem() {
+	public void updateIndividualityObjectITableItem() {
 		if (src == null)
 			return;
 		setName(src.getName());

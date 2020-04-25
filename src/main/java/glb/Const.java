@@ -26,6 +26,7 @@ public class Const {
 	 * 鍵ファイルの署名の名目に使われているので変更すると鍵ファイルの修正まで必要になる
 	 */
 	private final String appName = "Tenyu";
+
 	/**
 	 * 作者信用
 	 */
@@ -38,6 +39,29 @@ public class Const {
 	 * 作者公開鍵のBase64
 	 */
 	private final ArrayList<String> authorPublicKeys = new ArrayList<>();
+
+	public String getTenyuPolicySystemWithFileCodeBase(String fileCodeBase) {
+		return getTenyuPolicySystem("codeBase \"file:" + fileCodeBase + "\"");
+	}
+
+	public String getTenyuPolicySystem(String codeBase) {
+		String tenyuPolicy = "grant " + codeBase + " {\r\n"
+				+ "	permission java.security.AllPermission;\r\n" + "};\r\n";
+		return tenyuPolicy;
+	}
+
+	public String getTenyuPolicyOther(String workingDir) {
+		return getTenyuPolicyOtherInternal(workingDir, Glb.getFile().getSystemJarDir())
+				+ getTenyuPolicyOtherInternal(workingDir, Glb.getFile().getTrustedJarDir())
+				+ getTenyuPolicyOtherInternal(workingDir, Glb.getFile().getFriendJarDir())
+				+ getTenyuPolicyOtherInternal(workingDir, Glb.getFile().getAnonymouseJarDir());
+	}
+
+	private String getTenyuPolicyOtherInternal(String workingDir, String kindDir) {
+		String tenyuPolicy = "grant codeBase \"file:" + workingDir + kindDir + "-\" {\r\n"
+				+ "};\r\n";
+		return tenyuPolicy;
+	}
 
 	private final ResourceBundle.Control bundleUtf8 = new ResourceBundle.Control() {
 		@Override
@@ -325,7 +349,7 @@ public class Const {
 			authorOffPubBase64 = authorPublicKeys.get(3);//2は旧オフライン公開鍵
 		}
 		//OtherPublicKeys:PublicKeys.txt
-		author.setId(IdObjectDBI.getFirstId());
+		author.setId(IdObjectI.getFirstId());
 		author.setHid(HashStore.getFirstHid());
 		author.setSpecifiedId(true);
 		author.setMainAdministratorUserId(author.getId());
@@ -352,7 +376,7 @@ public class Const {
 				Base64.getDecoder().decode(authorOffPubBase64));
 		author.setTimezone(ZoneId.of("Japan"));
 
-		author.setRegistererUserId(IdObjectDBI.getSystemId());
+		author.setRegistererUserId(IdObjectI.getSystemId());
 
 		author.addTag("Author");
 		return author;
@@ -717,6 +741,8 @@ public class Const {
 		signsByOld.add(
 				"VCHwsFGCE0v6XtLOAi2xuLlw4aExuFb9H8HMKwiwqsYXT78fT3kHchRn1grH+c8eilDyKeBjU96eDoBjYk8WsZrU3ldq+fIMf/YbA4o2St4+dsRpO6CbPwpTef/VjZMTulEyIrOOGfiPR9g+I5gALdOuCyMHnwvriTSMHijfMU/ji99VRJdxxRX7dC1Kd+OaebeimSiCEYpQg4LG+bwXiluh3RK6V1pCsG4BkUOv+u0paekKHm4kih0T5Ij6Z7zLY9PksEFZrfpczcYSW1EVkBC/3pUCFANVyw2AO+1FrGTagZ6COtI5grx7KjVWGWaBSkNh8kRH9GBvHQUGSPfuort06Nw/+sMhDTFzAObqAaIdVPR7ShtzTALMBQ3EycS/kQU4udei1y7veOOhkuVSYfPvXA9Bf0OR1p+U+0HvC11Ci1ZanFaNgHM8b7gI8+Fi2zP5eYTRoxM6G6suro7ryrrIV21wDXNBYRM16eM3RWy3M6d/s/oLs2qhluMiS+Giwgr0GqLlg9JYLnQybv9AMQ03t5dW1eIMH400QA71yf6/45NKKn2fd8nlEMpFHGcJzISqudkQJj9uQTw84WGi6Yb68UDSxJCuAkHAhqe0Q83w2Fh9S85NDtls9Hj6yxHItz/n2ADkZXYJ7Zu5VBz2LrYXro9g2wAVdfLR2GGEWEo=");
 
+		String nominal = Keys.getSignKeyNominal();
+
 		try {
 			Decoder d = Base64.getDecoder();
 			Util u = Glb.getUtil();
@@ -733,15 +759,13 @@ public class Const {
 					continue;
 				byte[] signByOld = d.decode(signByOldStr);
 
-				boolean b1 = u.verify(Conf.getSignKeyNominal(), signByOld,
-						authorOffPubOld, pub);
+				boolean b1 = u.verify(nominal, signByOld, authorOffPubOld, pub);
 
 				String signByNewStr = signsByNew.get(i);
 				if (signByNewStr.length() == 0)
 					continue;
 				byte[] signByNew = d.decode(signByNewStr);
-				boolean b2 = u.verify(Conf.getSignKeyNominal(), signByNew,
-						authorOffPubNew, pub);
+				boolean b2 = u.verify(nominal, signByNew, authorOffPubNew, pub);
 
 				if (!b1 || !b2) {
 					Glb.debug("検証失敗");

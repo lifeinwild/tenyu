@@ -9,7 +9,7 @@ public interface HasStore {
 	/**
 	 * @return	このオブジェクトを永続化するストア
 	 */
-	abstract ObjectStore<? extends ModelDBI, ? extends Model> getStore(
+	abstract ObjectStore<? extends ModelI, ? extends Model> getStore(
 			Transaction txn);
 
 }

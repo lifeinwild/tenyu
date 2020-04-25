@@ -51,7 +51,7 @@ public class PowerVoteSequence extends P2PSequence {
 		try {
 			//まずユーザーによって設定された値の取得を試みる
 			DistributedVoteManager man = Glb.getMiddle()
-					.getDistributedManager();
+					.getDistributedVoteManager();
 			PowerVoteValue src = (PowerVoteValue) man
 					.getMyValueClone(distributedVoteId);
 			if (src != null)
@@ -83,7 +83,7 @@ public class PowerVoteSequence extends P2PSequence {
 
 	public DistributedVote getInfo() {
 		if (cache == null)
-			cache = Glb.getMiddle().getDistributedManager()
+			cache = Glb.getMiddle().getDistributedVoteManager()
 					.get(distributedVoteId);
 		return cache;
 	}

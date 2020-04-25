@@ -12,7 +12,19 @@ import glb.util.*;
 import jetbrains.exodus.*;
 import jetbrains.exodus.env.*;
 
-public abstract class ModelStore<K, T1 extends ModelDBI, T2 extends T1>
+/**
+ * 全ストア系クラスの親クラス
+ *
+ * サブインデックス無し。
+ * 検索という概念は{@link IdObjectI}以下でしか存在しない。IDが必要だから
+ *
+ * @author exceptiontenyu@gmail.com
+ *
+ * @param <K>
+ * @param <T1>
+ * @param <T2>
+ */
+public abstract class ModelStore<K, T1 extends ModelI, T2 extends T1>
 		extends ObjectStore<K, T2> {
 
 	public static final StoreInfo getCreateHistoryIndexStoreStatic(

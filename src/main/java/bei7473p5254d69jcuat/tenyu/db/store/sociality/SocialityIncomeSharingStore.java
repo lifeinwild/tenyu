@@ -17,7 +17,7 @@ import jetbrains.exodus.*;
 import jetbrains.exodus.env.*;
 
 public class SocialityIncomeSharingStore
-		extends AdministratedObjectStore<SocialityIncomeSharingDBI,
+		extends AdministratedObjectStore<SocialityIncomeSharingI,
 				SocialityIncomeSharing> {
 	public static final String modelName = SocialityIncomeSharing.class
 			.getSimpleName();
@@ -54,7 +54,7 @@ public class SocialityIncomeSharingStore
 
 	@Override
 	protected boolean createAdministratedObjectConcrete(
-			SocialityIncomeSharingDBI o) throws Exception {
+			SocialityIncomeSharingI o) throws Exception {
 		if (!util.put(senderSocialityIdToId, cnvL(o.getSenderSocialityId()),
 				cnvL(o.getId())))
 			return false;
@@ -66,7 +66,7 @@ public class SocialityIncomeSharingStore
 
 	@Override
 	protected boolean dbValidateAtUpdateAdministratedObjectConcrete(
-			SocialityIncomeSharingDBI updated, SocialityIncomeSharingDBI old,
+			SocialityIncomeSharingI updated, SocialityIncomeSharingI old,
 			ValidationResult r) {
 		boolean b = true;
 		if (Glb.getUtil().notEqual(updated.getSenderSocialityId(),
@@ -95,7 +95,7 @@ public class SocialityIncomeSharingStore
 
 	@Override
 	protected boolean deleteAdministratedObjectConcrete(
-			SocialityIncomeSharingDBI o) throws Exception {
+			SocialityIncomeSharingI o) throws Exception {
 		if (!util.deleteDupSingle(senderSocialityIdToId,
 				cnvL(o.getSenderSocialityId()), cnvL(o.getId())))
 			return false;
@@ -122,7 +122,7 @@ public class SocialityIncomeSharingStore
 
 	@Override
 	protected boolean existAdministratedObjectConcrete(
-			SocialityIncomeSharingDBI o, ValidationResult vr) throws Exception {
+			SocialityIncomeSharingI o, ValidationResult vr) throws Exception {
 		boolean b = true;
 		if (!existBySenderSocialityId(o.getSenderSocialityId(), o.getId())) {
 			vr.add(Lang.SOCIALITY_INCOMESHARING_SENDERSOCIALITYID,
@@ -169,12 +169,12 @@ public class SocialityIncomeSharingStore
 
 	@Override
 	public boolean isSupport(Object o) {
-		return o instanceof SocialityIncomeSharingDBI;
+		return o instanceof SocialityIncomeSharingI;
 	}
 
 	@Override
 	protected boolean noExistAdministratedObjectConcrete(
-			SocialityIncomeSharingDBI o, ValidationResult vr) throws Exception {
+			SocialityIncomeSharingI o, ValidationResult vr) throws Exception {
 		boolean b = true;
 		if (existBySenderSocialityId(o.getSenderSocialityId(), o.getId())) {
 			vr.add(Lang.SOCIALITY_INCOMESHARING_SENDERSOCIALITYID,
@@ -191,7 +191,7 @@ public class SocialityIncomeSharingStore
 
 	@Override
 	protected boolean updateAdministratedObjectConcrete(
-			SocialityIncomeSharingDBI updated, SocialityIncomeSharingDBI old)
+			SocialityIncomeSharingI updated, SocialityIncomeSharingI old)
 			throws Exception {
 		if (Glb.getUtil().notEqual(updated.getSenderSocialityId(),
 				old.getSenderSocialityId())) {

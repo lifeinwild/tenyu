@@ -21,7 +21,7 @@ import jetbrains.exodus.env.*;
  *
  */
 public class URLProvementRegexStore
-		extends IndividualityObjectStore<URLProvementRegexDBI, URLProvementRegex> {
+		extends IndividualityObjectStore<URLProvementRegexI, URLProvementRegex> {
 	public static final String modelName = URLProvementRegex.class
 			.getSimpleName();
 
@@ -66,7 +66,7 @@ public class URLProvementRegexStore
 	}
 
 	@Override
-	protected boolean createIndividualityObjectConcrete(URLProvementRegexDBI o)
+	protected boolean createIndividualityObjectConcrete(URLProvementRegexI o)
 			throws Exception {
 		for (String fqdn : o.getFqdns()) {
 			if (!util.put(fqdnToId, cnvS(fqdn), cnvL(o.getId()))) {
@@ -78,7 +78,7 @@ public class URLProvementRegexStore
 
 	@Override
 	protected boolean dbValidateAtUpdateIndividualityObjectConcrete(
-			URLProvementRegexDBI updated, URLProvementRegexDBI old,
+			URLProvementRegexI updated, URLProvementRegexI old,
 			ValidationResult r) {
 		boolean b = true;
 		Collection<String> added = Glb.getUtil().getExtra(updated.getFqdns(),
@@ -95,7 +95,7 @@ public class URLProvementRegexStore
 	}
 
 	@Override
-	protected boolean deleteIndividualityObjectConcrete(URLProvementRegexDBI o)
+	protected boolean deleteIndividualityObjectConcrete(URLProvementRegexI o)
 			throws Exception {
 		for (String fqdn : o.getFqdns()) {
 			if (!util.deleteDupSingle(fqdnToId, cnvS(fqdn),
@@ -113,7 +113,7 @@ public class URLProvementRegexStore
 	}
 
 	@Override
-	protected boolean existIndividualityObjectConcrete(URLProvementRegexDBI o,
+	protected boolean existIndividualityObjectConcrete(URLProvementRegexI o,
 			ValidationResult vr) throws Exception {
 		boolean b = true;
 		for (String fqdn : o.getFqdns()) {
@@ -167,11 +167,11 @@ public class URLProvementRegexStore
 
 	@Override
 	public boolean isSupport(Object o) {
-		return o instanceof URLProvementRegexDBI;
+		return o instanceof URLProvementRegexI;
 	}
 
 	@Override
-	protected boolean noExistIndividualityObjectConcrete(URLProvementRegexDBI o,
+	protected boolean noExistIndividualityObjectConcrete(URLProvementRegexI o,
 			ValidationResult vr) throws Exception {
 		boolean b = true;
 		for (String fqdn : o.getFqdns()) {
@@ -185,8 +185,8 @@ public class URLProvementRegexStore
 	}
 
 	@Override
-	protected boolean updateIndividualityObjectConcrete(URLProvementRegexDBI updated,
-			URLProvementRegexDBI old) throws Exception {
+	protected boolean updateIndividualityObjectConcrete(URLProvementRegexI updated,
+			URLProvementRegexI old) throws Exception {
 		//fqdnsについて変化があるか。順序が違うだけで変化があったとみなされる
 		if (Glb.getUtil().notEqual(updated.getFqdns(), old.getFqdns())) {
 			//以下、差分を見出して処理するのでfqdnsの順序の違いは影響しない

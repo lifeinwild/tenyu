@@ -74,19 +74,19 @@ public enum StoreNameObjectivity implements StoreNameEnum {
 			DistributedVoteResultStore.modelName),;
 
 	private final Function<Transaction,
-			IdObjectStore<? extends IdObjectDBI, ?>> getStore;
+			IdObjectStore<? extends IdObjectI, ?>> getStore;
 
 	private final String modelname;
 
 	private StoreNameObjectivity(
 			Function<Transaction,
-					IdObjectStore<? extends IdObjectDBI, ?>> getStore,
+					IdObjectStore<? extends IdObjectI, ?>> getStore,
 			String modelname) {
 		this.getStore = getStore;
 		this.modelname = modelname;
 	}
 
-	public IdObjectStore<? extends IdObjectDBI, ?> getStore(Transaction txn) {
+	public IdObjectStore<? extends IdObjectI, ?> getStore(Transaction txn) {
 		return getStore.apply(txn);
 	}
 

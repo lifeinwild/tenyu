@@ -9,7 +9,7 @@ import glb.*;
 import jetbrains.exodus.env.*;
 
 public class RatingGameMatchGui extends
-		AdministratedObjectGui<RatingGameMatchDBI,
+		AdministratedObjectGui<RatingGameMatchI,
 				RatingGameMatch,
 				RatingGameMatch,
 				RatingGameMatchStore,
@@ -21,7 +21,7 @@ public class RatingGameMatchGui extends
 	}
 
 	public static class RatingGameMatchTableItem extends
-			AdministratedObjectTableItem<RatingGameMatchDBI, RatingGameMatch> {
+			AdministratedObjectTableItem<RatingGameMatchI, RatingGameMatch> {
 
 		public RatingGameMatchTableItem(RatingGameMatch src) {
 			super(src);

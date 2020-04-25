@@ -17,4 +17,10 @@ public class TenyuReferenceGui<V extends CreativeObject>
 
 	}
 
+	@Override
+	public void clear() {
+		// TODO 自動生成されたメソッド・スタブ
+
+	}
+
 }

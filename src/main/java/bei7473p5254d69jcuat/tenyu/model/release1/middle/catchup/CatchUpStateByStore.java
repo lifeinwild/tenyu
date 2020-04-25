@@ -230,13 +230,13 @@ public class CatchUpStateByStore extends AbstractCatchUpState {
 		Long majorityLastHid = getCtx().getMajorityAtStart().getByStore()
 				.get(storeName).getLastHidOfHashStore();
 		if (majorityLastHid == null)
-			majorityLastHid = IdObjectDBI.getFirstId() - 1;
+			majorityLastHid = IdObjectI.getFirstId() - 1;
 
 		//自分の最後のHID
 		Long myLastHid = getCtx().getMyAtStart().getByStore().get(storeName)
 				.getLastHidOfHashStore();
 		if (myLastHid == null)
-			myLastHid = IdObjectDBI.getFirstId() - 1;
+			myLastHid = IdObjectI.getFirstId() - 1;
 
 		Glb.debug("majorityLastHid=" + majorityLastHid + " myLastHid="
 				+ myLastHid);
@@ -370,7 +370,7 @@ public class CatchUpStateByStore extends AbstractCatchUpState {
 	private void step1FinishProc() {
 		//更新されたIDをDBに書き込む
 		Glb.getObje().execute(txn -> {
-			IdObjectStore<? extends IdObjectDBI,
+			IdObjectStore<? extends IdObjectI,
 					?> s = storeName.getStore(txn);
 			CatchUpUpdatedIDListStore ups = s.getCatchUpUpdatedIDListStore();
 			for (Entry<Long, CatchUpUpdatedIDList> e : updatedIdProc

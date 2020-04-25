@@ -11,7 +11,7 @@ import glb.util.*;
 import jetbrains.exodus.env.*;
 
 public abstract class AdministratedObjectStore<
-		T1 extends AdministratedObjectDBI,
+		T1 extends AdministratedObjectI,
 		T2 extends T1> extends IdObjectStore<T1, T2> {
 
 	/**
@@ -132,7 +132,7 @@ public abstract class AdministratedObjectStore<
 	 * GUI等においてDBとの整合性を検証するとき、
 	 * まだIDが割り振られていないのでexist()を呼べないので、
 	 * これをpublicにして直接呼び出す。
-	 * @see bei7473p5254d69jcuat.tenyu.db.store.IdObjectStore#existIdObjectConcrete(bei7473p5254d69jcuat.tenyu.db.store.IdObjectDBI, glb.util.ValidationResult)
+	 * @see bei7473p5254d69jcuat.tenyu.db.store.IdObjectStore#existIdObjectConcrete(bei7473p5254d69jcuat.tenyu.db.store.IdObjectI, glb.util.ValidationResult)
 	 */
 	@Override
 	protected final boolean existIdObjectConcrete(T1 o, ValidationResult vr)
@@ -193,7 +193,7 @@ public abstract class AdministratedObjectStore<
 	}
 
 	/* (非 Javadoc)
-	 * @see bei7473p5254d69jcuat.tenyu.db.store.IdObjectStore#noExistIdObjectConcrete(bei7473p5254d69jcuat.tenyu.db.store.IdObjectDBI, glb.util.ValidationResult)
+	 * @see bei7473p5254d69jcuat.tenyu.db.store.IdObjectStore#noExistIdObjectConcrete(bei7473p5254d69jcuat.tenyu.db.store.IdObjectI, glb.util.ValidationResult)
 	 * GUI等においてDBとの整合性を検証するとき、
 	 * まだIDが割り振られていないのでexist()を呼べないので、
 	 * これをpublicにして直接呼び出す。

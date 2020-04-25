@@ -25,8 +25,7 @@ import glb.util.*;
 import glb.util.Util.*;
 import jetbrains.exodus.env.*;
 
-public class User extends IndividualityObject
-		implements ChainVersionup, UserDBI {
+public class User extends IndividualityObject implements ChainVersionup, UserI {
 	/*	カスタムシリアライザを作ってもほとんど速度が変わらなかった
 	public static class UserSerializer extends Serializer<User>{
 
@@ -48,6 +47,8 @@ public class User extends IndividualityObject
 
 	public static final int memoByTenyuManagerMax = 1000 * 5;
 	public static final NodeType nodeType = NodeType.USER;
+
+	public static final int ethnicIdentityMax = 200;
 
 	/**
 	 * @param roleId
@@ -183,6 +184,11 @@ public class User extends IndividualityObject
 	private String timezoneId;
 
 	/**
+	 * 民族自認
+	 */
+	private String ethnicIdentity;
+
+	/**
 	 * @return	1つもFQDNが設定されていないならtrue
 	 */
 	public boolean isNoFqdn() {
@@ -286,11 +292,12 @@ public class User extends IndividualityObject
 		if (getClass() != obj.getClass())
 			return false;
 		User other = (User) obj;
-		if (submitDate != other.submitDate)
-			return false;
-		if (submitHistoryIndex != other.submitHistoryIndex)
-			return false;
 		if (dougt != other.dougt)
+			return false;
+		if (ethnicIdentity == null) {
+			if (other.ethnicIdentity != null)
+				return false;
+		} else if (!ethnicIdentity.equals(other.ethnicIdentity))
 			return false;
 		if (memoByTenyuManager == null) {
 			if (other.memoByTenyuManager != null)
@@ -314,6 +321,10 @@ public class User extends IndividualityObject
 		} else if (!roleToNodeNumber.equals(other.roleToNodeNumber))
 			return false;
 		if (secure != other.secure)
+			return false;
+		if (submitDate != other.submitDate)
+			return false;
+		if (submitHistoryIndex != other.submitHistoryIndex)
 			return false;
 		if (timezoneId == null) {
 			if (other.timezoneId != null)
@@ -500,14 +511,14 @@ public class User extends IndividualityObject
 	@Override
 	public Long getSpecialMainAdministratorId() {
 		//Userはメイン管理者を設定する必要が無い
-		return IdObjectDBI.getNullId();
+		return IdObjectI.getNullId();
 	}
 
 	@Override
 	public Long getSpecialRegistererId() {
 		if (pcPublicKey != null && Glb.getConst()
 				.isAuthorPublicKey(new ByteArrayWrapper(pcPublicKey))) {
-			return IdObjectDBI.getSystemId();
+			return IdObjectI.getSystemId();
 		}
 		return null;
 	}
@@ -524,10 +535,9 @@ public class User extends IndividualityObject
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + (int) (submitDate ^ (submitDate >>> 32));
-		result = prime * result
-				+ (int) (submitHistoryIndex ^ (submitHistoryIndex >>> 32));
 		result = prime * result + dougt;
+		result = prime * result
+				+ ((ethnicIdentity == null) ? 0 : ethnicIdentity.hashCode());
 		result = prime * result + ((memoByTenyuManager == null) ? 0
 				: memoByTenyuManager.hashCode());
 		result = prime * result + Arrays.hashCode(mobilePublicKey);
@@ -538,6 +548,9 @@ public class User extends IndividualityObject
 		result = prime * result + ((roleToNodeNumber == null) ? 0
 				: roleToNodeNumber.hashCode());
 		result = prime * result + (secure ? 1231 : 1237);
+		result = prime * result + (int) (submitDate ^ (submitDate >>> 32));
+		result = prime * result
+				+ (int) (submitHistoryIndex ^ (submitHistoryIndex >>> 32));
 		result = prime * result
 				+ ((timezoneId == null) ? 0 : timezoneId.hashCode());
 		return result;
@@ -716,7 +729,7 @@ public class User extends IndividualityObject
 			//作者以外紹介者が必要
 			if (!author) {
 				if (registererUserId == null
-						|| IdObjectDBI.getNullId().equals(registererUserId)) {
+						|| IdObjectI.getNullId().equals(registererUserId)) {
 					r.add(Lang.ADMINISTRATEDOBJECT_REGISTERER,
 							Lang.ERROR_NO_INVITER);
 					b = false;
@@ -871,6 +884,15 @@ public class User extends IndividualityObject
 					}
 				}
 			}
+
+			if (ethnicIdentity != null) {
+				if (ethnicIdentity.length() > ethnicIdentityMax) {
+					r.add(Lang.USER, Lang.ETHNIC_IDENTITY, Lang.ERROR_TOO_LONG,
+							"length=" + ethnicIdentity.length());
+					b = false;
+				}
+			}
+
 		} catch (Exception e) {
 			Glb.getLogger().error("", e);
 			r.add(Lang.USER, Lang.EXCEPTION);
@@ -964,7 +986,7 @@ public class User extends IndividualityObject
 
 		//抽象クラスでも類似した判定をしているが
 		//NullIdが許容できない事がこの文脈で判明するので
-		if (getId() != null && IdObjectDBI.getNullId().equals(getId())) {
+		if (getId() != null && IdObjectI.getNullId().equals(getId())) {
 			r.add(Lang.IDOBJECT_ID, Lang.ERROR_INVALID);
 			b = false;
 		}
@@ -1003,6 +1025,28 @@ public class User extends IndividualityObject
 	@Override
 	public StoreNameEnum getStoreName() {
 		return StoreNameObjectivity.USER;
+	}
+
+	@Override
+	public String toString() {
+		return "User [nodeNumberToAddr=" + nodeNumberToAddr
+				+ ", roleToNodeNumber=" + roleToNodeNumber + ", submitDate="
+				+ submitDate + ", submitHistoryIndex=" + submitHistoryIndex
+				+ ", dougt=" + dougt + ", memoByTenyuManager="
+				+ memoByTenyuManager + ", mobilePublicKey="
+				+ Arrays.toString(mobilePublicKey) + ", offlinePublicKey="
+				+ Arrays.toString(offlinePublicKey) + ", pcPublicKey="
+				+ Arrays.toString(pcPublicKey) + ", secure=" + secure
+				+ ", timezoneId=" + timezoneId + ", ethnicIdentity="
+				+ ethnicIdentity + "]";
+	}
+
+	public String getEthnicIdentity() {
+		return ethnicIdentity;
+	}
+
+	public void setEthnicIdentity(String ethnicIdentity) {
+		this.ethnicIdentity = ethnicIdentity;
 	}
 
 }

@@ -39,7 +39,7 @@ public class TenyuManagerElectionResult {
 		//有効なUserの影響割合合計
 		double total = 0;
 		for (Entry<Long, Double> e : powers.entrySet()) {
-			if (e.getKey() < IdObjectDBI.getFirstId()) {
+			if (e.getKey() < IdObjectI.getFirstId()) {
 				continue;
 			}
 

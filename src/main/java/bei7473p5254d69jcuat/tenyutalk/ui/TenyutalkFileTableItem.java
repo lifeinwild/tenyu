@@ -4,7 +4,7 @@ import bei7473p5254d69jcuat.tenyutalk.model.promise.*;
 import bei7473p5254d69jcuat.tenyutalk.model.release1.*;
 
 public class TenyutalkFileTableItem
-		extends CreativeObjectTableItem<TenyutalkFileDBI, TenyutalkFile> {
+		extends CreativeObjectTableItem<TenyutalkFileI, TenyutalkFile> {
 
 	public TenyutalkFileTableItem(TenyutalkFile src) {
 		super(src);

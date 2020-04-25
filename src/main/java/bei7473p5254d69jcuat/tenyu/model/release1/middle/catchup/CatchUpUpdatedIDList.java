@@ -13,7 +13,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class CatchUpUpdatedIDList implements CatchUpUpdatedIDListDBI {
+public class CatchUpUpdatedIDList implements CatchUpUpdatedIDListI {
 	/**
 	 * この回に更新されたオブジェクト一覧を対象とする
 	 */

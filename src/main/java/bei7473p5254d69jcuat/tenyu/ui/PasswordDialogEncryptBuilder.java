@@ -124,7 +124,7 @@ public class PasswordDialogEncryptBuilder extends GuiBuilder {
 								Lang.KEY_GENERATION_WAIT_1MINUTE.toString());
 
 					//この処理は時間がかかる場合がある
-					Glb.getConf().init2(password);
+					Glb.getConf().getKeys().init2(password);
 
 					//待機メッセージが渡されたなら元のタイトルに戻す
 					if (encrypt)
@@ -132,7 +132,7 @@ public class PasswordDialogEncryptBuilder extends GuiBuilder {
 				}
 
 				//鍵のセットアップが出来ていなければ繰り返し
-				if (Glb.getConf().getMyStandardPublicKey() == null) {
+				if (Glb.getConf().getKeys().getMyStandardPublicKey() == null) {
 					passwordDialog.setHeaderText(
 							Lang.PASSWORD_KEY_SETUP_FAILED.toString());
 				} else {

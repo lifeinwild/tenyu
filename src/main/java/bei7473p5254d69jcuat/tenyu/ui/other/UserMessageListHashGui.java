@@ -9,7 +9,7 @@ import glb.*;
 import jetbrains.exodus.env.*;
 
 public class UserMessageListHashGui extends
-		AdministratedObjectGui<UserMessageListHashDBI,
+		AdministratedObjectGui<UserMessageListHashI,
 				UserMessageListHash,
 				UserMessageListHash,
 				UserMessageListHashStore,
@@ -20,7 +20,7 @@ public class UserMessageListHashGui extends
 	}
 
 	public static class UserMessageListHashTableItem
-			extends AdministratedObjectTableItem<UserMessageListHashDBI,
+			extends AdministratedObjectTableItem<UserMessageListHashI,
 					UserMessageListHash> {
 
 		public UserMessageListHashTableItem(UserMessageListHash src) {

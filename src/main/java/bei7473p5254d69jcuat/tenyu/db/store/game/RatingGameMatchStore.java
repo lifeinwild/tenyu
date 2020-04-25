@@ -23,7 +23,7 @@ import jetbrains.exodus.env.*;
  *
  */
 public class RatingGameMatchStore
-		extends AdministratedObjectStore<RatingGameMatchDBI, RatingGameMatch> {
+		extends AdministratedObjectStore<RatingGameMatchI, RatingGameMatch> {
 	public static final String modelName = RatingGameMatch.class
 			.getSimpleName();
 	private static final StoreInfo ratingGameIdToId = new StoreInfo(
@@ -67,7 +67,7 @@ public class RatingGameMatchStore
 	}
 
 	@Override
-	protected boolean createAdministratedObjectConcrete(RatingGameMatchDBI o)
+	protected boolean createAdministratedObjectConcrete(RatingGameMatchI o)
 			throws Exception {
 		if (!util.put(ratingGameIdToId, cnvL(o.getRatingGameId()),
 				cnvL(o.getId())))
@@ -84,7 +84,7 @@ public class RatingGameMatchStore
 
 	@Override
 	protected boolean dbValidateAtUpdateAdministratedObjectConcrete(
-			RatingGameMatchDBI updated, RatingGameMatchDBI old,
+			RatingGameMatchI updated, RatingGameMatchI old,
 			ValidationResult r) {
 		boolean b = true;
 		if (Glb.getUtil().notEqual(updated.getRatingGameId(),
@@ -102,7 +102,7 @@ public class RatingGameMatchStore
 	}
 
 	@Override
-	protected boolean deleteAdministratedObjectConcrete(RatingGameMatchDBI o)
+	protected boolean deleteAdministratedObjectConcrete(RatingGameMatchI o)
 			throws Exception {
 		if (!util.deleteDupSingle(ratingGameIdToId, cnvL(o.getRatingGameId()),
 				cnvL(o.getId())))
@@ -133,7 +133,7 @@ public class RatingGameMatchStore
 			*/
 
 	@Override
-	protected boolean existAdministratedObjectConcrete(RatingGameMatchDBI o,
+	protected boolean existAdministratedObjectConcrete(RatingGameMatchI o,
 			ValidationResult vr) throws Exception {
 		boolean b = true;
 		if (!existByRatingGameId(o.getRatingGameId(), o.getId())) {
@@ -182,11 +182,11 @@ public class RatingGameMatchStore
 
 	@Override
 	public boolean isSupport(Object o) {
-		return o instanceof RatingGameMatchDBI;
+		return o instanceof RatingGameMatchI;
 	}
 
 	@Override
-	protected boolean noExistAdministratedObjectConcrete(RatingGameMatchDBI o,
+	protected boolean noExistAdministratedObjectConcrete(RatingGameMatchI o,
 			ValidationResult vr) throws Exception {
 		boolean b = true;
 		if (existByRatingGameId(o.getRatingGameId(), o.getId())) {
@@ -213,7 +213,7 @@ public class RatingGameMatchStore
 
 	@Override
 	protected boolean updateAdministratedObjectConcrete(
-			RatingGameMatchDBI updated, RatingGameMatchDBI old)
+			RatingGameMatchI updated, RatingGameMatchI old)
 			throws Exception {
 		if (Glb.getUtil().notEqual(updated.getRatingGameId(),
 				old.getRatingGameId())) {

@@ -22,7 +22,7 @@ import jetbrains.exodus.env.*;
  *
  */
 public abstract class IndividualityObject extends AdministratedObject
-		implements IndividualityObjectDBI {
+		implements IndividualityObjectI {
 
 	/**
 	 * アルファベット、数字、一部記号
@@ -104,9 +104,9 @@ public abstract class IndividualityObject extends AdministratedObject
 				vr.add(e, Lang.ERROR_EMPTY);
 				b = false;
 			} else {
-				if (tag.length() > IndividualityObjectDBI.tagLenMax) {
+				if (tag.length() > IndividualityObjectI.tagLenMax) {
 					vr.add(e, Lang.ERROR_TOO_LONG, tag.length() + " / "
-							+ IndividualityObjectDBI.tagLenMax);
+							+ IndividualityObjectI.tagLenMax);
 					b = false;
 				}
 				if (!validateText(e, tag, vr))
@@ -416,8 +416,8 @@ public abstract class IndividualityObject extends AdministratedObject
 	}
 
 	@Override
-	abstract public IndividualityObjectStore<? extends AdministratedObjectDBI,
-			? extends AdministratedObjectDBI> getStore(Transaction txn);
+	abstract public IndividualityObjectStore<? extends AdministratedObjectI,
+			? extends AdministratedObjectI> getStore(Transaction txn);
 
 	@Override
 	abstract public IndividualityObjectGui<?, ?, ?, ?, ?, ?> getGui(

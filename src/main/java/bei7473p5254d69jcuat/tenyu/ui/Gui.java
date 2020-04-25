@@ -323,9 +323,10 @@ public class Gui implements GlbMemberDynamicState {
 				 */
 				//開発モード時に使用される秘密鍵暗号化のパスワード
 				String devPassword = TenyuTest.devPassword;
-				Glb.getConf().init2(devPassword);
+				Glb.getConf().getKeys().init2(devPassword);
 			} else {
-				boolean isKeyGenerated = Glb.getConf().isKeyGenerated();
+				boolean isKeyGenerated = Glb.getConf().getKeys()
+						.isKeyGenerated();
 				//秘密鍵パスワード入力ダイアログ
 				Node dialog = null;
 				if (isKeyGenerated) {
@@ -670,8 +671,7 @@ public class Gui implements GlbMemberDynamicState {
 	private boolean loadCss() {
 		try {
 			String css = Glb.getUtil().getLoader()
-					.getResource(Glb.getConst().getAppName() + ".css")
-					.toExternalForm();
+					.getResource(Glb.getFile().getCss()).toExternalForm();
 			scene.getStylesheets().remove(css);
 			return scene.getStylesheets().add(css);
 		} catch (Exception e) {

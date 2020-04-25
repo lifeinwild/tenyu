@@ -23,7 +23,6 @@ import glb.util.Util.*;
  *
  */
 public class P2PEdge extends P2PEdgeBase {
-
 	/**
 	 * 紹介者への影響 = このノードの活躍 / indirectionCost
 	 */
@@ -279,7 +278,7 @@ public class P2PEdge extends P2PEdgeBase {
 
 	/**
 	 * 様々な値から信用を計算する
-	 * @return	信用
+	 * @return	信用。0-60200
 	 */
 	public int credit() {
 		//作者なら信用ボーナスを与える

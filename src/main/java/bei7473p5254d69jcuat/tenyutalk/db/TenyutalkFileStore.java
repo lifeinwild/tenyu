@@ -17,7 +17,7 @@ import jetbrains.exodus.*;
 import jetbrains.exodus.env.*;
 
 public class TenyutalkFileStore
-		extends CreativeObjectStore<TenyutalkFileDBI, TenyutalkFile> {
+		extends CreativeObjectStore<TenyutalkFileI, TenyutalkFile> {
 	public static final String modelName = TenyutalkFile.class.getSimpleName();
 
 	public TenyutalkFileStore(Transaction txn) {
@@ -30,26 +30,26 @@ public class TenyutalkFileStore
 	}
 
 	@Override
-	protected boolean createVersionedConcrete(TenyutalkFileDBI o) throws Exception {
+	protected boolean createVersionedConcrete(TenyutalkFileI o) throws Exception {
 		boolean b = true;
 		return b;
 	}
 
 	@Override
-	protected boolean dbValidateAtUpdateVersionedConcrete(TenyutalkFileDBI updated, TenyutalkFileDBI old,
+	protected boolean dbValidateAtUpdateVersionedConcrete(TenyutalkFileI updated, TenyutalkFileI old,
 			ValidationResult r) {
 		boolean b = true;
 		return b;
 	}
 
 	@Override
-	protected boolean deleteVersionedConcrete(TenyutalkFileDBI o) throws Exception {
+	protected boolean deleteVersionedConcrete(TenyutalkFileI o) throws Exception {
 		boolean b = true;
 		return b;
 	}
 
 	@Override
-	protected boolean existVersionedConcrete(TenyutalkFileDBI o, ValidationResult vr)
+	protected boolean existVersionedConcrete(TenyutalkFileI o, ValidationResult vr)
 			throws Exception {
 		boolean b = true;
 		return b;
@@ -62,14 +62,14 @@ public class TenyutalkFileStore
 	}
 
 	@Override
-	protected boolean noExistVersionedConcrete(TenyutalkFileDBI o, ValidationResult vr)
+	protected boolean noExistVersionedConcrete(TenyutalkFileI o, ValidationResult vr)
 			throws Exception {
 		boolean b = true;
 		return b;
 	}
 
 	@Override
-	protected boolean updateVersionedConcrete(TenyutalkFileDBI updated, TenyutalkFileDBI old)
+	protected boolean updateVersionedConcrete(TenyutalkFileI updated, TenyutalkFileI old)
 			throws Exception {
 		boolean b = true;
 		return b;

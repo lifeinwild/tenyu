@@ -145,4 +145,10 @@ public class NeighborListGui extends ObjectGui<ReadonlyNeighborList> {
 	public void setSelected(P2PEdgeTableItem selected) {
 		this.selected = selected;
 	}
+
+	@Override
+	public void clear() {
+		// TODO 自動生成されたメソッド・スタブ
+
+	}
 }

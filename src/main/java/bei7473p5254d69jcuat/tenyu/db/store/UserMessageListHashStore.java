@@ -23,7 +23,7 @@ import jetbrains.exodus.env.*;
  *
  */
 public class UserMessageListHashStore extends
-		AdministratedObjectStore<UserMessageListHashDBI, UserMessageListHash> {
+		AdministratedObjectStore<UserMessageListHashI, UserMessageListHash> {
 
 	public static final String modelName = UserMessageListHash.class
 			.getSimpleName();
@@ -55,7 +55,7 @@ public class UserMessageListHashStore extends
 	}
 
 	@Override
-	protected boolean createAdministratedObjectConcrete(UserMessageListHashDBI o)
+	protected boolean createAdministratedObjectConcrete(UserMessageListHashI o)
 			throws Exception {
 		return util.put(historyIndexToId, cnvL(o.getHistoryIndex()),
 				cnvL(o.getId()));
@@ -63,7 +63,7 @@ public class UserMessageListHashStore extends
 
 	@Override
 	protected boolean dbValidateAtUpdateAdministratedObjectConcrete(
-			UserMessageListHashDBI updated, UserMessageListHashDBI old,
+			UserMessageListHashI updated, UserMessageListHashI old,
 			ValidationResult r) {
 		boolean b = true;
 		if (Glb.getUtil().notEqual(updated.getHistoryIndex(),
@@ -78,13 +78,13 @@ public class UserMessageListHashStore extends
 	}
 
 	@Override
-	protected boolean deleteAdministratedObjectConcrete(UserMessageListHashDBI h)
+	protected boolean deleteAdministratedObjectConcrete(UserMessageListHashI h)
 			throws Exception {
 		return util.remove(historyIndexToId, cnvL(h.getHistoryIndex()));
 	}
 
 	@Override
-	public boolean existAdministratedObjectConcrete(UserMessageListHashDBI o,
+	public boolean existAdministratedObjectConcrete(UserMessageListHashI o,
 			ValidationResult vr) {
 		boolean b = true;
 		if (getIdByHistoryIndex(o.getHistoryIndex()) == null) {
@@ -113,13 +113,13 @@ public class UserMessageListHashStore extends
 
 	@Override
 	public boolean isSupport(Object o) {
-		if (o instanceof bei7473p5254d69jcuat.tenyu.model.promise.objectivity.other.UserMessageListHashDBI)
+		if (o instanceof bei7473p5254d69jcuat.tenyu.model.promise.objectivity.other.UserMessageListHashI)
 			return true;
 		return false;
 	}
 
 	@Override
-	public boolean noExistAdministratedObjectConcrete(UserMessageListHashDBI o,
+	public boolean noExistAdministratedObjectConcrete(UserMessageListHashI o,
 			ValidationResult vr) {
 		boolean b = true;
 		if (getIdByHistoryIndex(o.getHistoryIndex()) != null) {
@@ -131,7 +131,7 @@ public class UserMessageListHashStore extends
 
 	@Override
 	protected boolean updateAdministratedObjectConcrete(
-			UserMessageListHashDBI updated, UserMessageListHashDBI old)
+			UserMessageListHashI updated, UserMessageListHashI old)
 			throws Exception {
 		if (Glb.getUtil().notEqual(updated.getHistoryIndex(),
 				old.getHistoryIndex())) {

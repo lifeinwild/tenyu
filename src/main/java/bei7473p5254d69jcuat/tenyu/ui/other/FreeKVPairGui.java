@@ -9,7 +9,7 @@ import glb.*;
 import jetbrains.exodus.env.*;
 
 public class FreeKVPairGui extends
-		AdministratedObjectGui<FreeKVPairDBI,
+		AdministratedObjectGui<FreeKVPairI,
 				FreeKVPair,
 				FreeKVPair,
 				FreeKVPairStore,
@@ -20,7 +20,7 @@ public class FreeKVPairGui extends
 	}
 
 	public static class FreeKVPairTableItem
-			extends AdministratedObjectTableItem<FreeKVPairDBI, FreeKVPair> {
+			extends AdministratedObjectTableItem<FreeKVPairI, FreeKVPair> {
 
 		public FreeKVPairTableItem(FreeKVPair src) {
 			super(src);

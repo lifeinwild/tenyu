@@ -22,7 +22,7 @@ import javafx.scene.layout.*;
 import jetbrains.exodus.env.*;
 
 public class UserGui extends
-		IndividualityObjectGui<UserDBI, User, User, UserStore, UserGui, UserTableItem> {
+		IndividualityObjectGui<UserI, User, User, UserStore, UserGui, UserTableItem> {
 	public UserGui(String name, String id) {
 		super(name, id);
 	}
@@ -189,7 +189,7 @@ public class UserGui extends
 	}
 
 	@Override
-	public GridPane buildSearch(SearchFuncs<UserDBI, User> sf) {
+	public GridPane buildSearch(SearchFuncs<UserI, User> sf) {
 		//総件数
 		buildCount(DBUtil.countStatic(UserStore.getMainStoreInfoStatic()));
 
@@ -201,7 +201,7 @@ public class UserGui extends
 	}
 
 	@Override
-	public GridPane buildSearchSimple(SearchFuncs<UserDBI, User> sf) {
+	public GridPane buildSearchSimple(SearchFuncs<UserI, User> sf) {
 		super.buildSearchSimple(sf);
 		buildIndividualityObjectPrompt();
 		return grid;
@@ -308,9 +308,9 @@ public class UserGui extends
 		}
 
 		Conf cf = Glb.getConf();
-		modelCache.setPcPublicKey(cf.getMyPcPublicKey().getEncoded());
-		modelCache.setMobilePublicKey(cf.getMyMobilePublicKey().getEncoded());
-		modelCache.setOfflinePublicKey(cf.getMyOfflinePublicKey().getEncoded());
+		modelCache.setPcPublicKey(cf.getKeys().getMyPcPublicKey().getEncoded());
+		modelCache.setMobilePublicKey(cf.getKeys().getMyMobilePublicKey().getEncoded());
+		modelCache.setOfflinePublicKey(cf.getKeys().getMyOfflinePublicKey().getEncoded());
 
 		return modelCache;
 	}

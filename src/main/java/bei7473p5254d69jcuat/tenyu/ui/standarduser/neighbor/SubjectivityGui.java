@@ -9,7 +9,7 @@ import glb.*;
 import jetbrains.exodus.env.*;
 
 public class SubjectivityGui extends
-		IdObjectGui<SubjectivityDBI,
+		IdObjectGui<SubjectivityI,
 				Subjectivity,
 				Subjectivity,
 				SubjectivityStore,
@@ -17,7 +17,7 @@ public class SubjectivityGui extends
 				SubjectivityTableItem> {
 
 	public static class SubjectivityTableItem
-			extends IdObjectTableItem<SubjectivityDBI, Subjectivity> {
+			extends IdObjectTableItem<SubjectivityI, Subjectivity> {
 
 		public SubjectivityTableItem(Subjectivity src) {
 			super(src);

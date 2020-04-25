@@ -18,10 +18,14 @@ import jetbrains.exodus.env.*;
  * 分散合意によって書き込まれる情報にUserRightMessageの反映処理は依存してはならない。
  * 分散合意は任意のタイミングで客観を更新する。
  *
+ * 分散合意はTenyu基盤ソフトウェアがより基礎的なところでも使用している。
+ * 例えば客観DBの実現など。
+ * これは、客観DBが実現された後で、分散合意を他の機能のために使うためにある。
+ *
  * @author exceptiontenyu@gmail.com
  *
  */
-public class DistributedVote extends IndividualityObject implements DistributedVoteDBI {
+public class DistributedVote extends IndividualityObject implements DistributedVoteI {
 	public static final int choicesMax = 200;
 
 	public static final int scheduleMax = 50;
@@ -100,16 +104,16 @@ public class DistributedVote extends IndividualityObject implements DistributedV
 	@Override
 	public List<Long> getSpecialMainAdministratorIds() {
 		List<Long> r = new ArrayList<>();
-		r.add(IdObjectDBI.getSystemId());
-		r.add(IdObjectDBI.getVoteId());
+		r.add(IdObjectI.getSystemId());
+		r.add(IdObjectI.getVoteId());
 		return r;
 	}
 
 	@Override
 	public List<Long> getSpecialRegistererIds() {
 		List<Long> r = new ArrayList<>();
-		r.add(IdObjectDBI.getSystemId());
-		r.add(IdObjectDBI.getVoteId());
+		r.add(IdObjectI.getSystemId());
+		r.add(IdObjectI.getVoteId());
 		return r;
 	}
 

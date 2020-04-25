@@ -9,13 +9,13 @@ import glb.*;
 import jetbrains.exodus.env.*;
 
 public class RoleGui extends
-		IndividualityObjectGui<RoleDBI, Role, Role, RoleStore, RoleGui, RoleTableItem> {
+		IndividualityObjectGui<RoleI, Role, Role, RoleStore, RoleGui, RoleTableItem> {
 	public RoleGui(String name, String id) {
 		super(name, id);
 	}
 
 	public static class RoleTableItem
-			extends IndividualityObjectTableItem<RoleDBI, Role> {
+			extends IndividualityObjectTableItem<RoleI, Role> {
 
 		public RoleTableItem(Role src) {
 			super(src);

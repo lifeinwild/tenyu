@@ -6,7 +6,6 @@ import java.util.concurrent.*;
 
 import bei7473p5254d69jcuat.tenyu.communication.mutual.right.*;
 import bei7473p5254d69jcuat.tenyu.communication.mutual.vote.*;
-import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.single.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
@@ -248,6 +247,9 @@ public class DistributedVoteManager {
 			int parent = ObjectivityUpdateDataElement.super.compareTo(o);
 			if (parent != 0)
 				return parent;
+
+			//親クラスでクラス名比較が入っているので
+			//ここに来た場合必ず同じクラス
 			if (o == null || !(o instanceof DistributedVoteProc))
 				return 1;
 			DistributedVoteProc o2 = (DistributedVoteProc) o;
@@ -355,7 +357,7 @@ public class DistributedVoteManager {
 	/**
 	 * 全体運営者選出投票の分散合意のID
 	 */
-	public static final Long managerElectionId = IdObjectDBI
+	public static final Long managerElectionId = IdObjectI
 			.getFirstId();
 
 	public void start() {

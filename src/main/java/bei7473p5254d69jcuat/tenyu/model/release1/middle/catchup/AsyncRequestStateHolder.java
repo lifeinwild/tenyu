@@ -214,6 +214,8 @@ public abstract class AsyncRequestStateHolder<
 	 * @return 再試行が行われたか
 	 */
 	protected boolean retry(AsyncRequestState<R> e, int i) {
+		Glb.debug("retry " + e.getReq(), new Exception());
+
 		//何らかのプログラムのミスで無限に試行される可能性を無くす
 		if (isExpired() || isOverCount())
 			return false;

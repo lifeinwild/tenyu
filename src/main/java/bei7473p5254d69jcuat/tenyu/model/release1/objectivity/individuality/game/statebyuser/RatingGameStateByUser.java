@@ -21,7 +21,7 @@ import jetbrains.exodus.env.*;
  *
  */
 public class RatingGameStateByUser extends AdministratedObject
-		implements RatingGameStateByUserDBI {
+		implements RatingGameStateByUserI {
 
 	public static final int initialMatchCount = 0;
 

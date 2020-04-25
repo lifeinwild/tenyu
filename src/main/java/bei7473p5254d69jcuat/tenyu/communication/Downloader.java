@@ -45,6 +45,12 @@ public class Downloader implements GlbMemberDynamicState {
 	 */
 	private static ScheduledFuture<?> periodic = null;
 
+	/**
+	 * @param f	DLするファイル
+	 * @param necessary	動作上必須のファイルか、
+	 * P2Pネットワークの安定性や効率性等のためにできればDLしておきたいファイルか
+	 * @return	DL可能か。ストレージの空き容量チェック
+	 */
 	public boolean canDownload(TenyuFile f, boolean necessary) {
 		long space = f.getRelativePath().toFile().getUsableSpace();
 		//ファイルをDLできるだけの空き容量があるか
@@ -119,7 +125,7 @@ public class Downloader implements GlbMemberDynamicState {
 	/**
 	 * @param f	DL対象ファイル
 	 * @param necessary	必須ファイルか
-	 * @return	DLに成功したか
+	 * @return	DLに成功したか既にDL済みだったらtrue
 	 */
 	public boolean downloadSync(TenyuFile f, boolean necessary) {
 		try {
@@ -734,11 +740,11 @@ public class Downloader implements GlbMemberDynamicState {
 	}
 	*/
 
-	private <I extends IdObjectDBI, O extends I> void periodicDownloadCommon(
+	private <I extends IdObjectI, O extends I> void periodicDownloadCommon(
 			Function<O, List<TenyuFile>> func,
 			Function<Transaction, IdObjectStore<I, O>> getStore) {
 		Local local = new Local();
-		local.id = IdObjectDBI.getFirstId();
+		local.id = IdObjectI.getFirstId();
 		int dbLoop = 1000;
 		long sleep = 200;
 		while (true) {
@@ -1073,11 +1079,11 @@ public class Downloader implements GlbMemberDynamicState {
 			if (file == null) {
 				b = false;
 			}
-			if (hasNeighbors == null || hasNeighbors.getNeighborsSize() == 0) {
+			if (hasNeighbors == null || hasNeighbors.size() == 0) {
 				b = false;
 			}
 			if (initNeighbors == null
-					|| initNeighbors.getNeighborsSize() == 0) {
+					|| initNeighbors.size() == 0) {
 				b = false;
 			}
 			if (notDownloadedBitCount <= 0) {

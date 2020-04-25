@@ -125,4 +125,10 @@ public class UserRegistrationGui extends ObjectGui<UserRegistration> {
 			UserRegistrationIntroduceOfferTableItem> offerTableSelect) {
 		this.offerTableSelect = offerTableSelect;
 	}
+
+	@Override
+	public void clear() {
+		// TODO 自動生成されたメソッド・スタブ
+
+	}
 }

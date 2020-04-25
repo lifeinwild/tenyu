@@ -35,7 +35,7 @@ import jetbrains.exodus.env.*;
  *
  */
 public class Middle extends IdObject
-		implements GlbMemberDynamicState, MiddleDBI {
+		implements GlbMemberDynamicState, MiddleI {
 	public static Middle loadOrCreate() {
 		return Glb.getDb(Glb.getFile().getMiddleDBPath())
 				.computeInTransaction((txn) -> {
@@ -53,7 +53,7 @@ public class Middle extends IdObject
 				});
 	}
 
-	private DistributedVoteManager distributedManager = new DistributedVoteManager();
+	private DistributedVoteManager distributedVoteManager = new DistributedVoteManager();
 	private EventManager eventManager = new EventManager();
 
 	/**
@@ -138,8 +138,8 @@ public class Middle extends IdObject
 		return serverCache.get(roleName);
 	}
 
-	public DistributedVoteManager getDistributedManager() {
-		return distributedManager;
+	public DistributedVoteManager getDistributedVoteManager() {
+		return distributedVoteManager;
 	}
 
 	public EventManager getEventManager() {
@@ -155,6 +155,10 @@ public class Middle extends IdObject
 		if (myUserId == null)
 			myUserId = UserStore.getMyIdSimple();
 		return myUserId;
+	}
+
+	public void setMyUserId(Long myUserId) {
+		this.myUserId = myUserId;
 	}
 
 	public ObjectivityCatchUp getObjeCatchUp() {
@@ -222,7 +226,7 @@ public class Middle extends IdObject
 
 	public void setDistributedManager(
 			DistributedVoteManager distributedManager) {
-		this.distributedManager = distributedManager;
+		this.distributedVoteManager = distributedManager;
 	}
 
 	public void setEventManager(EventManager eventManager) {
@@ -346,20 +350,26 @@ public class Middle extends IdObject
 	}
 
 	/**
-	 * 客観状況
+	 * 客観の分裂が起きている事が予想されるか。
+	 *
 	 * @author exceptiontenyu@gmail.com
 	 *
 	 */
 	public static enum ObjectivityCircumstance {
 		/**
-		 * 混沌。客観は近傍において割れている。
-		 * メッセージリストを拡散、反映しない。同調に専念する。
+		 * 混沌。P2Pネットワークは分断しており
+		 * 客観の分裂（矛盾した２つ以上の客観がそれぞれ多数のノードに信じられている状況）
+		 * が生じていると予想される。
+		 *
+		 * この場合、メッセージ受付サーバによって客観更新が停止し、
+		 * メッセージリストを拡散、反映しない。
+		 * しばらくネットワークの回復を待ち同調に専念する。
 		 */
 		CHAOS,
 		DEFAULT,
 		/**
-		 * 平時。客観は近傍において概ね統一されている。
-		 * メッセージリストを拡散、反映する。
+		 * 平時。客観はほぼ全ノードにおいて統一されている。
+		 * 客観更新が可能であり、メッセージリストを拡散、反映する。
 		 */
 		UNITY,
 	}

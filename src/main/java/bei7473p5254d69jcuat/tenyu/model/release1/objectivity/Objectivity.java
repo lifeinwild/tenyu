@@ -235,13 +235,13 @@ public class Objectivity implements GlbMemberDynamicState, DBObj {
 	 * @param objs
 	 */
 	public synchronized void applySparseObjectList(
-			StoreNameObjectivity storeName, List<? extends IdObjectDBI> objs) {
+			StoreNameObjectivity storeName, List<? extends IdObjectI> objs) {
 		getEnv().executeInTransaction((txn) -> {
 			try {
 				@SuppressWarnings("unchecked")
-				IdObjectStore<IdObjectDBI, ?> s = (IdObjectStore<IdObjectDBI,
+				IdObjectStore<IdObjectI, ?> s = (IdObjectStore<IdObjectI,
 						?>) storeName.getStore(txn);
-				for (IdObjectDBI o : objs) {
+				for (IdObjectI o : objs) {
 					try {
 						s.catchUp(o);
 					} catch (Exception e) {
@@ -307,8 +307,12 @@ public class Objectivity implements GlbMemberDynamicState, DBObj {
 	 * @return
 	 */
 	public ObjectivityCore getCore(Transaction txn) {
+		ObjectivityCoreStore s = new ObjectivityCoreStore(txn);
+		return getCore(s, txn);
+	}
+
+	public ObjectivityCore getCore(ObjectivityCoreStore s, Transaction txn) {
 		try {
-			ObjectivityCoreStore s = new ObjectivityCoreStore(txn);
 			ObjectivityCore r = s.get(s.getDefaultId());
 			if (r == null) {
 				r = new ObjectivityCore();
@@ -523,7 +527,7 @@ public class Objectivity implements GlbMemberDynamicState, DBObj {
 	private void setupTenyuManager() {
 		writeTryW(txn -> {
 			ObjectivityCoreStore s = new ObjectivityCoreStore(txn);
-			ObjectivityCore core = s.get(s.getDefaultId());
+			ObjectivityCore core = Glb.getObje().getCore(s, txn);
 			//作者が最初の全体運営者になる。全体運営者無しでは本構想を開始できない
 			boolean exist = false;
 			User author = Glb.getConst().getAuthor();
@@ -616,8 +620,10 @@ public class Objectivity implements GlbMemberDynamicState, DBObj {
 		Long electionId = DistributedVoteManager.managerElectionId;
 		return writeTryW(txn -> {
 			DistributedVoteStore s = new DistributedVoteStore(txn);
-			//0番に全体運営者選出投票が設定されているか
+			//全体運営者選出投票について書き込む必要があるか
 			boolean writeZero = false;
+			//electionIdで取得される投票オブジェクトは、全体運営者投票でなければならないし、
+			//システムのどの時点でも必ず存在しなければならない。
 			DistributedVote zero = s.get(electionId);
 			String managerVoteName = Glb.getConst()
 					.getDistributedVoteManagerVoteName();
@@ -637,15 +643,17 @@ public class Objectivity implements GlbMemberDynamicState, DBObj {
 			if (writeZero) {
 				//書き込む
 				DistributedVote managerVote = new DistributedVote();
-				managerVote.setRegistererUserId(IdObjectDBI.getSystemId());
+				managerVote.setRegistererUserId(IdObjectI.getSystemId());
 				managerVote
-						.setMainAdministratorUserId(IdObjectDBI.getSystemId());
+						.setMainAdministratorUserId(IdObjectI.getSystemId());
 				managerVote.setId(electionId);
+				//HIDも0(electionId)想定でいい
+				managerVote.setHid(electionId);
 				managerVote.setName(managerVoteName);
 				managerVote.setSystem(true);
 				managerVote.setEnable(true);
-				managerVote.setName("全体運営者選出投票TenyuManagerElection");
-				managerVote.setId(electionId);
+				//managerVote.setName("全体運営者選出投票TenyuManagerElection");
+				//managerVote.setId(electionId);
 				managerVote.setSchedule("0 0 */8 * * ?");
 				managerVote.setSustainable(true);
 				managerVote.setExplanation(
@@ -671,14 +679,14 @@ public class Objectivity implements GlbMemberDynamicState, DBObj {
 		execute(txn -> {
 			try {
 				RoleStore rs = new RoleStore(txn);
-				for (String roleName : RoleDBI.roleInitialNames.getNames()) {
+				for (String roleName : RoleI.roleInitialNames.getNames()) {
 					Role exist = rs.getByName(roleName);
 					if (exist == null) {
 						Role r = new Role();
 						r.setName(roleName);
 						r.setExplanation(roleName + " Administrators");
-						r.setRegistererUserId(IdObjectDBI.getSystemId());
-						r.setMainAdministratorUserId(IdObjectDBI.getVoteId());
+						r.setRegistererUserId(IdObjectI.getSystemId());
+						r.setMainAdministratorUserId(IdObjectI.getVoteId());
 						Long createdId = rs.create(r);
 						if (createdId == null) {
 							Glb.getLogger().error("Failed to create role",

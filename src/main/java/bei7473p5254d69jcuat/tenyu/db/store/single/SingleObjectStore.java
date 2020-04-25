@@ -13,7 +13,7 @@ import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
  */
 public interface SingleObjectStore {
 	public static Long getDefaultIdStatic() {
-		return IdObjectDBI.getFirstId();
+		return IdObjectI.getFirstId();
 	}
 	public static Long getDefaultHidStatic() {
 		return HashStore.getFirstHid();

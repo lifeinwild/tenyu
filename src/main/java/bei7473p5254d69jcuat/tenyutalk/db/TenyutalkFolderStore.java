@@ -17,7 +17,7 @@ import jetbrains.exodus.*;
 import jetbrains.exodus.env.*;
 
 public class TenyutalkFolderStore
-		extends CreativeObjectStore<TenyutalkFolderDBI, TenyutalkFolder> {
+		extends CreativeObjectStore<TenyutalkFolderI, TenyutalkFolder> {
 	public static final String modelName = TenyutalkFolder.class
 			.getSimpleName();
 
@@ -26,26 +26,26 @@ public class TenyutalkFolderStore
 	}
 
 	@Override
-	protected boolean createVersionedConcrete(TenyutalkFolderDBI o)
+	protected boolean createVersionedConcrete(TenyutalkFolderI o)
 			throws Exception {
 		return true;
 	}
 
 	@Override
 	protected boolean dbValidateAtUpdateVersionedConcrete(
-			TenyutalkFolderDBI updated, TenyutalkFolderDBI old,
+			TenyutalkFolderI updated, TenyutalkFolderI old,
 			ValidationResult r) {
 		return true;
 	}
 
 	@Override
-	protected boolean deleteVersionedConcrete(TenyutalkFolderDBI o)
+	protected boolean deleteVersionedConcrete(TenyutalkFolderI o)
 			throws Exception {
 		return true;
 	}
 
 	@Override
-	protected boolean existVersionedConcrete(TenyutalkFolderDBI o,
+	protected boolean existVersionedConcrete(TenyutalkFolderI o,
 			ValidationResult vr) throws Exception {
 		return true;
 	}
@@ -56,14 +56,14 @@ public class TenyutalkFolderStore
 	}
 
 	@Override
-	protected boolean noExistVersionedConcrete(TenyutalkFolderDBI o,
+	protected boolean noExistVersionedConcrete(TenyutalkFolderI o,
 			ValidationResult vr) throws Exception {
 		return true;
 	}
 
 	@Override
-	protected boolean updateVersionedConcrete(TenyutalkFolderDBI updated,
-			TenyutalkFolderDBI old) throws Exception {
+	protected boolean updateVersionedConcrete(TenyutalkFolderI updated,
+			TenyutalkFolderI old) throws Exception {
 		return true;
 	}
 

@@ -9,6 +9,7 @@ import bei7473p5254d69jcuat.tenyu.db.store.sociality.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.sociality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.subjectivity.*;
 import bei7473p5254d69jcuat.tenyu.reference.*;
 import bei7473p5254d69jcuat.tenyu.ui.standarduser.user.*;
 import glb.*;
@@ -22,19 +23,18 @@ import jetbrains.exodus.env.*;
  *
  */
 public class Sociality extends AdministratedObject
-		implements Trader, SocialityDBI {
+		implements Trader, SocialityI {
 	public static final int balckListMax = 2000;
 
 	public static byte[] createIndividualityObjectId(byte nodeTypeId,
 			long individualityObjectId) {
 		//ここに値が設置される
-		byte[] nodeId = new byte[NodeType.getIdSize()
-				+ IdObjectDBI.getIdSize()];
+		byte[] nodeId = new byte[NodeType.getIdSize() + IdObjectI.getIdSize()];
 		//頭にNodeTypeを特定する情報が設置される
 		nodeId[0] = nodeTypeId;
 		//次にIdObjectのidを特定する情報が設置される
 		ByteBuffer buf = ByteBuffer.wrap(nodeId, NodeType.getIdSize(),
-				IdObjectDBI.getIdSize());
+				IdObjectI.getIdSize());
 		buf.putLong(individualityObjectId);
 		return buf.array();
 	}
@@ -58,7 +58,7 @@ public class Sociality extends AdministratedObject
 		if (type == NodeType.COOPERATIVE_ACCOUNT
 				|| type == NodeType.FLOWNETWORK_ABSTRACTNOMINAL
 				|| type == NodeType.WEB)
-			return IdObjectDBI.getNullId();
+			return IdObjectI.getNullId();
 		return null;
 	}
 	*/
@@ -93,7 +93,8 @@ public class Sociality extends AdministratedObject
 		}
 	}
 
-	public static long parseIndividualityObjectId(byte[] individualityObjectId) {
+	public static long parseIndividualityObjectId(
+			byte[] individualityObjectId) {
 		return ByteBuffer.wrap(individualityObjectId, 1, Long.BYTES)
 				.getLong(NodeType.getIdSize());
 	}
@@ -166,6 +167,33 @@ public class Sociality extends AdministratedObject
 	public Sociality(long historyIndex) {
 		edgeManager = new EdgeManager(historyIndex);
 		createHistoryIndex = historyIndex;
+	}
+
+	/**
+	 * 社会的信用を返す
+	 * {@link P2PEdge#credit()}は主観信用なので区別が必要
+	 * @return	社会的信用。0-60000程度
+	 */
+	public int credit() {
+		int max = 1000 * 60;
+		int socialCredit = 0;
+		if (NodeType.USER.equals(type)) {
+			Long authorId = Glb.getConst().getAuthor().getId();
+			if (authorId.equals(individualityObjectConcreteId)) {
+				socialCredit += max;
+			}
+		}
+		socialCredit += Glb.getUtil().getScaleForNumber(flowFromCooperativeAccount)
+				* (max / 632);
+		if (Glb.getObje().getCore().getHistoryIndex() - createHistoryIndex > 720
+				* 700) {
+			socialCredit += 3000;
+		}
+		if (socialCredit < 0)
+			socialCredit = 0;
+		if (socialCredit > max)
+			socialCredit = max;
+		return socialCredit;
 	}
 
 	@Override
@@ -266,7 +294,8 @@ public class Sociality extends AdministratedObject
 	 * @return	NodeTypeのid+オブジェクトのid
 	 */
 	public byte[] getIndividualityObjectId() {
-		return createIndividualityObjectId(type.getId(), individualityObjectConcreteId);
+		return createIndividualityObjectId(type.getId(),
+				individualityObjectConcreteId);
 	}
 
 	@Override
@@ -281,11 +310,11 @@ public class Sociality extends AdministratedObject
 			return r;
 		switch (type) {
 		case COOPERATIVE_ACCOUNT:
-			r.add(IdObjectDBI.getVoteId());
+			r.add(IdObjectI.getVoteId());
 			break;
 		case FLOWNETWORK_ABSTRACTNOMINAL:
 		case WEB:
-			r.add(IdObjectDBI.getNullId());
+			r.add(IdObjectI.getNullId());
 			break;
 		case RATINGGAME:
 		case STATICGAME:
@@ -303,9 +332,9 @@ public class Sociality extends AdministratedObject
 			return null;
 		switch (type) {
 		case COOPERATIVE_ACCOUNT:
-			return IdObjectDBI.getSystemId();
+			return IdObjectI.getSystemId();
 		case FLOWNETWORK_ABSTRACTNOMINAL:
-			return IdObjectDBI.getVoteId();
+			return IdObjectI.getVoteId();
 		case WEB:
 		case RATINGGAME:
 		case STATICGAME:
@@ -420,7 +449,8 @@ public class Sociality extends AdministratedObject
 			ValidationResult r) {
 		boolean b = true;
 		if (individualityObjectConcreteId == null) {
-			r.add(Lang.SOCIALITY_INDIVIDUALITY_OBJECT_CONCRETE_ID, Lang.ERROR_EMPTY);
+			r.add(Lang.SOCIALITY_INDIVIDUALITY_OBJECT_CONCRETE_ID,
+					Lang.ERROR_EMPTY);
 			b = false;
 		} else {
 			if (!IdObject.validateIdStandardNotSpecialId(
@@ -512,8 +542,10 @@ public class Sociality extends AdministratedObject
 		boolean b = true;
 		if (Glb.getUtil().notEqual(getIndividualityObjectConcreteId(),
 				old2.getIndividualityObjectConcreteId())) {
-			r.add(Lang.SOCIALITY_INDIVIDUALITY_OBJECT_CONCRETE_ID, Lang.ERROR_UNALTERABLE,
-					"individualityObjectConcreteId=" + getIndividualityObjectConcreteId()
+			r.add(Lang.SOCIALITY_INDIVIDUALITY_OBJECT_CONCRETE_ID,
+					Lang.ERROR_UNALTERABLE,
+					"individualityObjectConcreteId="
+							+ getIndividualityObjectConcreteId()
 							+ " oldIndividualityObjectConcreteId="
 							+ old2.getIndividualityObjectConcreteId());
 			b = false;
@@ -587,10 +619,12 @@ public class Sociality extends AdministratedObject
 					.get(individualityObjectConcreteId);
 			break;
 		case USER:
-			dbIndividualityObject = new UserStore(txn).get(individualityObjectConcreteId);
+			dbIndividualityObject = new UserStore(txn)
+					.get(individualityObjectConcreteId);
 			break;
 		case WEB:
-			dbIndividualityObject = new WebStore(txn).get(individualityObjectConcreteId);
+			dbIndividualityObject = new WebStore(txn)
+					.get(individualityObjectConcreteId);
 			break;
 		default:
 			noDBIndividualityObject = true;

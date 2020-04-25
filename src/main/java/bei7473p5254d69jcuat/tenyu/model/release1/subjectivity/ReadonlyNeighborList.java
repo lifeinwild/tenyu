@@ -22,6 +22,7 @@ import glb.util.Util.*;
  *
  */
 public class ReadonlyNeighborList {
+
 	/**
 	 * エッジID to ノード情報。
 	 * 近傍。どんなノードが居るかという知識。
@@ -195,7 +196,8 @@ public class ReadonlyNeighborList {
 	 */
 	public P2PEdge getNeighbor(NodeIdentifierUser identifier) {
 		try {
-			User u = Glb.getObje().getUser(us->us.get(identifier.getUserId()));
+			User u = Glb.getObje()
+					.getUser(us -> us.get(identifier.getUserId()));
 			for (P2PEdge n : neighbors.values()) {
 				//ノードが設定している鍵タイプに応じて
 				//Userのどの鍵と比較するかを決める
@@ -216,7 +218,7 @@ public class ReadonlyNeighborList {
 						n.getNode().getPubKey().getByteArray())) {
 					continue;
 				}
-				if(n.getNode().getNodeNumber() != identifier.getNodeNumber()) {
+				if (n.getNode().getNodeNumber() != identifier.getNodeNumber()) {
 					continue;
 				}
 				return n;
@@ -411,7 +413,7 @@ public class ReadonlyNeighborList {
 	/**
 	 * 知っているIPアドレスの件数
 	 */
-	public int getNeighborsSize() {
+	public int size() {
 		return neighbors.size();
 	}
 
@@ -432,6 +434,23 @@ public class ReadonlyNeighborList {
 	 */
 	public void logNeighbors(String prefix) {
 		Glb.getLogger().info(prefix + Lang.NEIGHBORS + ":" + logNeighbors());
+	}
+
+	/**
+	 * @return	近傍のオンライン率
+	 * ５分以内に通信した近傍のみオンラインとみなす。
+	 */
+	public double getOnlineRate() {
+		int sum = 0;
+		int size = neighbors.size();
+		if(size == 0)
+			return 0;
+		for (P2PEdge e : neighbors.values()) {
+			if (e.isConnectedIn5Minute()) {
+				sum++;
+			}
+		}
+		return sum / size;
 	}
 
 }

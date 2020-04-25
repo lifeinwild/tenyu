@@ -19,7 +19,7 @@ import jetbrains.exodus.env.*;
  *
  */
 public class DistributedVoteResult extends AdministratedObject
-		implements DistributedVoteResultDBI {
+		implements DistributedVoteResultI {
 	protected Long distributedVoteId;
 
 	/**
@@ -37,8 +37,8 @@ public class DistributedVoteResult extends AdministratedObject
 	private long startHistoryIndex;
 
 	public DistributedVoteResult() {
-		registererUserId = IdObjectDBI.getSystemId();
-		mainAdministratorUserId = IdObjectDBI.getVoteId();
+		registererUserId = IdObjectI.getSystemId();
+		mainAdministratorUserId = IdObjectI.getVoteId();
 	}
 
 	/**
@@ -53,7 +53,7 @@ public class DistributedVoteResult extends AdministratedObject
 
 	private List<Long> getAdministratorCommon() {
 		List<Long> r = new ArrayList<>();
-		r.add(IdObjectDBI.getSystemId());
+		r.add(IdObjectI.getSystemId());
 		return r;
 	}
 
@@ -82,12 +82,12 @@ public class DistributedVoteResult extends AdministratedObject
 
 	@Override
 	public Long getSpecialMainAdministratorId() {
-		return IdObjectDBI.getVoteId();
+		return IdObjectI.getVoteId();
 	}
 
 	@Override
 	public Long getSpecialRegistererId() {
-		return IdObjectDBI.getSystemId();
+		return IdObjectI.getSystemId();
 	}
 
 	@Override

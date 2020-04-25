@@ -22,10 +22,10 @@ public class UserRegistrationBuilder extends GuiBuilder {
 			//作成日時を設定
 			info.getMe().setSubmitDate(System.currentTimeMillis());
 
-			info.setMobileByOffSign(cf.getMyMobileKeySignByOffB());
-			info.setPcByOffSign(cf.getMyPcKeySignByOffB());
-			info.setOffByMobileSign(cf.getMyOffKeySignByMobB());
-			info.setOffByPcSign(cf.getMyOffKeySignByPcB());
+			info.setMobileByOffSign(cf.getKeys().getMyMobileKeySignByOffB());
+			info.setPcByOffSign(cf.getKeys().getMyPcKeySignByOffB());
+			info.setOffByMobileSign(cf.getKeys().getMyOffKeySignByMobB());
+			info.setOffByPcSign(cf.getKeys().getMyOffKeySignByPcB());
 
 			return UserRegistrationIntroduceOffer.send(info, scr.getInviter());
 		}, gui -> scr.clear(), null));

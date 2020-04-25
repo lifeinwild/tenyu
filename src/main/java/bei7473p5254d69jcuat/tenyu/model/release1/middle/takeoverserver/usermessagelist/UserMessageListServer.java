@@ -85,7 +85,10 @@ public class UserMessageListServer
 	 * @return 同調状況が混沌の場合、null。それ以外の場合、次に拡散すべきメッセージリスト
 	 */
 	public synchronized UserMessageList getAndNewMessageList() {
-		if (Glb.getMiddle().getObjeCatchUp()
+		//P2Pネットワークが混乱状況なら客観更新を停止する。
+		//この処理は、インターネットが大規模に障害され分断されたケースにおいて
+		//一時的に客観更新を停止させ分断されたネットワーク間での客観の矛盾を抑える。
+		if (Glb.getSubje()
 				.getCurrentCircumstance() == ObjectivityCircumstance.CHAOS) {
 			return null;
 		}

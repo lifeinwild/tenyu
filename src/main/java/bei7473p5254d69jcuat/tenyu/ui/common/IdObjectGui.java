@@ -3,15 +3,12 @@ package bei7473p5254d69jcuat.tenyu.ui.common;
 import java.util.*;
 import java.util.function.*;
 
-import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.ui.*;
 import glb.*;
 import glb.util.*;
-import javafx.geometry.*;
 import javafx.scene.control.*;
-import javafx.scene.control.TextFormatter.*;
 import javafx.scene.control.cell.*;
 import javafx.scene.layout.*;
 import jetbrains.exodus.env.*;
@@ -28,8 +25,8 @@ import jetbrains.exodus.env.*;
  * GUI部品やその設定値、画面内の処理における中間情報など。
  * 中間情報はメソッド名にtmpが入っている
  *
- * T1	DBI
- * T2	DBIの最新実装
+ * T1	I
+ * T2	Iの最新実装
  * T3	GUIで主に扱うクラス。ほぼT2と一致
  * S	T1,T2に対応するストア
  * T1-3など冗長な感じが非常にあるが、修正方法が無い。
@@ -40,19 +37,82 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public abstract class IdObjectGui<T1 extends IdObjectDBI,
+public abstract class IdObjectGui<T1 extends IdObjectI,
 		T2 extends T1,
 		T3 extends IdObject,
 		S extends IdObjectStore<T1, T2>,
 		G extends IdObjectGui,
-		TI extends IdObjectTableItem<T1, T2>> extends ObjectGui<T3> {
-	//検索結果
-	protected TableView<TI> searchResults;
+		TI extends IdObjectTableItem<T1, T2>>
+		extends ModelGui<T1, T2, T3, S, G, TI> {
 
-	protected static final String detail = "Detail";
+	/**
+	 * 検索結果にIdObject関連の列を加える
+	 * IdObjectを継承した各クラス毎にこのようなメソッドが定義される
+	 * 検索結果テーブルは画面によって表示すべき属性が異なるので
+	 * このメソッドを呼ぶかは画面や具象クラスに委ねられ、
+	 * どこかから勝手に呼ばれるということはない。
+	 */
+	public void buildSearchResultIdObject() {
+		TableColumn<TI, Long> idHead = new TableColumn<>(Lang.ID.toString());
+		idHead.setCellValueFactory(new PropertyValueFactory<TI, Long>("id"));
 
-	public TableView<TI> getSearchResults() {
-		return searchResults;
+		searchResults.getColumns().add(idHead);
+	}
+
+	private TextField idInput;
+
+	private Label idLabel;
+
+	public IdObjectGui(String name, String id) {
+		super(name, id);
+	}
+
+	private void build() {
+		boolean editable = CRUDContext.editableBase(ctx);
+		//ID
+		idLabel = new Label(Lang.ID.toString());
+		idLabel.setId(idPrefix + "Id");
+		grid.add(idLabel, 0, elapsed);
+		idInput = new TextField();
+		idInput.setEditable(editable);
+		idInput.setId(idPrefix + "IdInput");
+		idInput.setTextFormatter(ModelGui.getIdFormatter());
+		grid.add(idInput, 1, elapsed);
+		elapsed += 1;
+	}
+
+	@Override
+	public GridPane buildDelete(T3 exist) {
+		super.buildDelete(exist);
+		return grid;
+	}
+
+	@Override
+	public GridPane buildRead() {
+		super.buildRead();
+		build();
+		return grid;
+	}
+
+	@Override
+	public GridPane buildReadSimple() {
+		super.buildReadSimple();
+		build();
+		return grid;
+	}
+
+	/**
+	 * 検索結果から１つ選択した時に詳細表示するGUI
+	 */
+	protected G detailGui;
+
+	protected SearchFuncs<T1, T2> sf(SearchFuncs<T1, T2> arg) {
+		SearchFuncs<T1, T2> sf;
+		if (arg == null) {
+			return getDefaultSearchFuncs();
+		} else {
+			return arg;
+		}
 	}
 
 	public SearchFuncs<T1, T2> getDefaultSearchFuncs() {
@@ -77,147 +137,6 @@ public abstract class IdObjectGui<T1 extends IdObjectDBI,
 				});
 	}
 
-	protected abstract TI createTableItem(T2 o);
-
-	/**
-	 * 検索結果にIdObject関連の列を加える
-	 * IdObjectを継承した各クラス毎にこのようなメソッドが定義される
-	 * 検索結果テーブルは画面によって表示すべき属性が異なるので
-	 * このメソッドを呼ぶかは画面や具象クラスに委ねられ、
-	 * どこかから勝手に呼ばれるということはない。
-	 */
-	public void buildSearchResultIdObject() {
-		TableColumn<TI, Long> idHead = new TableColumn<>(Lang.ID.toString());
-		idHead.setCellValueFactory(new PropertyValueFactory<TI, Long>("id"));
-
-		searchResults.getColumns().add(idHead);
-	}
-
-	public static TextFormatter<Long> getIdFormatter() {
-		return new TextFormatter<Long>(change -> {
-			if (change.getControlNewText().equals("-"))
-				return change;
-			if (change.getControlNewText().length() == 0)
-				return change;
-			try {
-				Long id = Long.valueOf(change.getControlNewText());
-				if (!IdObject.validateIdStandard(id))
-					return null;
-			} catch (Exception e) {
-				return null;
-			}
-			return change;
-		});
-	}
-
-	public static TextFormatter<String> getTextFormatterValidation(
-			Function<Change, ValidationResult> validate) {
-		return new TextFormatter<String>(change -> {
-			if (change.getControlNewText().length() == 0)
-				return change;
-			try {
-				ValidationResult vr = validate.apply(change);
-				if (!vr.isNoError())
-					return null;
-			} catch (Exception e) {
-				return null;
-			}
-			return change;
-		});
-	}
-
-	/**
-	 * 総件数を表示するGUI部品を構築
-	 *
-	 * @param grid
-	 * @param elapsed
-	 * @param guiId
-	 * @param count
-	 * @return
-	 */
-	public void buildCount(long count) {
-		Label countLabelGui = new Label(Lang.COUNT.toString());
-		countLabelGui.setId(idPrefix + "CountLabel");
-		grid.add(countLabelGui, 0, elapsed);
-		Label countGui = new Label("" + count);
-		countGui.setId(idPrefix + "Count");
-		grid.add(countGui, 1, elapsed);
-		addElapsed(1);
-	}
-
-	protected G detailGui;
-
-	private TextField idInput;
-
-	private Label idLabel;
-
-	/**
-	 * このクラスのインスタンスが複数のラムダ式の中で使われた場合、
-	 * 返値を輸送する手段が必要なので、内部にキャッシュする。
-	 *
-	 * setup系メソッドでセットアップされる。
-	 * ～Gui系クラスはGUI部品を通じてモデルをセットアップすると捉えれる。
-	 * そのセットアップされたモデルが設定される。
-	 * ただしセットアップされるGUIの状態は作成や更新など文脈によって異なるので
-	 * setupもvalidateも文脈毎にメソッドが用意される必要がある。
-	 */
-	protected T3 modelCache;
-
-	public IdObjectGui(String name, String id) {
-		super(name, id);
-	}
-
-	private void build() {
-		boolean editable = CRUDContext.editableBase(ctx);
-		//ID
-		idLabel = new Label(Lang.ID.toString());
-		idLabel.setId(idPrefix + "Id");
-		grid.add(idLabel, 0, elapsed);
-		idInput = new TextField();
-		idInput.setEditable(editable);
-		idInput.setId(idPrefix + "IdInput");
-		idInput.setTextFormatter(getIdFormatter());
-		grid.add(idInput, 1, elapsed);
-		elapsed += 1;
-	}
-
-	@Override
-	public GridPane buildDelete(T3 exist) {
-		super.buildDelete(exist);
-		return grid;
-	}
-
-	@Override
-	public GridPane buildDeleteBatch() {
-		ctx = CRUDContext.DELETE_BATCH;
-		return grid;
-	}
-
-	@Override
-	public GridPane buildRead() {
-		super.buildRead();
-		build();
-		return grid;
-	}
-
-	@Override
-	public GridPane buildReadSimple() {
-		super.buildReadSimple();
-		build();
-		return grid;
-	}
-
-	protected SearchFuncs<T1, T2> sf(SearchFuncs<T1, T2> arg) {
-		SearchFuncs<T1, T2> sf;
-		if (arg == null) {
-			return getDefaultSearchFuncs();
-		} else {
-			return arg;
-		}
-	}
-
-	/**
-	 */
 	public GridPane buildSearch(SearchFuncs<T1, T2> arg) {
 		ctx = CRUDContext.SEARCH;
 		detailGui = createDetailGui();
@@ -278,29 +197,6 @@ public abstract class IdObjectGui<T1 extends IdObjectDBI,
 	}
 
 	/**
-	 * 1行かつ横幅最大のテキストを表示。
-	 *
-	 * @param grid
-	 * @param elapsed
-	 * @param subTitle
-	 * @param guiId
-	 * @return
-	 */
-	public void buildSubTitle(String subTitle) {
-		Label label = new Label(subTitle);
-
-		HBox box = new HBox();
-		box.setAlignment(Pos.CENTER);
-		box.getChildren().add(label);
-
-		label.setId(idPrefix + "SubTitle");
-		label.setFocusTraversable(false);
-
-		grid.add(box, 0, elapsed, 2, 1);
-		elapsed += 1;
-	}
-
-	/**
 	 * @param exist	既にDBに記録されているオブジェクト。GUIにその状態が表示される
 	 * @return
 	 */
@@ -318,6 +214,7 @@ public abstract class IdObjectGui<T1 extends IdObjectDBI,
 	}
 
 	public synchronized void clear() {
+		super.clear();
 		if (idInput != null) {
 			boolean editable = idInput.isEditable();
 			idInput.setEditable(true);
@@ -325,8 +222,6 @@ public abstract class IdObjectGui<T1 extends IdObjectDBI,
 			idInput.setEditable(editable);
 		}
 	}
-
-	abstract public Lang getClassNameLang();
 
 	protected abstract G createDetailGui();
 
@@ -340,39 +235,20 @@ public abstract class IdObjectGui<T1 extends IdObjectDBI,
 		}
 	}
 
-	public T3 getModelCache() {
-		return modelCache;
-	}
-
-	public abstract S getStore(Transaction txn);
-
 	@Override
 	public void set(T3 o) {
-		//setの前に必ずクリアが必要なのでここに書いた
-		clear();
+		super.set(o);
 		if (idInput != null && o.getId() != null)
 			getIdInput().setText("" + o.getId());
 	}
 
 	public void setGui(IdObjectGui<T1, T2, T3, S, G, TI> gui) {
+		super.setGui(gui);
 		setIdInput(gui.getIdInput());
 	}
 
 	public void setIdInput(TextField idInput) {
 		this.idInput = idInput;
-	}
-
-	public void setModelCache(T3 modelCache) {
-		this.modelCache = modelCache;
-	}
-
-	public T3 setupModelCreate() {
-		return modelCache;
-	}
-
-	public T3 setupModelUpdateOrDelete(T3 o) {
-		modelCache = o;
-		return modelCache;
 	}
 
 	/**

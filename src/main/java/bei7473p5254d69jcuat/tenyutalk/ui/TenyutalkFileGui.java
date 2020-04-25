@@ -7,7 +7,7 @@ import glb.*;
 import jetbrains.exodus.env.*;
 
 public class TenyutalkFileGui extends
-		CreativeObjectGui<TenyutalkFileDBI,
+		CreativeObjectGui<TenyutalkFileI,
 				TenyutalkFile,
 				TenyutalkFile,
 				TenyutalkFileStore,

@@ -12,16 +12,11 @@ import jetbrains.exodus.env.*;
 
 /**
  * Tenyutalkのモデルへの参照
- *
- * ハッシュ値を含むので偽のデータを流し込まれる恐れが無い。
- * 参照オブジェクト作成時点で正しい動作を確認できた場合、
- * その後も正しく動作し続ける。
+ * 参照先オブジェクトのハッシュ値を含むので偽のデータを流し込まれる恐れが無い。
  * デメリットとして、参照作成時点でバージョンを決定する必要があり、
  * 自動的に最新版を参照するような動作をしない。
  *
  * 関連：{@link TenyutalkReferenceFlexible}
- *
- * 基本的想定として参照先オブジェクトはプログラム系。
  *
  * @author exceptiontenyu@gmail.com
  *
@@ -38,11 +33,6 @@ public class TenyutalkReferenceSecure<V extends CreativeObject>
 	 * 参照先オブジェクトのハッシュ値
 	 */
 	private byte[] hash;
-
-	/**
-	 * ファイルサイズ
-	 */
-	private long fileSize;
 
 	public Long getId() {
 		return id;
@@ -95,8 +85,8 @@ public class TenyutalkReferenceSecure<V extends CreativeObject>
 			if (tmp == null || !(tmp instanceof IdObjectStore))
 				return null;
 			@SuppressWarnings("unchecked")
-			IdObjectStore<? extends IdObjectDBI,
-					V> s = (IdObjectStore<? extends IdObjectDBI, V>) tmp;
+			IdObjectStore<? extends IdObjectI,
+					V> s = (IdObjectStore<? extends IdObjectI, V>) tmp;
 			return s.get(getId());
 		});
 	}
@@ -161,7 +151,6 @@ public class TenyutalkReferenceSecure<V extends CreativeObject>
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + (int) (fileSize ^ (fileSize >>> 32));
 		result = prime * result + Arrays.hashCode(hash);
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
@@ -176,8 +165,6 @@ public class TenyutalkReferenceSecure<V extends CreativeObject>
 		if (getClass() != obj.getClass())
 			return false;
 		TenyutalkReferenceSecure other = (TenyutalkReferenceSecure) obj;
-		if (fileSize != other.fileSize)
-			return false;
 		if (!Arrays.equals(hash, other.hash))
 			return false;
 		if (id == null) {
@@ -191,14 +178,7 @@ public class TenyutalkReferenceSecure<V extends CreativeObject>
 	@Override
 	public String toString() {
 		return "TenyutalkReferenceSecure [id=" + id + ", hash="
-				+ Arrays.toString(hash) + ", fileSize=" + fileSize + "]";
+				+ Arrays.toString(hash) + "]";
 	}
 
-	public long getFileSize() {
-		return fileSize;
-	}
-
-	public void setFileSize(long fileSize) {
-		this.fileSize = fileSize;
-	}
 }

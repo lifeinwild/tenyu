@@ -9,7 +9,7 @@ import glb.*;
 import jetbrains.exodus.env.*;
 
 public class URLProvementRegexGui extends
-		IndividualityObjectGui<URLProvementRegexDBI,
+		IndividualityObjectGui<URLProvementRegexI,
 				URLProvementRegex,
 				URLProvementRegex,
 				URLProvementRegexStore,
@@ -20,7 +20,7 @@ public class URLProvementRegexGui extends
 	}
 
 	public static class URLProvementRegexTableItem extends
-			IndividualityObjectTableItem<URLProvementRegexDBI, URLProvementRegex> {
+			IndividualityObjectTableItem<URLProvementRegexI, URLProvementRegex> {
 
 		public URLProvementRegexTableItem(URLProvementRegex src) {
 			super(src);

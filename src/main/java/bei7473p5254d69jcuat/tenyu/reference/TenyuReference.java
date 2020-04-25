@@ -14,6 +14,15 @@ import bei7473p5254d69jcuat.tenyu.model.promise.*;
  *
  */
 public interface TenyuReference<V> extends HasGui, Storable {
+	public static final int notificationMessagesMax = 200;
+
+	/**
+	 * ここに通知メッセージが定義されることは、
+	 * 参照先を取得せずに通知を表示できるという事。
+	 *
+	 * @return 通知メッセージ
+	 */
+	String getNotificationMessage();
 
 	/**
 	 * @return	参照の文字列表現時の区切り文字
@@ -21,7 +30,6 @@ public interface TenyuReference<V> extends HasGui, Storable {
 	default String getDelimiter() {
 		return "&";
 	}
-
 
 	/**
 	 * local://tenyu.p2p/?rt=javaKryo

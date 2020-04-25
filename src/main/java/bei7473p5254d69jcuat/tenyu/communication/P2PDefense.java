@@ -30,7 +30,7 @@ import jetbrains.exodus.env.*;
 *
 */
 public class P2PDefense extends IdObject
-		implements GlbMemberDynamicState, P2PDefenseDBI {
+		implements GlbMemberDynamicState, P2PDefenseI {
 
 	/**
 	 * 受信側ノードの処理性能を送信側1ノードが最大どれくらい消費して良いか

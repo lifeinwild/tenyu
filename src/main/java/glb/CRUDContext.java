@@ -30,6 +30,12 @@ public enum CRUDContext {
 	 */
 	SEARCH_SIMPLE;
 
+	/**
+	 * メンバー変数を表示するGUI部品がこの返値を使用して編集可能か変わる
+	 *
+	 * @param ctx
+	 * @return
+	 */
 	public static boolean editable(CRUDContext ctx) {
 		boolean editable = true;
 		if (ctx == CRUDContext.READ || ctx == CRUDContext.DELETE)
@@ -38,8 +44,7 @@ public enum CRUDContext {
 	}
 
 	/**
-	 * 更新において修正不可
-	 * IDなど更新不可能なメンバーについての判定
+	 * メンバー変数を表示するGUI部品がこの返値を使用して編集可能か変わる
 	 *
 	 * @param ctx
 	 * @return

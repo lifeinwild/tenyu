@@ -70,19 +70,19 @@ public class GetObj extends AbstractByStoreMessage {
 				+ hidList);
 
 		//返信されるオブジェクト一覧
-		List<IdObjectDBI> objs = new ArrayList<>();
+		List<IdObjectI> objs = new ArrayList<>();
 
 		//ID
 		if (idList != null) {
 			long[] ids = idList.uncompress();
 			Glb.getObje().read(txn -> {
-				IdObjectStore<? extends IdObjectDBI,
+				IdObjectStore<? extends IdObjectI,
 						?> s = storeName.getStore(txn);
 				if (s == null)
 					return;
 				int count = 0;
 				for (Long id : ids) {
-					IdObjectDBI o = s.getRawObj(id);
+					IdObjectI o = s.getRawObj(id);
 					if (o == null)
 						continue;
 					objs.add(o);
@@ -97,13 +97,13 @@ public class GetObj extends AbstractByStoreMessage {
 		if (hidList != null) {
 			long[] hids = hidList.uncompress();
 			Glb.getObje().read(txn -> {
-				IdObjectStore<? extends IdObjectDBI,
+				IdObjectStore<? extends IdObjectI,
 						?> s = storeName.getStore(txn);
 				if (s == null)
 					return;
 				int count = 0;
 				for (Long hid : hids) {
-					IdObjectDBI o = s.getRawObjByHid(hid);
+					IdObjectI o = s.getRawObjByHid(hid);
 					if (o == null)
 						continue;
 					objs.add(o);
@@ -140,13 +140,13 @@ public class GetObj extends AbstractByStoreMessage {
 		 * idまたはhidで取得されたオブジェクト一覧
 		 * 要素のIDがIdObject#getNullId()と一致する場合、削除されたことを意味する
 		 */
-		private List<IdObjectDBI> objs;
+		private List<IdObjectI> objs;
 
-		public void setObjs(List<IdObjectDBI> objs) {
+		public void setObjs(List<IdObjectI> objs) {
 			this.objs = objs;
 		}
 
-		public List<IdObjectDBI> getObjs() {
+		public List<IdObjectI> getObjs() {
 			return objs;
 		}
 

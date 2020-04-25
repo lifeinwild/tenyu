@@ -5,6 +5,7 @@ import java.nio.*;
 import java.nio.file.*;
 import java.util.*;
 
+import bei7473p5254d69jcuat.tenyu.communication.*;
 import bei7473p5254d69jcuat.tenyu.communication.netty.*;
 import bei7473p5254d69jcuat.tenyu.db.*;
 import glb.*;
@@ -13,7 +14,8 @@ import glb.util.Bits;
 import jetbrains.exodus.env.*;
 
 /**
- * ファイル。java.io.Fileと区別するためこのクラス名にした。
+ * ファイルメタデータ
+ * {@link Downloader}に対応するためのインターフェースを備える
  *
  * @author exceptiontenyu@gmail.com
  *
@@ -29,13 +31,22 @@ public class TenyuFile implements FileMetadataI, Storable {
 	 */
 	private String dirAndFilename;
 
+	public TenyuFile() {
+	}
+
+	public TenyuFile(String dirAndFilename, byte[] hash, long size) {
+		setDirAndFilename(dirAndFilename);
+		setFileHash(hash);
+		setFileSize(size);
+	}
+
 	@Override
 	public TenyuFile clone() {
 		try {
 			TenyuFile r = new TenyuFile();
 			r.setDirAndFilename(dirAndFilename);
-			r.setFileHash(getFileHash());
-			r.setFileSize(getFileSize());
+			setFileHash(getFileHash());
+			setFileSize(getFileSize());
 			return r;
 		} catch (Exception e) {
 			Glb.getLogger().error("", e);

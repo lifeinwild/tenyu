@@ -25,7 +25,7 @@ public class CatchUpStateByStoreStepGetObj extends AbstractCatchUpByStoreStep {
 	private AsyncRequestStatesSerialSharding<
 			GetObj> objRequests = new AsyncRequestStatesSerialSharding<>();
 
-	private List<IdObjectDBI> tmpObjs = new ArrayList<>();
+	private List<IdObjectI> tmpObjs = new ArrayList<>();
 
 	@Override
 	public String toString() {
@@ -84,7 +84,7 @@ public class CatchUpStateByStoreStepGetObj extends AbstractCatchUpByStoreStep {
 				//取得されたデータ
 				Message resM = get.getReq().getRes();
 				GetObjResponse res = (GetObjResponse) resM.getContent();
-				for (IdObjectDBI e : res.getObjs()) {
+				for (IdObjectI e : res.getObjs()) {
 					//一時リストに書き込み
 					tmpObjs.add(e);
 				}
@@ -102,7 +102,7 @@ public class CatchUpStateByStoreStepGetObj extends AbstractCatchUpByStoreStep {
 
 	private String toStringTmpObjs() {
 		StringBuilder sb = new StringBuilder();
-		for (IdObjectDBI e : tmpObjs) {
+		for (IdObjectI e : tmpObjs) {
 			sb.append(e.getId() + " ");
 		}
 		return sb.toString();

@@ -6,7 +6,7 @@ import bei7473p5254d69jcuat.tenyu.communication.request.*;
 import io.netty.channel.*;
 
 /**
- * 全体運営者によるManagerAgendaに対する投票。
+ * 全体運営者達によるManagerAgendaに対する投票。
  * @author exceptiontenyu@gmail.com
  *
  */

@@ -22,7 +22,7 @@ import jetbrains.exodus.env.*;
  *
  */
 public class DistributedVoteResultStore
-		extends AdministratedObjectStore<DistributedVoteResultDBI,
+		extends AdministratedObjectStore<DistributedVoteResultI,
 				DistributedVoteResult> {
 
 	public static final String modelName = DistributedVoteResult.class
@@ -43,7 +43,7 @@ public class DistributedVoteResultStore
 		return Glb.getUtil().getLong1(dvIdShi);
 	}
 
-	private static byte[] getDvIdShi(DistributedVoteResultDBI o) {
+	private static byte[] getDvIdShi(DistributedVoteResultI o) {
 		return getDvIdShi(o.getDistributedVoteId(), o.getStartHistoryIndex());
 	}
 
@@ -79,7 +79,7 @@ public class DistributedVoteResultStore
 
 	@Override
 	protected boolean createAdministratedObjectConcrete(
-			DistributedVoteResultDBI o) throws Exception {
+			DistributedVoteResultI o) throws Exception {
 		if (!util.put(startHistoryIndexToId, cnvL(o.getStartHistoryIndex()),
 				cnvL(o.getId())))
 			return false;
@@ -91,7 +91,7 @@ public class DistributedVoteResultStore
 
 	@Override
 	protected boolean dbValidateAtUpdateAdministratedObjectConcrete(
-			DistributedVoteResultDBI updated, DistributedVoteResultDBI old,
+			DistributedVoteResultI updated, DistributedVoteResultI old,
 			ValidationResult r) {
 		boolean b = true;
 		if (Glb.getUtil().notEqual(updated.getStartHistoryIndex(),
@@ -116,7 +116,7 @@ public class DistributedVoteResultStore
 
 	@Override
 	protected boolean deleteAdministratedObjectConcrete(
-			DistributedVoteResultDBI o) throws Exception {
+			DistributedVoteResultI o) throws Exception {
 		if (!util.deleteDupSingle(startHistoryIndexToId,
 				cnvL(o.getStartHistoryIndex()), cnvL(o.getId())))
 			return false;
@@ -126,7 +126,7 @@ public class DistributedVoteResultStore
 		return true;
 	}
 
-	public boolean existByDvIdShi(DistributedVoteResultDBI o, Long id) {
+	public boolean existByDvIdShi(DistributedVoteResultI o, Long id) {
 		if (o == null || id == null)
 			return false;
 		return util.getDupSingle(dvIdShiToId, cnvBA(getDvIdShi(o)), cnvL(id),
@@ -141,7 +141,7 @@ public class DistributedVoteResultStore
 	}
 
 	@Override
-	protected boolean existAdministratedObjectConcrete(DistributedVoteResultDBI o,
+	protected boolean existAdministratedObjectConcrete(DistributedVoteResultI o,
 			ValidationResult vr) throws Exception {
 		boolean b = true;
 		if (!existByStartHistoryIndex(o.getStartHistoryIndex(),
@@ -160,7 +160,7 @@ public class DistributedVoteResultStore
 
 	public List<
 			DistributedVoteResult> getByDistributedVoteIdAndStartHistoryIndex(
-					DistributedVoteResultDBI o, int max) {
+					DistributedVoteResultI o, int max) {
 		List<Long> ids = getIdsByDistributedVoteIdAndStartHistoryIndex(o, max);
 		List<DistributedVoteResult> r = new ArrayList<>();
 		for (Long id : ids)
@@ -174,7 +174,7 @@ public class DistributedVoteResultStore
 	 * @return	特定の分散合意IDのID一覧のうちstartHistoryIndexでソートされた最初のmax件
 	 */
 	public List<Long> getIdsByDistributedVoteIdAndStartHistoryIndex(
-			DistributedVoteResultDBI o, int max) {
+			DistributedVoteResultI o, int max) {
 		if (o == null || o.getDistributedVoteId() == null)
 			return null;
 
@@ -203,12 +203,12 @@ public class DistributedVoteResultStore
 
 	@Override
 	public boolean isSupport(Object o) {
-		return o instanceof DistributedVoteResultDBI;
+		return o instanceof DistributedVoteResultI;
 	}
 
 	@Override
 	protected boolean noExistAdministratedObjectConcrete(
-			DistributedVoteResultDBI o, ValidationResult vr) throws Exception {
+			DistributedVoteResultI o, ValidationResult vr) throws Exception {
 		boolean b = true;
 		if (existByStartHistoryIndex(o.getStartHistoryIndex(),
 				o.getId())) {
@@ -224,13 +224,13 @@ public class DistributedVoteResultStore
 		return b;
 	}
 
-	private String optionDvId(DistributedVoteResultDBI o) {
+	private String optionDvId(DistributedVoteResultI o) {
 		return Lang.IDOBJECT_ID + "=" + o.getId() + " "
 				+ Lang.DISTRIBUTEDVOTE_RESULT_DISTRIBUTEDVOTE_ID_AND_STARTHISTORYINDEX
 				+ "=" + o.getDistributedVoteId();
 	}
 
-	private String optionShi(DistributedVoteResultDBI o) {
+	private String optionShi(DistributedVoteResultI o) {
 		return Lang.IDOBJECT_ID + "=" + o.getId() + " "
 				+ Lang.DISTRIBUTEDVOTE_RESULT_STARTHISTORYINDEX + "="
 				+ o.getStartHistoryIndex();
@@ -238,7 +238,7 @@ public class DistributedVoteResultStore
 
 	@Override
 	protected boolean updateAdministratedObjectConcrete(
-			DistributedVoteResultDBI updated, DistributedVoteResultDBI old)
+			DistributedVoteResultI updated, DistributedVoteResultI old)
 			throws Exception {
 		if (Glb.getUtil().notEqual(updated.getStartHistoryIndex(),
 				old.getStartHistoryIndex())) {

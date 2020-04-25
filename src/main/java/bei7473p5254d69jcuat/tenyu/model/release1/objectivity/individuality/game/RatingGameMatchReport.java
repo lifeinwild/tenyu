@@ -401,7 +401,7 @@ public class RatingGameMatchReport implements Storable {
 
 	public byte[] sign() {
 		try {
-			return Glb.getConf().sign(getNominal(), keyType, getSignTarget());
+			return Glb.getConf().getKeys().sign(getNominal(), keyType, getSignTarget());
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException
 				| IOException e) {
 			Glb.getLogger().error("", e);

@@ -2,6 +2,7 @@ package bei7473p5254d69jcuat.tenyu.communication.request.gui;
 
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
 import glb.*;
+import glb.util.*;
 
 /**
  * ユーザー登録紹介依頼とユーザー登録メッセージの共通情報
@@ -27,7 +28,7 @@ public class UserRegistrationInfo {
 	 */
 	public void signMeByPC() {
 		try {
-			signMeByPC = Glb.getConf().sign(getNominal(), KeyType.PC,
+			signMeByPC = Glb.getConf().getKeys().sign(getNominal(), KeyType.PC,
 					getSignTarget());
 		} catch (Exception e) {
 			Glb.getLogger().error("", e);
@@ -68,7 +69,7 @@ public class UserRegistrationInfo {
 				getSignTarget()))
 			return false;
 
-		if (!Conf.verifyKeys(me.getPcPublicKey(), me.getMobilePublicKey(),
+		if (!Keys.verifyKeys(me.getPcPublicKey(), me.getMobilePublicKey(),
 				me.getOfflinePublicKey(), signPcByOff, signMobileByOff,
 				signOffByPc, signOffByMobile))
 			return false;

@@ -58,19 +58,27 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>io.reactivex.rxjava3</groupId>
+			<artifactId>rxjava</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.almasb</groupId>
+			<artifactId>fxgl</artifactId>
+			<version>0.5.4</version>
+		</dependency>
+		<dependency>
 			<groupId>com.github.veddan</groupId>
 			<artifactId>java-physical-cores</artifactId>
 			<version>0.2-SNAPSHOT</version>
 			<scope>system</scope>
 			<systemPath>${basedir}/lib/java-physical-cores.jar</systemPath>
 		</dependency>
-
 		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
 			<version>1.11.3</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
@@ -121,7 +129,7 @@
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
-			<version>4.1.42.Final</version>
+			<version>4.1.48.Final</version>
 		</dependency>
 
 		<dependency>
@@ -163,7 +171,7 @@
 		<dependency>
 			<groupId>com.esotericsoftware</groupId>
 			<artifactId>kryo</artifactId>
-			<version>5.0.0-RC1</version>
+			<version>5.0.0-RC5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>

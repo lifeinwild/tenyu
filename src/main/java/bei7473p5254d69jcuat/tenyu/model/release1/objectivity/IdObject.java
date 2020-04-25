@@ -17,7 +17,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public abstract class IdObject extends Model implements IdObjectDBI {
+public abstract class IdObject extends Model implements IdObjectI {
 	public static boolean validateIdStandard(Collection<Long> ids) {
 		for (Long id : ids) {
 			if (!IdObject.validateIdStandard(id)) {
@@ -38,8 +38,8 @@ public abstract class IdObject extends Model implements IdObjectDBI {
 	 * @return
 	 */
 	public static boolean validateIdStandard(Long id) {
-		return id != null && (id >= IdObjectDBI.getFirstId()
-				|| IdObjectDBI.isSpecialId(id));
+		return id != null && (id >= IdObjectI.getFirstId()
+				|| IdObjectI.isSpecialId(id));
 	}
 
 	/**
@@ -53,7 +53,7 @@ public abstract class IdObject extends Model implements IdObjectDBI {
 			List<Long> acceptedSpecialIds) {
 		if (id == null)
 			return false;
-		if (id >= IdObjectDBI.getFirstId())
+		if (id >= IdObjectI.getFirstId())
 			return true;
 		if (acceptedSpecialIds != null && acceptedSpecialIds.contains(id))
 			return true;
@@ -71,7 +71,7 @@ public abstract class IdObject extends Model implements IdObjectDBI {
 	}
 
 	public static boolean validateIdStandardNotSpecialId(Long id) {
-		return id != null && id >= IdObjectDBI.getFirstId();
+		return id != null && id >= IdObjectI.getFirstId();
 	}
 
 	/**
@@ -198,8 +198,8 @@ public abstract class IdObject extends Model implements IdObjectDBI {
 	}
 
 	@Override
-	abstract public IdObjectStore<? extends IdObjectDBI,
-			? extends IdObjectDBI> getStore(Transaction txn);
+	abstract public IdObjectStore<? extends IdObjectI,
+			? extends IdObjectI> getStore(Transaction txn);
 
 	@Override
 	public int hashCode() {

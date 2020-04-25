@@ -4,13 +4,15 @@ import java.util.function.*;
 
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
 import bei7473p5254d69jcuat.tenyutalk.db.*;
+import bei7473p5254d69jcuat.tenyutalk.db.other.*;
+import bei7473p5254d69jcuat.tenyutalk.model.promise.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.env.*;
 
 /**
- * 使用時にいちいちインスタンス化する必要がある。
- * Glbに常駐オブジェクトとして置けない。
+ * node毎に異なるインスタンスが必要になるので
+ * 少し特殊な設計がある。
  *
  * @author exceptiontenyu@gmail.com
  *
@@ -22,7 +24,25 @@ public class Tenyutalk implements DBObj {
 	 */
 	private NodeIdentifierUser node;
 
-	private Tenyutalk(NodeIdentifierUser node) {
+	private OnmemoryManagementMultiplayer multiplayer;
+
+	/**
+	 * @return	{@link MultiplayerObjectI}のオンメモリ管理
+	 */
+	public OnmemoryManagementMultiplayer getMultiplayerOnMemory() {
+		return multiplayer;
+	}
+
+	/**
+	 * @param f	ストアを使った処理
+	 * @return	{@link MultiplayerObjectI}のストア
+	 */
+	public <T, LI extends CreativeObjectI, L extends LI> T getMultiplayer(
+			Function<MultiplayerObjectStore<LI, L>, T> f) {
+		return readTryW(txn -> f.apply(new MultiplayerObjectStore<LI, L>(txn)));
+	}
+
+	public Tenyutalk(NodeIdentifierUser node) {
 		this.node = node;
 	}
 
@@ -31,17 +51,16 @@ public class Tenyutalk implements DBObj {
 	}
 
 	/**
-	 * @return	{@link Tenyutalk#construct(NodeIdentifierUser)}を呼び出すためだけのインスタンス
-	 */
-	public static Tenyutalk constructForGlbInstance() {
-		return new Tenyutalk();
-	}
-
-	/**
-	 * Glbにインスタンスを常駐させるため。
-	 * そうするとテスト用インスタンスをセットできる。
-	 * このメソッドは常駐用インスタンスにおいてのみ呼び出され、
-	 * 返値のインスタンスは実際のDBアクセスに使用される。
+	 * {@link Tenyutalk}のインスタンスが{@link Tenyutalk}のインスタンスを作る。
+	 * この特殊な設計は、システム全体でTenyutalkクラスの
+	 * テストバージョンクラスを使用できるようにするために行っている。
+	 *
+	 * テストバージョンクラスはこのメソッドをオーバーライドする事で
+	 * システム内の全Tenyutalkインスタンスをテスト用に変えれる。
+	 *
+	 * Tenyutalkインスタンスは{@link Glb#getTenyutalk(NodeIdentifierUser)}
+	 * を通じて利用されるので、Glbの大本のインスタンスがテストバージョンクラスに変われば
+	 * システム全体で変わる。
 	 *
 	 * @param node
 	 * @return	実際に使用するインスタンス
@@ -63,6 +82,10 @@ public class Tenyutalk implements DBObj {
 
 	public <T> T getFile(Function<TenyutalkFileStore, T> f) {
 		return readTryW(txn -> f.apply(new TenyutalkFileStore(txn)));
+	}
+
+	public <T> T getComment(Function<CommentStore, T> f) {
+		return readTryW(txn -> f.apply(new CommentStore(txn)));
 	}
 
 }

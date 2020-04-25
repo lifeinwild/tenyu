@@ -5,7 +5,7 @@ import bei7473p5254d69jcuat.tenyutalk.model.release1.*;
 import bei7473p5254d69jcuat.tenyutalk.ui.*;
 
 public class TenyutalkFolderTableItem
-		extends CreativeObjectTableItem<TenyutalkFolderDBI, TenyutalkFolder> {
+		extends CreativeObjectTableItem<TenyutalkFolderI, TenyutalkFolder> {
 
 	public TenyutalkFolderTableItem(TenyutalkFolder src) {
 		super(src);

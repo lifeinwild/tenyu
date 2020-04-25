@@ -15,7 +15,7 @@ import jetbrains.exodus.*;
 import jetbrains.exodus.env.*;
 
 public class DistributedTradableStore
-		extends IndividualityObjectStore<DistributedTradableDBI, DistributedTradable> {
+		extends IndividualityObjectStore<DistributedTradableI, DistributedTradable> {
 	public static final String modelName = DistributedTradable.class
 			.getSimpleName();
 	private static final StoreInfo confirmedUserIdToId = new StoreInfo(
@@ -49,7 +49,7 @@ public class DistributedTradableStore
 	}
 
 	@Override
-	protected boolean createIndividualityObjectConcrete(DistributedTradableDBI o)
+	protected boolean createIndividualityObjectConcrete(DistributedTradableI o)
 			throws Exception {
 		if (!util.put(confirmedUserIdToId, cnvL(o.getConfirmedOwnerUserId()),
 				cnvL(o.getId())))
@@ -59,7 +59,7 @@ public class DistributedTradableStore
 
 	@Override
 	protected boolean dbValidateAtUpdateIndividualityObjectConcrete(
-			DistributedTradableDBI updated, DistributedTradableDBI old,
+			DistributedTradableI updated, DistributedTradableI old,
 			ValidationResult r) {
 		boolean b = true;
 		if (Glb.getUtil().notEqual(updated.getConfirmedOwnerUserId(),
@@ -75,7 +75,7 @@ public class DistributedTradableStore
 	}
 
 	@Override
-	protected boolean deleteIndividualityObjectConcrete(DistributedTradableDBI o)
+	protected boolean deleteIndividualityObjectConcrete(DistributedTradableI o)
 			throws Exception {
 		if (!util.deleteDupSingle(confirmedUserIdToId,
 				cnvL(o.getConfirmedOwnerUserId()), cnvL(o.getId())))
@@ -91,7 +91,7 @@ public class DistributedTradableStore
 	}
 
 	@Override
-	public boolean existIndividualityObjectConcrete(DistributedTradableDBI o,
+	public boolean existIndividualityObjectConcrete(DistributedTradableI o,
 			ValidationResult vr) throws Exception {
 		boolean b = true;
 		if (!existByConfirmedUser(o.getConfirmedOwnerUserId(),
@@ -125,13 +125,13 @@ public class DistributedTradableStore
 
 	@Override
 	public boolean isSupport(Object o) {
-		if (o instanceof bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.dtradable.DistributedTradableDBI)
+		if (o instanceof bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.dtradable.DistributedTradableI)
 			return true;
 		return false;
 	}
 
 	@Override
-	public boolean noExistIndividualityObjectConcrete(DistributedTradableDBI o,
+	public boolean noExistIndividualityObjectConcrete(DistributedTradableI o,
 			ValidationResult vr) throws Exception {
 		boolean b = true;
 		if (existByConfirmedUser(o.getConfirmedOwnerUserId(),
@@ -145,8 +145,8 @@ public class DistributedTradableStore
 	}
 
 	@Override
-	protected boolean updateIndividualityObjectConcrete(DistributedTradableDBI updated,
-			DistributedTradableDBI old) throws Exception {
+	protected boolean updateIndividualityObjectConcrete(DistributedTradableI updated,
+			DistributedTradableI old) throws Exception {
 		if (Glb.getUtil().notEqual(updated.getConfirmedOwnerUserId(),
 				old.getConfirmedOwnerUserId())) {
 			if (old.getConfirmedOwnerUserId() != null) {

@@ -26,7 +26,7 @@ public class P2PEdgeTableItem extends AbstractP2PEdgeAndUserTableItem<P2PEdge> {
 			setExplanation(u.getExplanation());
 			setUserId(userId);
 		} else {
-			setUserId(IdObjectDBI.getNullId());
+			setUserId(IdObjectI.getNullId());
 		}
 	}
 

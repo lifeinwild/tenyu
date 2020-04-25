@@ -3,13 +3,13 @@ package bei7473p5254d69jcuat.tenyu.ui.common;
 import java.util.*;
 import java.util.function.*;
 
-import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
-import glb.*;
 
 /**
  * 検索系GUIの抽象化のために作成
- * 具体的なところでこれらラムダ式を定義して抽象的なGUI構築メソッドに渡す
+ * コンストラクタでいくつかのラムダを受け取るが、
+ * ページ（読み書き検索とか色々）毎にそれらラムダの実装が異なる。
+ * このクラスによってその差異を抽象化できる。
  *
  * @author exceptiontenyu@gmail.com
  *
@@ -17,7 +17,7 @@ import glb.*;
  * @param <T2>
  * @param <S>
  */
-public class SearchFuncs<T1 extends IdObjectDBI, T2 extends T1> {
+public class SearchFuncs<T1 extends IdObjectI, T2 extends T1> {
 	/**
 	 * 検索結果のクリア処理など
 	 */

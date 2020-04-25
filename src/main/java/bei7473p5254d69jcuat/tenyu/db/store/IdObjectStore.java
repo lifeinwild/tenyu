@@ -47,7 +47,7 @@ import jetbrains.exodus.env.*;
  * つまりプログラム内部の動作だけを考えれば複雑なクエリに対応する必要が無く、
  * サブインデックスの数やインデックス構造の複雑さは限定的になり、
  * スキーマ更新が将来に渡ってないと考えられるサブインデックスの仕様に到達できるので問題は解決される。
- * （＝DBI系インターフェースによる約束）
+ * （＝モデル系インターフェースによる約束）
  * 内部処理のための最小限のサブインデックスのみを持つからそれが可能と判断した。
  *
  * そして本アプリはKVSによる単純な検索機能を内蔵する。
@@ -129,7 +129,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public abstract class IdObjectStore<T1 extends IdObjectDBI, T2 extends T1>
+public abstract class IdObjectStore<T1 extends IdObjectI, T2 extends T1>
 		extends ModelStore<Long, T1, T2> {
 	public static final StoreInfo getHidStoreStatic(String modelName) {
 		return new StoreInfo(modelName + "_hidToId");
@@ -433,14 +433,14 @@ public abstract class IdObjectStore<T1 extends IdObjectDBI, T2 extends T1>
 		Store s = getStore();
 		try (Cursor c = s.openCursor(util.getTxn())) {
 			if (!c.getLast())
-				return IdObjectDBI.getFirstId() - 1;
+				return IdObjectI.getFirstId() - 1;
 			if (ByteIterable.EMPTY.equals(c.getKey())) {
-				return IdObjectDBI.getFirstId() - 1;
+				return IdObjectI.getFirstId() - 1;
 			}
 			return cnvKey(c.getKey());
 		} catch (Exception e) {
 			Glb.getLogger().error("", e);
-			return IdObjectDBI.getFirstId() - 1;
+			return IdObjectI.getFirstId() - 1;
 		}
 	}
 
@@ -493,7 +493,7 @@ public abstract class IdObjectStore<T1 extends IdObjectDBI, T2 extends T1>
 	public T1 getRawObj(Long id) {
 		try {
 			Object o = cnvO(util.get(getMainStoreInfo(), cnvKey(id)));
-			if (o == null || !(o instanceof IdObjectDBI))
+			if (o == null || !(o instanceof IdObjectI))
 				return null;
 			return (T1) o;
 		} catch (IOException e) {
@@ -511,7 +511,7 @@ public abstract class IdObjectStore<T1 extends IdObjectDBI, T2 extends T1>
 		if (!needCatchUp())
 			return null;
 		Object o = getRawObj(getIdByHid(hid));
-		if (o == null || !(o instanceof IdObjectDBI))
+		if (o == null || !(o instanceof IdObjectI))
 			return null;
 		return (T1) o;
 	}

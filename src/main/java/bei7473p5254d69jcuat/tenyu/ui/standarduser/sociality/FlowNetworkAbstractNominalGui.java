@@ -9,7 +9,7 @@ import glb.*;
 import jetbrains.exodus.env.*;
 
 public class FlowNetworkAbstractNominalGui extends
-		IndividualityObjectGui<FlowNetworkAbstractNominalDBI,
+		IndividualityObjectGui<FlowNetworkAbstractNominalI,
 				FlowNetworkAbstractNominal,
 				FlowNetworkAbstractNominal,
 				FlowNetworkAbstractNominalStore,
@@ -20,7 +20,7 @@ public class FlowNetworkAbstractNominalGui extends
 	}
 
 	public static class FlowNetworkAbstractNominalTableItem
-			extends IndividualityObjectTableItem<FlowNetworkAbstractNominalDBI,
+			extends IndividualityObjectTableItem<FlowNetworkAbstractNominalI,
 					FlowNetworkAbstractNominal> {
 
 		public FlowNetworkAbstractNominalTableItem(

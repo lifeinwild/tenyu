@@ -4,9 +4,7 @@ import glb.*;
 import glb.util.*;
 import jetbrains.exodus.env.*;
 
-public abstract class Model implements ModelDBI {
-	public static final long defaultDate = -1;
-	public static final long defaultHistoryIndex = -1;
+public abstract class Model implements ModelI {
 	/**
 	 * 作成HI
 	 */
@@ -26,6 +24,10 @@ public abstract class Model implements ModelDBI {
 
 	/**
 	 * 最後のキーであるという保証があるか
+	 * 新たなモデルが作成された場合など、
+	 * 最後のキー（連番の最後のID）であるという保証がある文脈でDBを利用する場合に
+	 * DBで効率的に処理される。
+	 * falseでも機能は問題ない。性能が違うだけ
 	 */
 	private transient boolean lastKey = false;
 

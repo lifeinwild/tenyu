@@ -25,7 +25,7 @@ public class UserRegistrationIntroduceOfferTableItem
 	}
 
 	protected void updateUser() {
-		setUserId(IdObjectDBI.getNullId());
+		setUserId(IdObjectI.getNullId());
 		setName(offer.getInfo().getMe().getName());
 		setExplanation(offer.getInfo().getMe().getExplanation());
 	}

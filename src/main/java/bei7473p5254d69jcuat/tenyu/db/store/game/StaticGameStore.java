@@ -18,7 +18,7 @@ import jetbrains.exodus.*;
 import jetbrains.exodus.env.*;
 
 public class StaticGameStore
-		extends IndividualityObjectStore<StaticGameDBI, StaticGame> {
+		extends IndividualityObjectStore<StaticGameI, StaticGame> {
 	public static final String modelName = StaticGame.class.getSimpleName();
 	/**
 	 * ServerのuserIdからStaticGameのidへのサブインデックスストア
@@ -63,7 +63,7 @@ public class StaticGameStore
 	}
 
 	@Override
-	protected boolean createIndividualityObjectConcrete(StaticGameDBI game)
+	protected boolean createIndividualityObjectConcrete(StaticGameI game)
 			throws Exception {
 		for (NodeIdentifierUser server : game.getServerIdentifiers()) {
 			if (server == null) {
@@ -80,7 +80,7 @@ public class StaticGameStore
 
 	@Override
 	protected boolean dbValidateAtUpdateIndividualityObjectConcrete(
-			StaticGameDBI updated, StaticGameDBI old, ValidationResult r) {
+			StaticGameI updated, StaticGameI old, ValidationResult r) {
 		boolean b = true;
 		List<NodeIdentifierUser> newL = updated.getServerIdentifiers();
 		List<NodeIdentifierUser> oldL = old.getServerIdentifiers();
@@ -101,7 +101,7 @@ public class StaticGameStore
 	}
 
 	@Override
-	protected boolean deleteIndividualityObjectConcrete(StaticGameDBI game)
+	protected boolean deleteIndividualityObjectConcrete(StaticGameI game)
 			throws Exception {
 		for (NodeIdentifierUser server : game.getServerIdentifiers()) {
 			if (!util.deleteDupSingle(serverToId, cnvO(server),
@@ -112,7 +112,7 @@ public class StaticGameStore
 	}
 
 	@Override
-	public boolean existIndividualityObjectConcrete(StaticGameDBI game,
+	public boolean existIndividualityObjectConcrete(StaticGameI game,
 			ValidationResult vr) {
 		boolean b = true;
 		for (NodeIdentifierUser server : game.getServerIdentifiers()) {
@@ -155,13 +155,13 @@ public class StaticGameStore
 
 	@Override
 	public boolean isSupport(Object o) {
-		if (o instanceof bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.game.StaticGameDBI)
+		if (o instanceof bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.game.StaticGameI)
 			return true;
 		return false;
 	}
 
 	@Override
-	public boolean noExistIndividualityObjectConcrete(StaticGameDBI game,
+	public boolean noExistIndividualityObjectConcrete(StaticGameI game,
 			ValidationResult vr) {
 		boolean b = true;
 		for (NodeIdentifierUser server : game.getServerIdentifiers()) {
@@ -175,8 +175,8 @@ public class StaticGameStore
 	}
 
 	@Override
-	protected boolean updateIndividualityObjectConcrete(StaticGameDBI updated,
-			StaticGameDBI old) throws Exception {
+	protected boolean updateIndividualityObjectConcrete(StaticGameI updated,
+			StaticGameI old) throws Exception {
 		List<NodeIdentifierUser> newL = updated.getServerIdentifiers();
 		List<NodeIdentifierUser> oldL = old.getServerIdentifiers();
 		if (Glb.getUtil().notEqual(newL, oldL)) {

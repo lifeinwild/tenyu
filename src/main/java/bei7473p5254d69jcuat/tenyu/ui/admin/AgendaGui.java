@@ -8,7 +8,7 @@ import glb.*;
 import jetbrains.exodus.env.*;
 
 public class AgendaGui extends
-		IndividualityObjectGui<AgendaDBI,
+		IndividualityObjectGui<AgendaI,
 				Agenda,
 				Agenda,
 				AgendaStore,
@@ -20,7 +20,7 @@ public class AgendaGui extends
 	}
 
 	public static class AgendaTableItem
-			extends IndividualityObjectTableItem<AgendaDBI, Agenda> {
+			extends IndividualityObjectTableItem<AgendaI, Agenda> {
 
 		public AgendaTableItem(Agenda src) {
 			super(src);

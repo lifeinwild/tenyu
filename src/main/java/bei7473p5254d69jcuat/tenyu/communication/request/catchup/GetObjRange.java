@@ -69,7 +69,7 @@ public class GetObjRange extends P2PEdgeCommonKeyRequest {
 			IdObjectStore<?, ?> s = storeName.getStore(txn);
 			//要求されたIDを順次設定
 			for (long i = startId; i < count; i++) {
-				IdObjectDBI o = s.getRawObj(i);
+				IdObjectI o = s.getRawObj(i);
 				//抜けがあるデータを返すと同調処理を壊す可能性がある
 				if (o == null)
 					return false;
@@ -104,9 +104,9 @@ public class GetObjRange extends P2PEdgeCommonKeyRequest {
 		/**
 		 * 問い合わされたオブジェクトの一覧
 		 */
-		private List<IdObjectDBI> objs = new ArrayList<>();
+		private List<IdObjectI> objs = new ArrayList<>();
 
-		public List<IdObjectDBI> getObjs() {
+		public List<IdObjectI> getObjs() {
 			return objs;
 		}
 
@@ -126,7 +126,7 @@ public class GetObjRange extends P2PEdgeCommonKeyRequest {
 			return true;
 		}
 
-		public void setObjs(List<IdObjectDBI> objs) {
+		public void setObjs(List<IdObjectI> objs) {
 			this.objs = objs;
 		}
 

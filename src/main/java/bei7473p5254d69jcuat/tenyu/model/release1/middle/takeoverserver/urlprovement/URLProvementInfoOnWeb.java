@@ -166,14 +166,14 @@ public class URLProvementInfoOnWeb {
 	 */
 	public static URLProvementInfoOnWeb create(KeyType type, String url) {
 		URLProvementInfoOnWeb r = new URLProvementInfoOnWeb();
-		byte[] pubB = Glb.getConf().getMyPublicKey(type).getEncoded();
+		byte[] pubB = Glb.getConf().getKeys().getMyPublicKey(type).getEncoded();
 		r.setPubKey(pubB);
 		r.setUrl(url);
 
 		try {
 			Charset c = Glb.getConst().getCharsetNio();
 			long date = System.currentTimeMillis();
-			byte[] sign = Glb.getConf().sign(getNominal(), type,
+			byte[] sign = Glb.getConf().getKeys().sign(getNominal(), type,
 					url.getBytes(c));
 			if (sign == null)
 				throw new Exception("Failed to sign");

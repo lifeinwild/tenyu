@@ -2,10 +2,14 @@ package bei7473p5254d69jcuat.tenyutalk.reference;
 
 import java.util.*;
 
+import bei7473p5254d69jcuat.tenyu.communication.*;
 import bei7473p5254d69jcuat.tenyu.db.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.*;
 import bei7473p5254d69jcuat.tenyu.reference.*;
+import bei7473p5254d69jcuat.tenyutalk.model.promise.*;
 import bei7473p5254d69jcuat.tenyutalk.model.release1.*;
 import bei7473p5254d69jcuat.tenyutalk.ui.reference.*;
 import glb.*;
@@ -14,15 +18,41 @@ import jetbrains.exodus.env.*;
 
 /**
  * {@link CreativeObject}以降のモデルを参照するクラス群の抽象クラス
+ * つまりこれ以下のクラスでTenyutalk系モデルの参照を実現する。
  *
- * 取得されたオブジェクトとアップロード者の電子署名を検証し、
+ * 取得されたオブジェクトはアップロード者の電子署名等が検証され、
  * 不整合があれば拒否する。
+ * つまりこれら参照系クラスのDLメソッドにおいてTenyutalkのセキュリティが記述される。
+ *
+ * 特に創作物等のファイルをDLする流れについて説明する。
+ * {@link TenyutalkReferenceBase}系（参照）から
+ * {@link TenyutalkFile}（ファイルメタデータオブジェクト）を入手して、
+ * {@link TenyuFile}（非モデルで部品的に利用されるファイルメタデータオブジェクト）を作って、
+ * {@link Downloader}でファイルをDLする。
+ *
+ * ファイルの中には創作物でありモデルであるものもあるが、
+ * ゲームプレイのリプレイファイルなどモデルではないものもある。
+ * 前者は{@link TenyutalkFile}だが、
+ * 後者は{@link TenyuFile}として何らかのモデルの中の１メンバー変数となる。
+ *
+ * モデルは様々な意味を持つ。
+ * モデルは継承構造の一部で、{@link Model}以下のクラス。
+ * モデルはそれに対応するGUI、ストアがある。
+ * さらにTenyutalk系モデルは更新履歴やバージョン情報がある。
+ *
+ * 具体的には{@link MultiplayerObjectI}のリプレイファイルがモデルではなさそうなので
+ * モデルとして扱われるファイルと非モデルのファイルを区別した。
  *
  * @author exceptiontenyu@gmail.com
  *
  */
-public abstract class TenyutalkReferenceBase<V extends CreativeObject>
+public abstract class TenyutalkReferenceBase<V extends CreativeObjectI>
 		implements Storable, TenyuReference<V> {
+	/**
+	 * 通知メッセージ
+	 */
+	private String notificationMessage;
+
 	/**
 	 * 参照先オブジェクトを格納するストアの名前
 	 */
@@ -79,6 +109,9 @@ public abstract class TenyutalkReferenceBase<V extends CreativeObject>
 	abstract public TenyutalkReferenceBaseGui<V> getGui(String guiName,
 			String cssIdPrefix);
 
+	/**
+	 * @return この参照オブジェクトを表示するGUI
+	 */
 	abstract public TenyutalkReferenceBaseGui<V> getGui();
 
 	@Override
@@ -315,6 +348,11 @@ public abstract class TenyutalkReferenceBase<V extends CreativeObject>
 
 	public void setUploaderUserId(Long uploaderUserId) {
 		this.uploaderUserId = uploaderUserId;
+	}
+
+	@Override
+	public String getNotificationMessage() {
+		return notificationMessage;
 	}
 
 }

@@ -4,7 +4,7 @@ import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
 import bei7473p5254d69jcuat.tenyu.ui.common.*;
 
-public class UserTableItem extends IndividualityObjectTableItem<UserDBI, User> {
+public class UserTableItem extends IndividualityObjectTableItem<UserI, User> {
 	private User src;
 
 	public UserTableItem(User src) {

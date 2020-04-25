@@ -37,7 +37,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class ObjectivityCore extends IndividualityObject implements ObjectivityCoreDBI {
+public class ObjectivityCore extends IndividualityObject implements ObjectivityCoreI {
 
 	public static final long firstHistoryIndex = 0;
 
@@ -142,7 +142,7 @@ public class ObjectivityCore extends IndividualityObject implements ObjectivityC
 	 * loadOrCreate()を使うのでコンストラクタは外部から使われない
 	 */
 	protected ObjectivityCore() {
-		name = "Cooperative Account";
+		setName("Cooperative Account");
 		explanation = "The central node of flow network";
 		SingleObjectStore.setup(this);
 		latestAcceptedPlatformSoftware = new TenyuPlatformSoftware();
@@ -206,12 +206,12 @@ public class ObjectivityCore extends IndividualityObject implements ObjectivityC
 
 	@Override
 	public Long getSpecialMainAdministratorId() {
-		return IdObjectDBI.getNullId();
+		return IdObjectI.getNullId();
 	}
 
 	@Override
 	public Long getSpecialRegistererId() {
-		return IdObjectDBI.getNullId();
+		return IdObjectI.getNullId();
 	}
 
 	/**

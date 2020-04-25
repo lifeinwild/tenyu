@@ -20,7 +20,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class StaticGame extends IndividualityObject implements StaticGameDBI {
+public class StaticGame extends IndividualityObject implements StaticGameI {
 	public static boolean createSequence(Transaction txn, StaticGame u,
 			boolean specifiedId, long historyIndex) throws Exception {
 		return ObjectivitySequence.createSequence(txn, u, specifiedId,

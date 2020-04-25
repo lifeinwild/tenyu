@@ -14,7 +14,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.*;
 import javafx.scene.layout.*;
 
-public abstract class AdministratedObjectGui<T1 extends AdministratedObjectDBI,
+public abstract class AdministratedObjectGui<T1 extends AdministratedObjectI,
 		T2 extends T1,
 		T3 extends AdministratedObject,
 		S extends AdministratedObjectStore<T1, T2>,

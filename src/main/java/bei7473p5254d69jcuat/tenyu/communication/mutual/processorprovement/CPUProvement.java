@@ -15,6 +15,11 @@ import glb.util.Util.*;
 
 /**
  * CPU証明。TODO:本番動作での適切な負荷調節
+ *
+ * プロセッサ証明に関する大抵のコードはここに書かれている。
+ * マルチスレッドで処理して演算量を稼ぐインターフェースがある。
+ * プロセッサ証明に関してはReadme参照。
+ *
  * @author exceptiontenyu@gmail.com
  */
 public strictfp class CPUProvement {
@@ -271,51 +276,57 @@ public strictfp class CPUProvement {
 		r = r.substring(0, r.length() - 1);
 		r += "};" + crlf;
 
+		r += "char[] cVar = { 't', '9', '2', 'Y', 'u', 'w', 'W', 'a', 'h', '1', '2',"
+				+ "	'Z', 'A', 'F', 'D', 'Z', 's', 'l', '2', 'd', 'u', 'l', 'W', 'Z',"
+				+ "	'm', 'l', 'G', 'b', 'g', 'k', 'n', 'Y' };" + crlf;
+
 		r += "		for(int i=0; i<lVar.length; i++)" + crlf;
-		r += "			lVar[i] += argL;" + crlf;
+		r += "			lVar[i] += argL; " + crlf;
 		r += "		for(int i=0; i<dVar.length; i++)" + crlf;
-		r += "			dVar[i] += argD;" + crlf;
+		r += "			dVar[i] += argD; " + crlf;
+		r += "		for(int i=1; i<cVar.length; i++)" + crlf;
+		r += "			cVar[i] += cVar[i] + cVar[i-1];" + crlf;
 
 		r += "		for(int j=0; j<" + loop + ";j++){" + crlf;
 		for (int i = 0; i < internalFuncCount; i++) {
-			r += "			method" + i + "(0, lVar, dVar);" + crlf;
+			r += "			method" + i + "(0, lVar, dVar); " + crlf;
 		}
 		r += "		}" + crlf;
 
-		r += "		for(int i=0;i<" + dVar.length + ";i++){" + crlf;
-		r += "			md.update(ByteBuffer.allocate(8).putDouble(dVar[i]).array());"
+		r += "		for(int i=0;i<" + dVar.length + ";i++){ " + crlf;
+		r += "			md.update(ByteBuffer.allocate(8).putDouble(dVar[i]).array()); "
 				+ crlf;
 		r += "		}" + crlf;
-		r += "		for(int i=0;i<" + lVar.length + ";i++){" + crlf;
-		r += "			md.update(ByteBuffer.allocate(8).putLong(lVar[i]).array());"
+		r += "		for(int i=0;i<" + lVar.length + ";i++){ " + crlf;
+		r += "			md.update(ByteBuffer.allocate(8).putLong(lVar[i]).array()); "
 				+ crlf;
 		r += "		}" + crlf;
 		//ここでproblemSrc,argL,argDに依存させる事で引数による出力値の変化具合がどの問題でも同じになる。
 		//簡単な問題関数でなければ作り直す、という行為を無くす事ができる。
 		//今の問題関数と新しい問題関数のどちらがより正しい引数を見つけやすいかが評価不能になる。
-		r += "		md.update(problemSrc);" + crlf;
-		r += "		md.update(ByteBuffer.allocate(8).putLong(argL).array());"
+		r += "		md.update(problemSrc); " + crlf;
+		r += "		md.update(ByteBuffer.allocate(8).putLong(argL).array()); "
 				+ crlf;
-		r += "		md.update(ByteBuffer.allocate(8).putDouble(argD).array());"
+		r += "		md.update(ByteBuffer.allocate(8).putDouble(argD).array()); "
 				+ crlf;
-		r += "		return md.digest();" + crlf;
+		r += "		return md.digest(); " + crlf;
 		r += "	}" + crlf;
 
 		for (int i = 0; i < internalFuncCount; i++) {
 			r += "		public void method" + i
-					+ "(int nest, long[] lVar, double[] dVar) {" + crlf;
+					+ "(int nest, long[] lVar, double[] dVar) { " + crlf;
 			r += "			" + generateMethodContent(hashes[i]) + crlf;
-			r += "			commonRecursive(nest, lVar, dVar);" + crlf;
+			r += "			commonRecursive(nest, lVar, dVar); " + crlf;
 			r += "		}" + crlf;
 		}
 
 		//再起呼び出しの共通関数
-		r += "	public void commonRecursive(int nest, long[] lVar, double[] dVar){"
+		r += "	public void commonRecursive(int nest, long[] lVar, double[] dVar){ "
 				+ crlf;
-		r += "		if(nest > " + recursiveMax + "){ return; }" + crlf;
-		r += "		int j=0;" + crlf;
-		r += "		for(int i=0;i<lVar.length;i++) {" + crlf;
-		r += "			if(lVar[i] > 0) {" + crlf;
+		r += "		if(nest > " + recursiveMax + "){ return; } " + crlf;
+		r += "		int j=0; " + crlf;
+		r += "		for(int i=0;i<lVar.length;i++) { " + crlf;
+		r += "			if(lVar[i] > 0) { " + crlf;
 		r += "				j = (int)(lVar[i] % " + internalFuncCount + "L);"
 				+ crlf;
 		r += "			}" + crlf;

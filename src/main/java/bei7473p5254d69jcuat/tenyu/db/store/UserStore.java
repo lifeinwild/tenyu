@@ -22,7 +22,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class UserStore extends IndividualityObjectStore<UserDBI, User> {
+public class UserStore extends IndividualityObjectStore<UserI, User> {
 	/**
 	 * Constの値を使わない。変更は考えられない。
 	 */
@@ -88,18 +88,18 @@ public class UserStore extends IndividualityObjectStore<UserDBI, User> {
 	 */
 	public Long getMyId() {
 		if (Glb.getConf() == null
-				|| Glb.getConf().getMyOfflinePublicKey() == null)
+				|| Glb.getConf().getKeys().getMyOfflinePublicKey() == null)
 			return null;
 		return getId(KeyType.OFFLINE,
-				Glb.getConf().getMyOfflinePublicKey().getEncoded());
+				Glb.getConf().getKeys().getMyOfflinePublicKey().getEncoded());
 	}
 
 	public static Long getMyIdSimple() {
 		if (Glb.getConf() == null
-				|| Glb.getConf().getMyOfflinePublicKey() == null)
+				|| Glb.getConf().getKeys().getMyOfflinePublicKey() == null)
 			return null;
 		return Glb.getObje().getUser(us -> us.getId(KeyType.OFFLINE,
-				Glb.getConf().getMyOfflinePublicKey().getEncoded()));
+				Glb.getConf().getKeys().getMyOfflinePublicKey().getEncoded()));
 	}
 
 	/*
@@ -154,7 +154,7 @@ public class UserStore extends IndividualityObjectStore<UserDBI, User> {
 	}
 
 	@Override
-	protected boolean createIndividualityObjectConcrete(UserDBI u) throws IOException {
+	protected boolean createIndividualityObjectConcrete(UserI u) throws IOException {
 		MessageDigest md = getMD();
 		//鍵の書き込み
 		byte[] pcHash = md.digest(u.getPcPublicKey());
@@ -178,8 +178,8 @@ public class UserStore extends IndividualityObjectStore<UserDBI, User> {
 	}
 
 	@Override
-	protected boolean dbValidateAtUpdateIndividualityObjectConcrete(UserDBI updated,
-			UserDBI old, ValidationResult r) {
+	protected boolean dbValidateAtUpdateIndividualityObjectConcrete(UserI updated,
+			UserI old, ValidationResult r) {
 		boolean b = true;
 		MessageDigest md = getMD();
 		if (Glb.getUtil().notEqual(updated.getPcPublicKey(),
@@ -216,7 +216,7 @@ public class UserStore extends IndividualityObjectStore<UserDBI, User> {
 	}
 
 	@Override
-	protected boolean deleteIndividualityObjectConcrete(UserDBI u) throws Exception {
+	protected boolean deleteIndividualityObjectConcrete(UserI u) throws Exception {
 		if (Glb.getConf().getRunlevel() == RunLevel.RELEASE) {
 			//開発者ユーザーを削除してしまうと起動時に問題が出るので不可能に
 			if (u.getId() == null || u.getId()
@@ -241,7 +241,7 @@ public class UserStore extends IndividualityObjectStore<UserDBI, User> {
 	}
 
 	@Override
-	public boolean existIndividualityObjectConcrete(UserDBI u, ValidationResult vr) {
+	public boolean existIndividualityObjectConcrete(UserI u, ValidationResult vr) {
 		boolean b = true;
 		if (getIdByPc(u.getPcPublicKey()) == null) {
 			vr.add(Lang.USER_PCKEY, Lang.ERROR_DB_NOTFOUND,
@@ -381,13 +381,13 @@ public class UserStore extends IndividualityObjectStore<UserDBI, User> {
 
 	@Override
 	public boolean isSupport(Object o) {
-		if (o instanceof UserDBI)
+		if (o instanceof UserI)
 			return true;
 		return false;
 	}
 
 	@Override
-	protected boolean noExistIndividualityObjectConcrete(UserDBI u, ValidationResult vr) {
+	protected boolean noExistIndividualityObjectConcrete(UserI u, ValidationResult vr) {
 		boolean b = true;
 		//ByAnyで検索する。例えばPC鍵がモバイル鍵ストアの方で重複してもいけない
 		if (getIdByAny(u.getPcPublicKey()) != null) {
@@ -407,7 +407,7 @@ public class UserStore extends IndividualityObjectStore<UserDBI, User> {
 	}
 
 	@Override
-	protected boolean updateIndividualityObjectConcrete(UserDBI updated, UserDBI old)
+	protected boolean updateIndividualityObjectConcrete(UserI updated, UserI old)
 			throws Exception {
 		MessageDigest md = getMD();
 		if (Glb.getUtil().notEqual(updated.getPcPublicKey(),

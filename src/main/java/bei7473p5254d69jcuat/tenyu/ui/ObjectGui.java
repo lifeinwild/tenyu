@@ -83,6 +83,10 @@ public abstract class ObjectGui<V> {
 	protected SubmitButtonGui externalButton;
 	protected SubmitButtonFuncs externalButtonInfo;
 
+	/**
+	 * TenyuのGUIは基本的に２列多行のGridPaneで構築される。
+	 * Gui系クラスはこれを構築する事が主な処理になる。
+	 */
 	protected GridPane grid;
 
 	protected String idPrefix;
@@ -363,7 +367,12 @@ public abstract class ObjectGui<V> {
 	 * モデルをGUIに設定する
 	 * @param o
 	 */
-	public abstract void set(V o);
+	public void set(V o) {
+		//setの前に必ずクリアが必要なので最も抽象的なクラスに書く
+		clear();
+	}
+
+	abstract public void clear();
 
 	public void setCtx(CRUDContext ctx) {
 		this.ctx = ctx;

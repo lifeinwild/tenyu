@@ -10,12 +10,26 @@ import com.maxmind.geoip2.model.*;
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.subjectivity.Subjectivity.*;
 import glb.*;
 import glb.util.*;
 import glb.util.Util.*;
 import jetbrains.exodus.env.*;
 
 public class P2PNode implements Storable {
+	/**
+	 * {@link Subjectivity#getObservation()}が場合によってセットされる
+	 */
+	private P2PNetworkObservationByNode observation = null;
+
+	public void setObservation(P2PNetworkObservationByNode observation) {
+		this.observation = observation;
+	}
+
+	public P2PNetworkObservationByNode getObservation() {
+		return observation;
+	}
+
 	/**
 	 * thisは後進地域ノードか
 	 */
@@ -397,7 +411,7 @@ public class P2PNode implements Storable {
 				//ここで得られるサイズは実際の鍵サイズより小さいが、ハッシュ値を取るので問題無い
 				//鍵サイズ≠鍵オブジェクトのbyte[]符号化時のサイズ
 				pubKey = new byte[User.getRsaKeySizeByteBySecure(
-						Glb.getConf().isSecureUser())];
+						Glb.getConf().getKeys().isSecureUser())];
 			}
 			int nodeNumberSize = Integer.BYTES;
 

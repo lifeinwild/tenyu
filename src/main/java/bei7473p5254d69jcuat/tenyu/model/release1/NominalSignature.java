@@ -56,7 +56,7 @@ public class NominalSignature implements Storable {
 			byte[] signTarget = Glb.getUtil().hashSecure(buffer.array());
 
 			//署名
-			byte[] sign = Glb.getConf().sign(nominal, signTarget);
+			byte[] sign = Glb.getConf().getKeys().sign(nominal, signTarget);
 			if (sign == null)
 				return false;
 

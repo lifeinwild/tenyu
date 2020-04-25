@@ -19,7 +19,7 @@ import jetbrains.exodus.*;
 import jetbrains.exodus.env.*;
 
 public class RatingGameStore
-		extends IndividualityObjectStore<RatingGameDBI, RatingGame> {
+		extends IndividualityObjectStore<RatingGameI, RatingGame> {
 	public static final String modelName = RatingGame.class.getSimpleName();
 
 	public static StoreInfo getMainStoreInfoStatic() {
@@ -79,25 +79,25 @@ public class RatingGameStore
 	}
 
 	@Override
-	protected boolean createIndividualityObjectConcrete(RatingGameDBI game)
+	protected boolean createIndividualityObjectConcrete(RatingGameI game)
 			throws Exception {
 		return true;
 	}
 
 	@Override
 	protected boolean dbValidateAtUpdateIndividualityObjectConcrete(
-			RatingGameDBI updated, RatingGameDBI old, ValidationResult r) {
+			RatingGameI updated, RatingGameI old, ValidationResult r) {
 		return true;
 	}
 
 	@Override
-	protected boolean deleteIndividualityObjectConcrete(RatingGameDBI game)
+	protected boolean deleteIndividualityObjectConcrete(RatingGameI game)
 			throws Exception {
 		return true;
 	}
 
 	@Override
-	public boolean existIndividualityObjectConcrete(RatingGameDBI game,
+	public boolean existIndividualityObjectConcrete(RatingGameI game,
 			ValidationResult vr) {
 		return true;
 	}
@@ -115,20 +115,20 @@ public class RatingGameStore
 
 	@Override
 	public boolean isSupport(Object o) {
-		if (o instanceof bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.game.RatingGameDBI)
+		if (o instanceof bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.game.RatingGameI)
 			return true;
 		return false;
 	}
 
 	@Override
-	public boolean noExistIndividualityObjectConcrete(RatingGameDBI game,
+	public boolean noExistIndividualityObjectConcrete(RatingGameI game,
 			ValidationResult vr) {
 		return true;
 	}
 
 	@Override
-	protected boolean updateIndividualityObjectConcrete(RatingGameDBI updated,
-			RatingGameDBI old) throws Exception {
+	protected boolean updateIndividualityObjectConcrete(RatingGameI updated,
+			RatingGameI old) throws Exception {
 		return true;
 	}
 

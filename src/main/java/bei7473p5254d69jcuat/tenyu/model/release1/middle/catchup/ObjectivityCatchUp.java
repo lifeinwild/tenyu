@@ -4,7 +4,6 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import bei7473p5254d69jcuat.tenyu.communication.mutual.right.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.middle.Middle.*;
 import glb.*;
 import glb.Conf.*;
 import glb.Glb.*;
@@ -12,6 +11,8 @@ import glb.Glb.*;
 /**
  * 同調処理
  * 専用スレッドが随時客観を近傍の多数派に同調させる。
+ *
+ * 客観は拡散段階と反映段階がある。{@link ObjectivityUpdateSequence#setupStatements}
  *
  * 反映処理中は近傍の客観がばらばらになるので、
  * MessageListSequenceの段階に応じて行っていい反映処理が限定される。
@@ -64,11 +65,6 @@ public class ObjectivityCatchUp implements GlbMemberDynamicState {
 	 * 客観コアの同調状態
 	 */
 	private CatchUpStateCore coreState = new CatchUpStateCore();
-
-	/**
-	 * 同調状況
-	 */
-	private ObjectivityCircumstance currentCircumstance = ObjectivityCircumstance.DEFAULT;
 
 	/**
 	 * DBの同調処理に関する状態
@@ -129,10 +125,6 @@ public class ObjectivityCatchUp implements GlbMemberDynamicState {
 		} //アップデート直後なら基本倍率のまま
 
 		return Glb.getConf().getRunlevel().equals(RunLevel.DEV) ? 1 : 2.5 * d;
-	}
-
-	public ObjectivityCircumstance getCurrentCircumstance() {
-		return currentCircumstance;
 	}
 
 	public CatchUpStateDB getDbState() {
@@ -218,11 +210,6 @@ public class ObjectivityCatchUp implements GlbMemberDynamicState {
 
 	public void setCatchUpHistoryIndex(long catchUpHistoryIndex) {
 		this.catchUpHistoryIndex = catchUpHistoryIndex;
-	}
-
-	public void setCurrentCircumstance(
-			ObjectivityCircumstance currentCircumstance) {
-		this.currentCircumstance = currentCircumstance;
 	}
 
 	public void setDbCatchUpHistoryIndex(long dbCatchUpHistoryIndex) {

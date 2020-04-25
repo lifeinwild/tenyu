@@ -3,9 +3,11 @@ package bei7473p5254d69jcuat.tenyutalk.model.release1;
 import java.nio.file.*;
 import java.util.*;
 
+import bei7473p5254d69jcuat.tenyu.communication.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.*;
 import bei7473p5254d69jcuat.tenyu.reference.*;
 import bei7473p5254d69jcuat.tenyutalk.db.*;
 import bei7473p5254d69jcuat.tenyutalk.model.promise.*;
@@ -33,7 +35,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class TenyutalkFile extends CreativeObject implements TenyutalkFileDBI {
+public class TenyutalkFile extends CreativeObject implements TenyutalkFileI {
 
 	public static final int signaturesMax = 1000;
 
@@ -69,10 +71,10 @@ public class TenyutalkFile extends CreativeObject implements TenyutalkFileDBI {
 	 */
 	public String generateRelativePath() {
 		User uploader = Glb.getObje()
-				.getUser(us -> us.get(getUploaderUserId()));
+				.getUser(us -> us.get(getRegistererUserId()));
 		if (uploader == null) {
 			Glb.getLogger().warn("uploader User not found. uploaderUserId="
-					+ getUploaderUserId());
+					+ getRegistererUserId());
 			return null;
 		}
 		String s = Glb.getConst().getFileSeparator();
@@ -103,16 +105,24 @@ public class TenyutalkFile extends CreativeObject implements TenyutalkFileDBI {
 	private long fileSize;
 
 	/**
-	 * コンテンツに違法性が無いことを証言する署名
+	 * コンテンツが悪質でない事を証言する署名
 	 *
-	 * 児童ポルノの単純所持が禁止されているが
+	 * 例えば児童ポルノの単純所持が禁止されているが
 	 * Tenyutalkは近傍がアップロードしたファイルをキャッシュする仕組みがあり
 	 * PCの所有者の意思によらずファイルを保持する危険性がある。
+	 *
 	 * そこでアップロードされたファイルは他者による安全性署名があって初めて拡散する
 	 * という仕様にした。
 	 * Tenyuではユーザーの信用度が数値化できるのである程度の防壁となると思われる。
 	 */
 	private List<NominalSignature> safeSigns = new ArrayList<>();
+
+	/**
+	 * @return	{@link Downloader}用表現
+	 */
+	public TenyuFile getTenyuFile() {
+		return new TenyuFile(getRelativePathStr(), fileHash, fileSize);
+	}
 
 	public boolean addSafeSign(NominalSignature sign) {
 		return safeSigns.add(sign);
@@ -121,15 +131,15 @@ public class TenyutalkFile extends CreativeObject implements TenyutalkFileDBI {
 	/**
 	 * このオブジェクトが参照しているファイルをDLする。
 	 * @return	DLに成功したか、あるいは既にDL済みだったか。
-	 * つまり対象ファイルが自身のファイルシステムにセットされたか。
 	 */
-	public boolean download() {
-		return false;//TODO
+	public boolean download(boolean necessary) {
+		return Glb.getDownloader().downloadSync(getTenyuFile(), necessary);
 	}
 
 	/**
 	 * @return	DL及び検証に成功したか
 	 */
+	/* 検証はダウンローダーがやる
 	public boolean downloadAndValidateFileHash() {
 		if (!download()) {
 			Glb.getLogger().warn("Failed to download. this=" + this);
@@ -144,6 +154,7 @@ public class TenyutalkFile extends CreativeObject implements TenyutalkFileDBI {
 
 		return getFileHashWrapper().equals(hash);
 	}
+	*/
 
 	@Override
 	public boolean equals(Object obj) {
@@ -194,26 +205,33 @@ public class TenyutalkFile extends CreativeObject implements TenyutalkFileDBI {
 		return new TenyutalkFileGui(guiName, cssIdPrefix);
 	}
 
+	public Path getRelativePath() {
+		return Paths.get(getRelativePathStr());
+	}
+
 	/**
-	 * ファイルの内容にアクセスしたい場合、
-	 * このメソッドを呼ぶ前に{@link #download()}でtrueを確認すること。
-	 *
 	 * @return	このファイルが保存される相対パス
 	 */
-	public Path getRelativePath() {
-		String n = getName();
-		if (n == null) {
+	public String getRelativePathStr() {
+		User uploader = getRegistererUser();
+		if (uploader == null) {
+			Glb.getLogger().error("uploader is null",
+					new IllegalStateException());
+			return null;
+		}
+		String fileName = getName();
+		if (fileName == null) {
 			Glb.getLogger().error("name is null", new IllegalStateException());
 			return null;
 		}
 		String s = Glb.getConst().getFileSeparator();
-		return Paths.get(Glb.getMiddle().getMe().getName() + s + n
-				+ GeneralVersioning.delimiter + getVersion());
+		return Glb.getFile().getTenyutalkFileDir() + uploader.getName() + s
+				+ fileName + GeneralVersioning.delimiter + getVersion();
 	}
 
 	@Override
 	public byte[] getSignTarget() {
-		if (!downloadAndValidateFileHash())
+		if (!download(true))
 			return null;
 		return super.getSignTarget();
 	}

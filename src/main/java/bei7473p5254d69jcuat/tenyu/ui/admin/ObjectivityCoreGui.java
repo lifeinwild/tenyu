@@ -9,7 +9,7 @@ import glb.*;
 import jetbrains.exodus.env.*;
 
 public class ObjectivityCoreGui extends
-		IndividualityObjectGui<ObjectivityCoreDBI,
+		IndividualityObjectGui<ObjectivityCoreI,
 				ObjectivityCore,
 				ObjectivityCore,
 				ObjectivityCoreStore,
@@ -21,7 +21,7 @@ public class ObjectivityCoreGui extends
 	}
 
 	public static class ObjectivityCoreTableItem
-			extends IndividualityObjectTableItem<ObjectivityCoreDBI, ObjectivityCore> {
+			extends IndividualityObjectTableItem<ObjectivityCoreI, ObjectivityCore> {
 
 		public ObjectivityCoreTableItem(ObjectivityCore src) {
 			super(src);

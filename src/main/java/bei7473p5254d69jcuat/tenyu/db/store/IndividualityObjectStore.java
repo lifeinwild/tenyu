@@ -23,7 +23,7 @@ import jetbrains.exodus.env.*;
  * @param <T2>
  */
 public abstract class IndividualityObjectStore<
-		T1 extends IndividualityObjectDBI,
+		T1 extends IndividualityObjectI,
 		T2 extends T1> extends AdministratedObjectStore<T1, T2> {
 
 	public static final StoreInfo getNameStoreStatic(String storeName,
@@ -45,7 +45,7 @@ public abstract class IndividualityObjectStore<
 	 * 場合によって具象クラスでオーバーライドする。
 	 *
 	 * nameの一意制約を切り替えるこのオプションは
-	 * {@link CreativeObjectDBI}を実装する上で必要になった。
+	 * {@link CreativeObjectI}を実装する上で必要になった。
 	 * バージョンアップに伴い同じ名前のオブジェクトを作成するから。
 	 * モデルクラスではこのような抽象性の崩壊は生じておらず
 	 * ただDB側の一意制約の違いによってストアクラスにおいてのみ抽象性の崩壊が生じた。

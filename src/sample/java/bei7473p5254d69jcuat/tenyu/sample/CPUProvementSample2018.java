@@ -13,6 +13,13 @@ import org.codehaus.janino.*;
 
 /**
  * CPU証明｡あるいはﾌﾟﾛｾｯｻ証明のCPU型｡
+ *
+ * プロセッサ証明に関する大抵のコードはここに書かれている。
+ * マルチスレッドで処理して演算量を稼ぐインターフェースがある。
+ * プロセッサ証明に関してはReadme参照。
+ *
+ * @author exceptiontenyu@gmail.com
+ *
  */
 public class CPUProvementSample2018 {
 	public static interface DynamicProblem {
@@ -522,8 +529,8 @@ public class CPUProvementSample2018 {
 				+ ".*;" + crlf;
 		r += "import java.security.MessageDigest;" + crlf;
 		r += "import java.nio.ByteBuffer;" + crlf;
-		r += "public class " + cN + " implements CPUProvementSample2018.DynamicProblem {"
-				+ crlf;
+		r += "public class " + cN
+				+ " implements CPUProvementSample2018.DynamicProblem {" + crlf;
 
 		r += "private MessageDigest md;" + crlf;
 
@@ -551,11 +558,16 @@ public class CPUProvementSample2018 {
 		}
 		r = r.substring(0, r.length() - 1);
 		r += "};" + crlf;
+		r += "char[] cVar = { 't', '9', '2', 'Y', 'u', 'w', 'W', 'a', 'h', '1', '2',"
+				+ "	'Z', 'A', 'F', 'D', 'Z', 's', 'l', '2', 'd', 'u', 'l', 'W', 'Z',"
+				+ "	'm', 'l', 'G', 'b', 'g', 'k', 'n', 'Y' };" + crlf;
 
 		r += "		for(int i=0; i<lVar.length; i++)" + crlf;
 		r += "			lVar[i] += argL;" + crlf;
 		r += "		for(int i=0; i<dVar.length; i++)" + crlf;
 		r += "			dVar[i] += argD;" + crlf;
+		r += "		for(int i=1; i<cVar.length; i++)" + crlf;
+		r += "			cVar[i] += cVar[i] + cVar[i-1];" + crlf;
 
 		r += "		for(int j=0; j<" + loop + ";j++){" + crlf;
 		for (int i = 0; i < internalFuncCount; i++) {

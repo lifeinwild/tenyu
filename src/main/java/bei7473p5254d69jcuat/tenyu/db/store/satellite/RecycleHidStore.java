@@ -75,7 +75,7 @@ public class RecycleHidStore extends ObjectStore<Long, Byte>
 	public List<Long> getAllIds() {
 		Map<Long,
 				Byte> r = util.getRangePreserveOrder(getMainStoreInfo(),
-						cnvL(IdObjectDBI.getFirstId()),
+						cnvL(IdObjectI.getFirstId()),
 						(arg) -> cnvL(arg), (arg) -> null, true, 0, -1);
 		if (r == null || r.size() == 0)
 			return new ArrayList<>();
@@ -103,7 +103,7 @@ public class RecycleHidStore extends ObjectStore<Long, Byte>
 	public Long getFirst() {
 		KVSRecord<Long,
 				Byte> r = util.getRangeSingle(getMainStoreInfo(),
-						cnvL(IdObjectDBI.getFirstId()),
+						cnvL(IdObjectI.getFirstId()),
 						(arg) -> cnvL(arg), (arg) -> null);
 		if (r == null)
 			return null;
@@ -172,7 +172,7 @@ public class RecycleHidStore extends ObjectStore<Long, Byte>
 	 */
 	public List<IDList> getIDList(int index) {
 		Map<Long, Byte> r = util.getRangePreserveOrder(getMainStoreInfo(),
-				cnvL(IdObjectDBI.getFirstId()), (arg) -> cnvL(arg),
+				cnvL(IdObjectI.getFirstId()), (arg) -> cnvL(arg),
 				(arg) -> null, true, index * unitIDList, unitIDList);
 
 		if (r == null || r.size() == 0)

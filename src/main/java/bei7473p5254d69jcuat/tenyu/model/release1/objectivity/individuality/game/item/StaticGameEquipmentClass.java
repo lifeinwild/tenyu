@@ -23,7 +23,7 @@ import jetbrains.exodus.env.*;
  *
  */
 public class StaticGameEquipmentClass extends IndividualityObject
-		implements StaticGameEquipmentClassDBI {
+		implements StaticGameEquipmentClassI {
 	private Long staticGameId;
 
 	private boolean validateCommon(ValidationResult r) {

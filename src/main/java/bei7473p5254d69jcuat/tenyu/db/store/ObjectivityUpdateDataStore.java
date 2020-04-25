@@ -40,7 +40,7 @@ import jetbrains.exodus.env.*;
  *
  */
 public class ObjectivityUpdateDataStore
-		extends LogStore<ObjectivityUpdateDataDBI> {
+		extends LogStore<ObjectivityUpdateDataI> {
 	private static final String name = ObjectivityUpdateData.class
 			.getSimpleName();
 	private final StoreInfo indexToHistory = new StoreInfo(
@@ -74,7 +74,7 @@ public class ObjectivityUpdateDataStore
 	 * @param historyStep
 	 * @return					書き込まれたか
 	 */
-	public boolean randomWrite(ObjectivityUpdateDataDBI historyStep) {
+	public boolean randomWrite(ObjectivityUpdateDataI historyStep) {
 		try {
 			boolean write = false;
 			long count = ObjectivityUpdateDataStore.countSimple();

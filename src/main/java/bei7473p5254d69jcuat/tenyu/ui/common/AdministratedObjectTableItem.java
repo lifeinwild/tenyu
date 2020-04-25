@@ -6,11 +6,11 @@ import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
 import glb.*;
 import javafx.beans.property.*;
 
-public class AdministratedObjectTableItem<T1 extends AdministratedObjectDBI,
+public class AdministratedObjectTableItem<T1 extends AdministratedObjectI,
 		T2 extends T1> extends IdObjectTableItem<T1, T2> {
 	public AdministratedObjectTableItem(T2 src) {
 		super(src);
-		updateUpdateAdministratedObjectDBITableItem();
+		updateUpdateAdministratedObjectITableItem();
 	}
 
 	private StringProperty registererUserName = new SimpleStringProperty();
@@ -42,10 +42,10 @@ public class AdministratedObjectTableItem<T1 extends AdministratedObjectDBI,
 	@Override
 	public void update() {
 		super.update();
-		updateUpdateAdministratedObjectDBITableItem();
+		updateUpdateAdministratedObjectITableItem();
 	}
 
-	public void updateUpdateAdministratedObjectDBITableItem() {
+	public void updateUpdateAdministratedObjectITableItem() {
 		if (src == null)
 			return;
 		setRegistererUserName(src.getRegistererUserId());

@@ -5,7 +5,10 @@ import java.util.*;
 import bei7473p5254d69jcuat.tenyu.communication.*;
 import bei7473p5254d69jcuat.tenyu.communication.P2P.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.middle.takeoverserver.usermessagelist.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.role.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.subjectivity.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.subjectivity.Subjectivity.*;
 import glb.*;
 import io.netty.channel.*;
 
@@ -110,12 +113,56 @@ public class PeriodicNotification extends P2PEdgeCommonKeyRequest {
 		//返事
 		PeriodicNotificationResponse res = new PeriodicNotificationResponse();
 		res.setRequestorGlobalAddr(P2P.isa(con).getAddress().getAddress());
-		res.setResponder(Glb.getSubje().getMe());
+		P2PNode me = Glb.getSubje().getMe();
+		setupP2PNetworkObservation(me);
+		res.setResponder(me);
 
 		//送信
 		Message m = Message.build(res).packaging(res.createPackage(n)).finish();
 		Glb.getP2p().response(m, con);
 		return true;
+	}
+
+	/**
+	 * nに必要なら{@link P2PNetworkObservationByNode}をセットする。
+	 * @param n
+	 */
+	private void setupP2PNetworkObservation(P2PNode n) {
+		//ネットワーク状況のデータ量が大きいからあえてnullをセットする
+		//こうしないとメッセージ受付サーバから近傍へノード情報が伝わった時(GetAddresses)
+		//ネットワーク状況つきのノード情報が拡散してしまう
+		n.setObservation(null);
+		try {
+			Long requestorUserId = Glb.getObje()
+					.getUser(us -> us.getId(requestor.getType(),
+							requestor.getPubKey().getByteArray()));
+			if (requestorUserId == null)
+				return;//ユーザー登録前のノードは例外ではない
+
+			//ネットワーク状況を伝えるか
+			boolean setup = false;
+			//requestorが全体運営者だったら
+			if (Glb.getObje().getCore().getManagerList()
+					.isManager(requestorUserId)) {
+				setup = true;
+			} else {
+				//メッセージ受付サーバだったら
+				Role role = Glb.getObje().getRole(rs -> rs.getByName(
+						UserMessageListServer.class.getSimpleName()));
+				if (role != null) {
+					if (role.isAdmin(requestorUserId)) {
+						setup = true;
+					}
+				}
+			}
+
+			if (setup) {
+				n.setObservation(Glb.getSubje().getObservation());
+			}
+		} catch (Exception e) {
+			Glb.getLogger().error("", e);
+		}
+
 	}
 
 	public byte[] getResponderGlobalAddr() {

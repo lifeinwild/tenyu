@@ -19,7 +19,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class Role extends IndividualityObject implements RoleDBI {
+public class Role extends IndividualityObject implements RoleI {
 	/**
 	 * admins最大件数
 	 */
@@ -95,19 +95,19 @@ public class Role extends IndividualityObject implements RoleDBI {
 
 	@Override
 	public Long getSpecialMainAdministratorId() {
-		return IdObjectDBI.getVoteId();
+		return IdObjectI.getVoteId();
 	}
 
 	@Override
 	public List<Long> getSpecialMainAdministratorIds() {
 		List<Long> r = new ArrayList<>();
-		r.add(IdObjectDBI.getVoteId());
+		r.add(IdObjectI.getVoteId());
 		return r;
 	}
 
 	@Override
 	public Long getSpecialRegistererId() {
-		return IdObjectDBI.getSystemId();
+		return IdObjectI.getSystemId();
 	}
 
 	public boolean isAdmin(Long userId) {

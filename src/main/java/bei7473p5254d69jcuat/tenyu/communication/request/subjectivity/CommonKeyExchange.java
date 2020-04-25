@@ -41,7 +41,7 @@ public class CommonKeyExchange extends Request implements PlainPackageContent {
 		//復号化	送信者が受信者の公開鍵で暗号化して送信してきている
 		//ディテクターでKeyTypeを取得するようにもできるが
 		//このメッセージはStandardで良い。ノードとして主張する公開鍵は1つのみ
-		byte[] serialized = Glb.getConf()
+		byte[] serialized = Glb.getConf().getKeys()
 				.decryptByMyStandardPrivateKey(encrypted);
 		CommonKeyInfo cki = CommonKeyInfo.deserialize(serialized);
 		byte[] confirmation = CommonKeyInfo.deserializeConfirmation(serialized);
@@ -109,7 +109,7 @@ public class CommonKeyExchange extends Request implements PlainPackageContent {
 			if (n == null)//ここではisCommonKeyUpdatableをチェックしない。既にスタート済み
 				return false;
 			//復号化	返信者がリクエスト送信者の公開鍵で暗号化したもの
-			byte[] serialized = Glb.getConf()
+			byte[] serialized = Glb.getConf().getKeys()
 					.decryptByMyStandardPrivateKey(encrypted);
 			CommonKeyInfo cki = CommonKeyInfo.deserialize(serialized);
 			byte[] confirmation = CommonKeyInfo

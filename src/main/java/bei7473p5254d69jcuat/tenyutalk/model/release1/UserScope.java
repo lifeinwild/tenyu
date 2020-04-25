@@ -3,6 +3,7 @@ package bei7473p5254d69jcuat.tenyutalk.model.release1;
 import java.util.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.env.*;
@@ -32,6 +33,7 @@ public class UserScope implements Storable {
 
 	/**
 	 * 全員に公開されるか
+	 * これがfalseで閲覧可能ユーザー一覧が空ならアップロード者以外誰も見れない
 	 */
 	private boolean publication = false;
 
@@ -49,16 +51,46 @@ public class UserScope implements Storable {
 		return false;
 	}
 
+	/**
+	 * 許可グループにユーザーグループを追加する
+	 * @param g	追加されるユーザーグループ
+	 * @return	追加に成功したか
+	 */
 	public boolean accept(UserGroup g) {
+		if (g == null)
+			return false;
 		if (accepted.size() > acceptedMax)
 			return false;
 		return accepted.add(g);
 	}
 
+	public boolean accept(User u) {
+		if (u == null)
+			return false;
+		UserGroup g = new UserGroup();
+		g.add(u.getId());
+		return accept(u);
+	}
+
+	/**
+	 * 拒否グループにユーザーグループを追加する
+	 * @param g	追加されるユーザーグループ
+	 * @return	追加に成功したか
+	 */
 	public boolean deny(UserGroup g) {
+		if (g == null)
+			return false;
 		if (denied.size() > deniedMax)
 			return false;
 		return denied.add(g);
+	}
+
+	public boolean deny(User u) {
+		if (u == null)
+			return false;
+		UserGroup g = new UserGroup();
+		g.add(u.getId());
+		return deny(g);
 	}
 
 	public boolean removeFromAccepted(UserGroup g) {

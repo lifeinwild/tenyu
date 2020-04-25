@@ -48,6 +48,12 @@ public abstract class Communicatable {
 				|| this instanceof FileDownload;
 	}
 
+	/**
+	 * 送受信時に検証処理が行われる。
+	 * @param m	メッセージの梱包における電子署名等に内容の検証処理が依存している場合があるので
+	 * メッセージ全体が検証時の文脈になる。
+	 * @return	thisとmで実行可能なすべての検証処理において正しい内容か
+	 */
 	public final boolean validate(Message m) {
 		return isValidRelease() && validateConcrete(m);
 	}

@@ -37,7 +37,7 @@ public class UserRegistration extends UserRightRequest {
 		User u = info.getMe();
 		Long inviterUserId = u.getInviter();
 		if (inviterUserId == null
-				|| IdObjectDBI.getNullId().equals(inviterUserId))
+				|| IdObjectI.getNullId().equals(inviterUserId))
 			return false;
 		boolean dbCheck = Glb.getObje().compute(txn -> {
 			try {

@@ -614,6 +614,63 @@ public class Glb {
 			timerTaskList = new TimerTaskList();
 	}
 
+	private static boolean isInJar() {
+		try {
+			return Glb.class.getResource("Foo.class").getPath()
+					.startsWith("jar");
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private static void loadSecurityManager() {
+		if (System.getSecurityManager() != null)
+			return;
+		String codeBase, grantRange, tenyuPolicyPath, tenyuPolicyContent;
+		String tenyuPolicyFilename = file.getPolicyFileName();
+		boolean inJar = isInJar();
+		if (inJar) {
+			codeBase = "./" + Glb.getFile().getExecutableJarName();
+			grantRange = codeBase;//jarに付与
+			tenyuPolicyPath = tenyuPolicyFilename;
+			tenyuPolicyContent = cons
+					.getTenyuPolicySystemWithFileCodeBase(grantRange);
+		} else {
+			codeBase = Glb.getFile().getCodeBaseOnIde();
+			//grantRange = codeBase + "-";//フォルダ以下再帰的付与
+			tenyuPolicyPath = codeBase + tenyuPolicyFilename;
+			tenyuPolicyContent = cons.getTenyuPolicySystem("");//全クラス権限付与。開発ツールの変更によって付与すべきファイルがどこにあるか変わるので
+		}
+
+		tenyuPolicyContent += cons.getTenyuPolicyOther("./");
+
+		try {
+			//実行時にjarの中で実行されているかide上で実行されているかを判別して
+			//適宜ポリシーファイルを作成する。
+			File tenyuPolicyFile = new File(tenyuPolicyPath);
+			//既にあるなら削除
+			if (tenyuPolicyFile.exists()
+					&& file.isAppPathBoth(tenyuPolicyFile.toPath())) {
+				file.remove(tenyuPolicyFile.toPath());
+			}
+			tenyuPolicyFile.createNewFile();
+			FileWriter fw = new FileWriter(tenyuPolicyFile);
+			fw.write(tenyuPolicyContent);
+			fw.flush();
+			fw.close();
+		} catch (Exception e) {
+			stopApplication();
+		}
+
+		//作成されたポリシーファイルを読み込む
+		String policyFileAbsolutePath = Glb.class.getClassLoader()
+				.getResource(tenyuPolicyFilename).getPath();
+		System.out.println(policyFileAbsolutePath);
+		System.setProperty("java.security.policy", policyFileAbsolutePath);
+		Policy.getPolicy().refresh();
+		System.setSecurityManager(new TenyuSecurityManager());//これ以降権限の問題が生じる
+	}
+
 	/**
 	 *
 	 */
@@ -691,10 +748,15 @@ public class Glb {
 			file = new FileManagement();
 			file.open();
 		}
+
 		if (conf == null) {
 			conf = new Conf();
 			conf.init();
 		}
+
+		file.dirSetupAfterConf();
+
+		loadSecurityManager();
 	}
 
 	public static void setupStores() {
@@ -733,11 +795,12 @@ public class Glb {
 		if (obje == null) {
 			obje = new Objectivity();
 		}
-		if (tenyutalk == null) {
-			tenyutalk = Tenyutalk.constructForGlbInstance();
-		}
 		if (middle == null) {
 			middle = Middle.loadOrCreate();
+		}
+		if (tenyutalk == null) {
+			tenyutalk = new Tenyutalk(
+					Glb.getMiddle().getMyNodeIdentifierUser());
 		}
 
 		setupStores();
@@ -1093,9 +1156,7 @@ public class Glb {
 	}
 
 	/**
-	 * いちいちインスタンスを作成している。
-	 * そのためテスト用のオブジェクトをGlbにセットするようなことはできない。
-	 * @return
+	 * @return nodeのtenyutalkインスタンス。使用するDBが異なる
 	 */
 	public static Tenyutalk getTenyutalk(NodeIdentifierUser node) {
 		return tenyutalk.construct(node);
@@ -1105,7 +1166,7 @@ public class Glb {
 	 * @return	自分のTenyutalk情報へのアクセス
 	 */
 	public static Tenyutalk getTenyutalk() {
-		return tenyutalk.construct(Glb.getMiddle().getMyNodeIdentifierUser());
+		return tenyutalk;
 	}
 
 	/**

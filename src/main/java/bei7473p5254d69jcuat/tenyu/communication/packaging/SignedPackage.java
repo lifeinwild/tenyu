@@ -36,7 +36,7 @@ public class SignedPackage extends Package {
 	/**
 	 * 署名に使われた鍵のタイプ
 	 */
-	private KeyType keyType = Glb.getConf().getMyStandardKeyType();
+	private KeyType keyType = Glb.getConf().getKeys().getMyStandardKeyType();
 
 	public KeyType getKeyType() {
 		return keyType;
@@ -170,7 +170,7 @@ public class SignedPackage extends Package {
 	 */
 	private boolean sign() {
 		try {
-			signature = Glb.getConf().sign(getSignNominal(), keyType,
+			signature = Glb.getConf().getKeys().sign(getSignNominal(), keyType,
 					getContentBinary());
 			if (signature == null)
 				return false;

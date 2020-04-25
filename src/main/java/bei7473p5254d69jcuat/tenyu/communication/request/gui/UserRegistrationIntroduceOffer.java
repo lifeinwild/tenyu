@@ -67,7 +67,7 @@ public class UserRegistrationIntroduceOffer extends AbstractOffer
 
 		//自称している鍵の整合性を検証する。オフライン秘密鍵による署名があるか等
 		Util u = Glb.getUtil();
-		String nominal = Conf.getSignKeyNominal();
+		String nominal = Keys.getSignKeyNominal();
 		boolean mobileByOff = u.verify(nominal, info.getMobileByOffSign(),
 				info.getMe().getOfflinePublicKey(),
 				info.getMe().getMobilePublicKey());

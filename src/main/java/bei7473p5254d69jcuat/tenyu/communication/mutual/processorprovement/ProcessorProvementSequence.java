@@ -121,7 +121,7 @@ public class ProcessorProvementSequence extends P2PSequence {
 	@Override
 	public void start() {
 		//IPアドレスを１つ以上知っているか
-		if (neighborList.getNeighborsSize() == 0) {
+		if (neighborList.size() == 0) {
 			Glb.getLogger().info(Lang.NO_IPADDRESS);
 			return;
 		}

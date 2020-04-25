@@ -16,7 +16,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.*;
 import javafx.scene.layout.*;
 
-public abstract class IndividualityObjectGui<T1 extends IndividualityObjectDBI,
+public abstract class IndividualityObjectGui<T1 extends IndividualityObjectI,
 		T2 extends T1,
 		T3 extends IndividualityObject,
 		S extends IndividualityObjectStore<T1, T2>,

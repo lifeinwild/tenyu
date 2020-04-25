@@ -173,7 +173,7 @@ public class CatchUpUpdatedIDListStore extends
 		}
 	}
 
-	public boolean update(long historyIndex, CatchUpUpdatedIDListDBI o)
+	public boolean update(long historyIndex, CatchUpUpdatedIDListI o)
 			throws IOException {
 		return putDirect(cnvL(historyIndex), cnvO(o));
 	}

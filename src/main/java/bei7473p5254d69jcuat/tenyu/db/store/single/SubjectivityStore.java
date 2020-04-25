@@ -17,7 +17,7 @@ import jetbrains.exodus.*;
 import jetbrains.exodus.env.*;
 
 public class SubjectivityStore
-		extends IdObjectStore<SubjectivityDBI, Subjectivity>
+		extends IdObjectStore<SubjectivityI, Subjectivity>
 		implements SingleObjectStore {
 	public static final String modelName = Subjectivity.class.getSimpleName();
 
@@ -70,38 +70,38 @@ public class SubjectivityStore
 	}
 
 	@Override
-	protected boolean createIdObjectConcrete(SubjectivityDBI o)
+	protected boolean createIdObjectConcrete(SubjectivityI o)
 			throws Exception {
 		return true;
 	}
 
 	@Override
 	protected boolean dbValidateAtUpdateIdObjectConcrete(
-			SubjectivityDBI updated, SubjectivityDBI old, ValidationResult r) {
+			SubjectivityI updated, SubjectivityI old, ValidationResult r) {
 		return true;
 	}
 
 	@Override
-	protected boolean deleteIdObjectConcrete(SubjectivityDBI o)
+	protected boolean deleteIdObjectConcrete(SubjectivityI o)
 			throws Exception {
 		return true;
 	}
 
 	@Override
-	protected boolean existIdObjectConcrete(SubjectivityDBI o, ValidationResult r)
+	protected boolean existIdObjectConcrete(SubjectivityI o, ValidationResult r)
 			throws Exception {
 		return true;
 	}
 
 	@Override
-	protected boolean noExistIdObjectConcrete(SubjectivityDBI o,
+	protected boolean noExistIdObjectConcrete(SubjectivityI o,
 			ValidationResult r) throws Exception {
 		return true;
 	}
 
 	@Override
-	protected boolean updateIdObjectConcrete(SubjectivityDBI updated,
-			SubjectivityDBI old) throws Exception {
+	protected boolean updateIdObjectConcrete(SubjectivityI updated,
+			SubjectivityI old) throws Exception {
 		return true;
 	}
 

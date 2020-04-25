@@ -18,7 +18,7 @@ import jetbrains.exodus.*;
 import jetbrains.exodus.env.*;
 
 public class RatingGameStateByUserStore
-		extends AdministratedObjectStore<RatingGameStateByUserDBI,
+		extends AdministratedObjectStore<RatingGameStateByUserI,
 				RatingGameStateByUser> {
 	public static final String modelName = RatingGameStateByUser.class
 			.getSimpleName();
@@ -55,7 +55,7 @@ public class RatingGameStateByUserStore
 		return Glb.getUtil().toByteArray(gameId);
 	}
 
-	protected static byte[] getGameIdUserIdBA(RatingGameStateByUserDBI o) {
+	protected static byte[] getGameIdUserIdBA(RatingGameStateByUserI o) {
 		return getGameIdUserIdBA(o.getRatingGameId(), o.getOwnerUserId());
 	}
 
@@ -122,7 +122,7 @@ public class RatingGameStateByUserStore
 		return id.equals(existId);
 	}
 
-	public boolean existByGameIdUserId(RatingGameStateByUserDBI o) {
+	public boolean existByGameIdUserId(RatingGameStateByUserI o) {
 		return existByGameIdUserId(o.getRatingGameId(), o.getOwnerUserId(),
 				o.getId());
 	}
@@ -163,7 +163,7 @@ public class RatingGameStateByUserStore
 
 	@Override
 	protected boolean existAdministratedObjectConcrete(
-			RatingGameStateByUserDBI o, ValidationResult vr) throws Exception {
+			RatingGameStateByUserI o, ValidationResult vr) throws Exception {
 		boolean b = true;
 		if (!existByGameIdUserId(o)) {
 			vr.add(Lang.RATINGGAME_STATEBYUSER_ID_BY_RATINGGAME_ID_AND_USERID,
@@ -194,12 +194,12 @@ public class RatingGameStateByUserStore
 
 	@Override
 	public boolean isSupport(Object o) {
-		return o instanceof RatingGameDBI;
+		return o instanceof RatingGameI;
 	}
 
 	@Override
 	protected boolean noExistAdministratedObjectConcrete(
-			RatingGameStateByUserDBI o, ValidationResult vr) throws Exception {
+			RatingGameStateByUserI o, ValidationResult vr) throws Exception {
 		boolean b = true;
 		if (existByGameIdUserId(o)) {
 			vr.add(Lang.RATINGGAME_STATEBYUSER_ID_BY_RATINGGAME_ID_AND_USERID,
@@ -217,7 +217,7 @@ public class RatingGameStateByUserStore
 
 	@Override
 	protected boolean createAdministratedObjectConcrete(
-			RatingGameStateByUserDBI o) throws Exception {
+			RatingGameStateByUserI o) throws Exception {
 		if (!util.put(getGameIdUserIdToIdStore(), cnvBA(getGameIdUserIdBA(o)),
 				cnvL(o.getId()))) {
 			return false;
@@ -232,7 +232,7 @@ public class RatingGameStateByUserStore
 
 	@Override
 	protected boolean dbValidateAtUpdateAdministratedObjectConcrete(
-			RatingGameStateByUserDBI updated, RatingGameStateByUserDBI old,
+			RatingGameStateByUserI updated, RatingGameStateByUserI old,
 			ValidationResult r) {
 		boolean b = true;
 		Long updatedGameId = updated.getRatingGameId();
@@ -261,7 +261,7 @@ public class RatingGameStateByUserStore
 
 	@Override
 	protected boolean deleteAdministratedObjectConcrete(
-			RatingGameStateByUserDBI o) throws Exception {
+			RatingGameStateByUserI o) throws Exception {
 		if (!util.remove(getGameIdUserIdToIdStore(),
 				cnvBA(getGameIdUserIdBA(o))))
 			return false;
@@ -274,7 +274,7 @@ public class RatingGameStateByUserStore
 
 	@Override
 	protected boolean updateAdministratedObjectConcrete(
-			RatingGameStateByUserDBI updated, RatingGameStateByUserDBI old)
+			RatingGameStateByUserI updated, RatingGameStateByUserI old)
 			throws Exception {
 		Long updatedGameId = updated.getRatingGameId();
 		Long oldGameId = old.getRatingGameId();

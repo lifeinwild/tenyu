@@ -20,7 +20,7 @@ import jetbrains.exodus.*;
 import jetbrains.exodus.env.*;
 
 public class SocialityStore
-		extends AdministratedObjectStore<SocialityDBI, Sociality> {
+		extends AdministratedObjectStore<SocialityI, Sociality> {
 	public static final String modelName = Sociality.class.getSimpleName();
 	/**
 	 * individualityObjectIdとsocialityIdは1:1対応
@@ -117,7 +117,7 @@ public class SocialityStore
 	}
 
 	@Override
-	protected boolean createAdministratedObjectConcrete(SocialityDBI o)
+	protected boolean createAdministratedObjectConcrete(SocialityI o)
 			throws Exception {
 		if (!util.put(individualityObjectIdToId, cnvBA(o.getIndividualityObjectId()),
 				cnvL(o.getId())))
@@ -127,7 +127,7 @@ public class SocialityStore
 
 	@Override
 	protected boolean dbValidateAtUpdateAdministratedObjectConcrete(
-			SocialityDBI updated, SocialityDBI old, ValidationResult r) {
+			SocialityI updated, SocialityI old, ValidationResult r) {
 		boolean b = true;
 		if (Glb.getUtil().notEqual(updated.getIndividualityObjectId(),
 				old.getIndividualityObjectId())) {
@@ -142,7 +142,7 @@ public class SocialityStore
 	}
 
 	@Override
-	protected boolean deleteAdministratedObjectConcrete(SocialityDBI o)
+	protected boolean deleteAdministratedObjectConcrete(SocialityI o)
 			throws Exception {
 		if (Glb.getConf().getRunlevel() == RunLevel.RELEASE) {
 			//作者は削除不可
@@ -162,7 +162,7 @@ public class SocialityStore
 	}
 
 	@Override
-	public boolean existAdministratedObjectConcrete(SocialityDBI o,
+	public boolean existAdministratedObjectConcrete(SocialityI o,
 			ValidationResult vr) throws Exception {
 		boolean b = true;
 		if (getIdByIndividualityObject(o.getIndividualityObjectId()) == null) {
@@ -262,11 +262,11 @@ public class SocialityStore
 
 	@Override
 	public boolean isSupport(Object o) {
-		return o instanceof SocialityDBI;
+		return o instanceof SocialityI;
 	}
 
 	@Override
-	public boolean noExistAdministratedObjectConcrete(SocialityDBI o,
+	public boolean noExistAdministratedObjectConcrete(SocialityI o,
 			ValidationResult vr) throws Exception {
 		boolean b = true;
 		if (getIdByIndividualityObject(o.getIndividualityObjectId()) != null) {
@@ -277,8 +277,8 @@ public class SocialityStore
 	}
 
 	@Override
-	protected boolean updateAdministratedObjectConcrete(SocialityDBI updated,
-			SocialityDBI old) throws Exception {
+	protected boolean updateAdministratedObjectConcrete(SocialityI updated,
+			SocialityI old) throws Exception {
 		if (Glb.getUtil().notEqual(updated.getIndividualityObjectId(),
 				old.getIndividualityObjectId())) {
 			if (old.getIndividualityObjectId() != null) {

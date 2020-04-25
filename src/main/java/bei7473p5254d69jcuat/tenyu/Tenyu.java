@@ -9,8 +9,13 @@ import javafx.application.*;
 import javafx.stage.*;
 
 /**
+ * Tenyu基盤ソフトウェア
+ *
+ * https://github.com/lifeinwild/tenyu
  *
  * @author exceptiontenyu@gmail.com
+ * lifeinwild1@gmail.com
+ *
  */
 public class Tenyu extends Application implements GlbMemberDynamicState {
 	//多重起動防止

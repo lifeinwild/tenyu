@@ -9,7 +9,7 @@ import glb.*;
 import jetbrains.exodus.env.*;
 
 public class DistributedVoteGui extends
-		IndividualityObjectGui<DistributedVoteDBI,
+		IndividualityObjectGui<DistributedVoteI,
 				DistributedVote,
 				DistributedVote,
 				DistributedVoteStore,
@@ -20,7 +20,7 @@ public class DistributedVoteGui extends
 	}
 
 	public static class DistributedVoteTableItem
-			extends IndividualityObjectTableItem<DistributedVoteDBI, DistributedVote> {
+			extends IndividualityObjectTableItem<DistributedVoteI, DistributedVote> {
 
 		public DistributedVoteTableItem(DistributedVote src) {
 			super(src);

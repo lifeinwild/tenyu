@@ -71,7 +71,7 @@ public interface ObjectivityUpdateDataElement
 		if (date != 0)
 			return date;
 
-		//子クラスでオーバーライドして子クラスの値で比較を継続する
+		//まだ大小が決まらない場合、このメソッドを子クラスでオーバーライドして子クラスの値で比較を継続する
 		return 0;
 	}
 }

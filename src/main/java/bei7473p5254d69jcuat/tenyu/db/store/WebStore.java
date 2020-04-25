@@ -20,7 +20,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class WebStore extends IndividualityObjectStore<WebDBI, Web> {
+public class WebStore extends IndividualityObjectStore<WebI, Web> {
 	public static final String modelName = Web.class.getSimpleName();
 
 	public static StoreInfo getMainStoreInfoStatic() {
@@ -63,23 +63,23 @@ public class WebStore extends IndividualityObjectStore<WebDBI, Web> {
 	}
 
 	@Override
-	protected boolean createIndividualityObjectConcrete(WebDBI o) throws Exception {
+	protected boolean createIndividualityObjectConcrete(WebI o) throws Exception {
 		return true;
 	}
 
 	@Override
-	protected boolean dbValidateAtUpdateIndividualityObjectConcrete(WebDBI updated,
-			WebDBI old, ValidationResult r) {
+	protected boolean dbValidateAtUpdateIndividualityObjectConcrete(WebI updated,
+			WebI old, ValidationResult r) {
 		return true;
 	}
 
 	@Override
-	protected boolean deleteIndividualityObjectConcrete(WebDBI u) throws Exception {
+	protected boolean deleteIndividualityObjectConcrete(WebI u) throws Exception {
 		return true;
 	}
 
 	@Override
-	public boolean existIndividualityObjectConcrete(WebDBI url, ValidationResult vr) {
+	public boolean existIndividualityObjectConcrete(WebI url, ValidationResult vr) {
 		return true;
 	}
 
@@ -98,18 +98,18 @@ public class WebStore extends IndividualityObjectStore<WebDBI, Web> {
 
 	@Override
 	public boolean isSupport(Object o) {
-		if (o instanceof bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.WebDBI)
+		if (o instanceof bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.WebI)
 			return true;
 		return false;
 	}
 
 	@Override
-	public boolean noExistIndividualityObjectConcrete(WebDBI url, ValidationResult vr) {
+	public boolean noExistIndividualityObjectConcrete(WebI url, ValidationResult vr) {
 		return true;
 	}
 
 	@Override
-	protected boolean updateIndividualityObjectConcrete(WebDBI updated, WebDBI old)
+	protected boolean updateIndividualityObjectConcrete(WebI updated, WebI old)
 			throws Exception {
 		if (updated.getUrl() == null) {
 			return false;

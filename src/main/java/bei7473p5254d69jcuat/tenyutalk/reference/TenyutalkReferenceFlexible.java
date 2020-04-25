@@ -1,7 +1,7 @@
 package bei7473p5254d69jcuat.tenyutalk.reference;
 
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
-import bei7473p5254d69jcuat.tenyutalk.model.release1.*;
+import bei7473p5254d69jcuat.tenyutalk.model.promise.*;
 import bei7473p5254d69jcuat.tenyutalk.ui.reference.*;
 import glb.*;
 import glb.util.*;
@@ -20,7 +20,7 @@ import jetbrains.exodus.env.*;
  *
  * @param <V>
  */
-public class TenyutalkReferenceFlexible<V extends CreativeObject>
+public class TenyutalkReferenceFlexible<V extends CreativeObjectI>
 		extends TenyutalkReferenceBase<V> {
 
 	/**

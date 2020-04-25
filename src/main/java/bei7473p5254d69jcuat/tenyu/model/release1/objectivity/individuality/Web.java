@@ -23,7 +23,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class Web extends IndividualityObject implements ChainVersionup, WebDBI {
+public class Web extends IndividualityObject implements ChainVersionup, WebI {
 	private static final int urlMax = 2083;
 
 	public static boolean createSequence(Transaction txn, Web u,
@@ -69,7 +69,7 @@ public class Web extends IndividualityObject implements ChainVersionup, WebDBI {
 	@Override
 	public Long getSpecialMainAdministratorId() {
 		//nullIdの場合もある。URL証明前
-		return IdObjectDBI.getNullId();
+		return IdObjectI.getNullId();
 	}
 
 	@Override

@@ -44,7 +44,7 @@ public class TenyuPlatformSoftware implements Storable {
 	public List<TenyuFile> getFiles() {
 		List<TenyuFile> r = new ArrayList<>();
 		for (TenyuFile f : files) {
-			r.add(f.cloneAndPrefix(Glb.getFile().getPlatformFileDirSingle()));
+			r.add(f.cloneAndPrefix(Glb.getFile().getPlatformFileDirName()));
 		}
 		return r;
 	}
