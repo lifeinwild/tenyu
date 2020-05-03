@@ -1,8 +1,10 @@
 package bei7473p5254d69jcuat.tenyutalk.reference;
 
+import java.nio.*;
 import java.util.*;
 
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyutalk.model.release1.*;
 import bei7473p5254d69jcuat.tenyutalk.ui.reference.*;
@@ -34,6 +36,12 @@ public class TenyutalkReferenceSecure<V extends CreativeObject>
 	 */
 	private byte[] hash;
 
+	@Override
+	public byte[] getStoreKey() {
+		return ByteBuffer.allocate(Long.BYTES + hash.length).putLong(id)
+				.put(hash).array();
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -63,7 +71,7 @@ public class TenyutalkReferenceSecure<V extends CreativeObject>
 			b = false;
 		}
 		if (Glb.getUtil().notEqual(id, old2.getId())) {
-			r.add(Lang.TENYUTALK_REFERENCE_SECURE_ID, Lang.ERROR_NOT_EQUAL,
+			r.add(Lang.ID, Lang.ERROR_NOT_EQUAL,
 					"this.id=" + id + " old.id=" + old2.getId());
 			b = false;
 		}
@@ -82,11 +90,11 @@ public class TenyutalkReferenceSecure<V extends CreativeObject>
 			return null;
 		return Glb.getObje().readRet(txn -> {
 			Object tmp = getStoreName().getStore(txn);
-			if (tmp == null || !(tmp instanceof IdObjectStore))
+			if (tmp == null || !(tmp instanceof ModelStore))
 				return null;
 			@SuppressWarnings("unchecked")
-			IdObjectStore<? extends IdObjectI,
-					V> s = (IdObjectStore<? extends IdObjectI, V>) tmp;
+			ModelStore<? extends ModelI,
+					V> s = (ModelStore<? extends ModelI, V>) tmp;
 			return s.get(getId());
 		});
 	}
@@ -94,21 +102,20 @@ public class TenyutalkReferenceSecure<V extends CreativeObject>
 	private boolean validateCommon(ValidationResult r) {
 		boolean b = true;
 		if (id == null) {
-			r.add(Lang.TENYUTALK_REFERENCE_SECURE_ID, Lang.ERROR_EMPTY);
+			r.add(Lang.ID, Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (!IdObject.validateIdStandard(id)) {
-				r.add(Lang.TENYUTALK_REFERENCE_SECURE_ID, Lang.ERROR_INVALID,
-						"id=" + id);
+			if (!Model.validateIdStandard(id)) {
+				r.add(Lang.ID, Lang.ERROR_INVALID, "id=" + id);
 				b = false;
 			}
 		}
 		if (hash == null) {
-			r.add(Lang.TENYUTALK_REFERENCE_SECURE_HASH, Lang.ERROR_EMPTY);
+			r.add(Lang.HASH, Lang.ERROR_EMPTY);
 			b = false;
 		} else {
 			if (hash.length != Glb.getConst().getHashSize()) {
-				r.add(Lang.TENYUTALK_REFERENCE_SECURE_HASH, Lang.ERROR_INVALID,
+				r.add(Lang.HASH, Lang.ERROR_INVALID,
 						"hash.length=" + hash.length);
 				b = false;
 			}
@@ -179,6 +186,28 @@ public class TenyutalkReferenceSecure<V extends CreativeObject>
 	public String toString() {
 		return "TenyutalkReferenceSecure [id=" + id + ", hash="
 				+ Arrays.toString(hash) + "]";
+	}
+
+	@Override
+	protected boolean validateAtUpdateChangeTenyutalkReferenceBaseConcrete(
+			ValidationResult r, Object old) {
+		if (!(old instanceof TenyutalkReferenceSecure)) {
+			return false;
+		}
+		TenyutalkReferenceSecure<?> o = (TenyutalkReferenceSecure<?>) old;
+		boolean b = true;
+		if (!id.equals(o.getId())) {
+			r.add(Lang.TENYUTALK_REFERENCE_SECURE, Lang.ID,
+					Lang.ERROR_UNALTERABLE, "id=" + id + " o.id=" + o.getId());
+			b = false;
+		}
+		if (!Arrays.equals(hash, o.hash)) {
+			r.add(Lang.TENYUTALK_REFERENCE_SECURE, Lang.HASH,
+					Lang.ERROR_UNALTERABLE, "hash=" + Arrays.toString(hash)
+							+ " o.hash=" + Arrays.toString(o.getHash()));
+			b = false;
+		}
+		return b;
 	}
 
 }

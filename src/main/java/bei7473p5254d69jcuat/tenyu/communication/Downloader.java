@@ -11,10 +11,12 @@ import bei7473p5254d69jcuat.tenyu.communication.P2P.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.HasFile.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.catchup.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.TenyuFile.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.agenda.content.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.TenyuFile.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.subjectivity.*;
 import glb.*;
 import glb.Glb.*;
@@ -740,11 +742,11 @@ public class Downloader implements GlbMemberDynamicState {
 	}
 	*/
 
-	private <I extends IdObjectI, O extends I> void periodicDownloadCommon(
+	private <I extends ModelI, O extends I> void periodicDownloadCommon(
 			Function<O, List<TenyuFile>> func,
-			Function<Transaction, IdObjectStore<I, O>> getStore) {
+			Function<Transaction, ModelStore<I, O>> getStore) {
 		Local local = new Local();
-		local.id = IdObjectI.getFirstId();
+		local.id = ModelI.getFirstId();
 		int dbLoop = 1000;
 		long sleep = 200;
 		while (true) {
@@ -759,7 +761,7 @@ public class Downloader implements GlbMemberDynamicState {
 			//DL処理が無駄になる。
 			boolean ret = Glb.getObje().readRet(txn -> {
 				try {
-					IdObjectStore<I, O> s = getStore.apply(txn);
+					ModelStore<I, O> s = getStore.apply(txn);
 					Long lastId = s.getLastId();
 					for (int i = 0; i < dbLoop; i++) {
 						if (local.id > lastId)

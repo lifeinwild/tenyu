@@ -7,6 +7,7 @@ import bei7473p5254d69jcuat.tenyu.communication.request.catchup.*;
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.satellite.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.reference.*;
 import glb.*;
 import glb.util.*;
@@ -230,13 +231,13 @@ public class CatchUpStateByStore extends AbstractCatchUpState {
 		Long majorityLastHid = getCtx().getMajorityAtStart().getByStore()
 				.get(storeName).getLastHidOfHashStore();
 		if (majorityLastHid == null)
-			majorityLastHid = IdObjectI.getFirstId() - 1;
+			majorityLastHid = ModelI.getFirstId() - 1;
 
 		//自分の最後のHID
 		Long myLastHid = getCtx().getMyAtStart().getByStore().get(storeName)
 				.getLastHidOfHashStore();
 		if (myLastHid == null)
-			myLastHid = IdObjectI.getFirstId() - 1;
+			myLastHid = ModelI.getFirstId() - 1;
 
 		Glb.debug("majorityLastHid=" + majorityLastHid + " myLastHid="
 				+ myLastHid);
@@ -255,7 +256,7 @@ public class CatchUpStateByStore extends AbstractCatchUpState {
 		Glb.getObje().execute(txn -> {
 			try {
 				//このオブジェクトが対象としているストア
-				IdObjectStore<?, ?> s = storeName.getStore(txn);
+				ModelStore<?, ?> s = storeName.getStore(txn);
 
 				//最後のHIDについて自分の方が多数派より進んでいるか
 				if (myLastHidTmp > majorityLastHidTmp) {
@@ -370,7 +371,7 @@ public class CatchUpStateByStore extends AbstractCatchUpState {
 	private void step1FinishProc() {
 		//更新されたIDをDBに書き込む
 		Glb.getObje().execute(txn -> {
-			IdObjectStore<? extends IdObjectI,
+			ModelStore<? extends ModelI,
 					?> s = storeName.getStore(txn);
 			CatchUpUpdatedIDListStore ups = s.getCatchUpUpdatedIDListStore();
 			for (Entry<Long, CatchUpUpdatedIDList> e : updatedIdProc

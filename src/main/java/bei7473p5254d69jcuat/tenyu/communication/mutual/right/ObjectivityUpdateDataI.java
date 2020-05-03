@@ -7,6 +7,6 @@ import bei7473p5254d69jcuat.tenyu.db.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public interface ObjectivityUpdateDataI extends Storable {
+public interface ObjectivityUpdateDataI extends StorableI {
 	long getHistoryIndex();
 }

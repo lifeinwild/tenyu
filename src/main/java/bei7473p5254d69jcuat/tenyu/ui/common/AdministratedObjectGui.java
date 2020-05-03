@@ -7,6 +7,8 @@ import org.controlsfx.control.textfield.AutoCompletionBinding.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
 import glb.*;
@@ -20,7 +22,7 @@ public abstract class AdministratedObjectGui<T1 extends AdministratedObjectI,
 		S extends AdministratedObjectStore<T1, T2>,
 		G extends AdministratedObjectGui,
 		TI extends AdministratedObjectTableItem<T1, T2>>
-		extends IdObjectGui<T1, T2, T3, S, G, TI> {
+		extends ModelGui<T1, T2, T3, S, G, TI> {
 
 	public AdministratedObjectGui(String name, String id) {
 		super(name, id);

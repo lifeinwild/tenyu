@@ -7,7 +7,7 @@ import bei7473p5254d69jcuat.tenyu.db.*;
 import glb.util.*;
 import jetbrains.exodus.env.*;
 
-public class ChatWindow implements Storable {
+public class ChatWindow implements StorableI {
 	/**
 	 * このウィンドウに表示されるチャットメッセージのカテゴリー一覧
 	 */

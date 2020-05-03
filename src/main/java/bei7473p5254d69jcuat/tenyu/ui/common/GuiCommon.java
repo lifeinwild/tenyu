@@ -3,7 +3,7 @@ package bei7473p5254d69jcuat.tenyu.ui.common;
 import java.util.*;
 import java.util.function.*;
 
-import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import glb.*;
 import glb.util.*;
@@ -128,7 +128,7 @@ public class GuiCommon {
 	}
 
 	/**
-	 * IdObjectのGUI部品を構築
+	 * {@link Model}のGUI部品を構築
 	 *
 	 * @param builder
 	 * @param grid
@@ -139,7 +139,7 @@ public class GuiCommon {
 	 * @return
 	 */
 	public static int buildId(GuiBuilder builder, GridPane grid, int elapsed,
-			CRUDContext ctx, IdObjectGui built) {
+			CRUDContext ctx, ModelGui built) {
 		if (ctx != CRUDContext.CREATE) {
 			boolean editable = CRUDContext.editableBase(ctx);
 			//ID
@@ -166,7 +166,7 @@ public class GuiCommon {
 				return change;
 			try {
 				Long id = Long.valueOf(change.getControlNewText());
-				if (!IdObject.validateIdStandard(id))
+				if (!Model.validateIdStandard(id))
 					return null;
 			} catch (Exception e) {
 				return null;

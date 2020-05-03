@@ -5,6 +5,8 @@ import bei7473p5254d69jcuat.tenyu.communication.packaging.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.gui.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.gui.right.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
 import glb.*;
 import glb.util.*;
@@ -37,12 +39,12 @@ public class UserRegistration extends UserRightRequest {
 		User u = info.getMe();
 		Long inviterUserId = u.getInviter();
 		if (inviterUserId == null
-				|| IdObjectI.getNullId().equals(inviterUserId))
+				|| ModelI.getNullId().equals(inviterUserId))
 			return false;
 		boolean dbCheck = Glb.getObje().compute(txn -> {
 			try {
 				UserStore store = new UserStore(txn);
-				return store.noExistIdObjectConcrete(u, new ValidationResult());
+				return store.noExistModelConcrete(u, new ValidationResult());
 			} catch (Exception e) {
 				Glb.getLogger().error("", e);
 				return false;

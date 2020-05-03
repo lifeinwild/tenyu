@@ -16,7 +16,7 @@ import glb.util.*;
 import glb.util.Util.*;
 import jetbrains.exodus.env.*;
 
-public class P2PNode implements Storable {
+public class P2PNode implements StorableI {
 	/**
 	 * {@link Subjectivity#getObservation()}が場合によってセットされる
 	 */

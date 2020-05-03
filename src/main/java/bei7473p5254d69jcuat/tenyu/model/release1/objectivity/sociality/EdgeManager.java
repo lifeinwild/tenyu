@@ -18,7 +18,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class EdgeManager implements Storable {
+public class EdgeManager implements StorableI {
 	/**
 	 * エッジの数の最大値
 	 * 全ノードタイプのうちの最大値であり、
@@ -105,7 +105,7 @@ public class EdgeManager implements Storable {
 						"size=" + edges.size());
 				b = false;
 			} else {
-				if (!IdObject.validateIdStandardNotSpecialId(edges.keySet())) {
+				if (!Model.validateIdStandardNotSpecialId(edges.keySet())) {
 					vr.add(Lang.EDGEMANAGER_EDGES, Lang.ERROR_INVALID,
 							"edgesKeySet=" + edges.keySet());
 					b = false;

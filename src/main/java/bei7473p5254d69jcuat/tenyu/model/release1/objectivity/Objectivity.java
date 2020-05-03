@@ -8,13 +8,17 @@ import bei7473p5254d69jcuat.tenyu.communication.*;
 import bei7473p5254d69jcuat.tenyu.communication.mutual.right.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.gui.right.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
-import bei7473p5254d69jcuat.tenyu.db.store.game.*;
-import bei7473p5254d69jcuat.tenyu.db.store.game.item.*;
-import bei7473p5254d69jcuat.tenyu.db.store.game.statebyuser.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.item.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.statebyuser.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.tenyupedia.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.sociality.*;
 import bei7473p5254d69jcuat.tenyu.db.store.satellite.*;
 import bei7473p5254d69jcuat.tenyu.db.store.satellite.HashStore.*;
 import bei7473p5254d69jcuat.tenyu.db.store.single.*;
-import bei7473p5254d69jcuat.tenyu.db.store.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.role.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.catchup.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.catchup.Integrity.*;
@@ -33,10 +37,13 @@ import jetbrains.exodus.env.*;
 
 /**
  * 客観。統一値を網羅的に管理するクラス。
+ *
  * 統一値全体は巨大すぎる事、トランザクション処理が必要な事から、
  * 各部はストアクラスを通じてDBのみで管理されオンメモリにならない。
- * つまり、本クラスは永続化される動的な内部状態を一切持たない。
- * 本クラスを通して取得できるストアクラスで統一値はほとんど網羅される。
+ * つまり、このクラスは永続化される動的な内部状態を一切持たない。
+ *
+ * このクラスを通して取得できるストアクラスで統一値はほとんど網羅される。
+ * 統一値という言葉の意味する範囲を客観かつモデル系のデータとすればすべて網羅できる。
  * それ以外は、ソフトウェアが予め持つ設定値のみである。
  *
  * @author exceptiontenyu@gmail.com
@@ -53,7 +60,12 @@ public class Objectivity implements GlbMemberDynamicState, DBObj {
 	 * 全ノードで一致する現在日時のミリ秒表現
 	 */
 	private transient long globalCurrentTime = Glb.getUtil()
-			.getEpochMilliIgnoreSeconds(0);
+			.getEpochMilliIgnoreSeconds(0, globalCurrentTimeInterval);
+	/**
+	 * ２分に１回更新される事を前提としている。
+	 * それより早いペースを期待する事はできない。
+	 */
+	private static int globalCurrentTimeInterval = 60;
 
 	public long getGlobalCurrentTime() {
 		return globalCurrentTime;
@@ -65,7 +77,8 @@ public class Objectivity implements GlbMemberDynamicState, DBObj {
 	 * @return 最新の{@link Objectivity#getGlobalCurrentTime()}の返値
 	 */
 	public long updateGlobalCurrentTime() {
-		this.globalCurrentTime = Glb.getUtil().getEpochMilliIgnoreSeconds(0);
+		this.globalCurrentTime = Glb.getUtil().getEpochMilliIgnoreSeconds(0,
+				globalCurrentTimeInterval);
 		return getGlobalCurrentTime();
 	}
 
@@ -235,13 +248,13 @@ public class Objectivity implements GlbMemberDynamicState, DBObj {
 	 * @param objs
 	 */
 	public synchronized void applySparseObjectList(
-			StoreNameObjectivity storeName, List<? extends IdObjectI> objs) {
+			StoreNameObjectivity storeName, List<? extends ModelI> objs) {
 		getEnv().executeInTransaction((txn) -> {
 			try {
 				@SuppressWarnings("unchecked")
-				IdObjectStore<IdObjectI, ?> s = (IdObjectStore<IdObjectI,
-						?>) storeName.getStore(txn);
-				for (IdObjectI o : objs) {
+				ModelStore<ModelI,
+						?> s = (ModelStore<ModelI, ?>) storeName.getStore(txn);
+				for (ModelI o : objs) {
 					try {
 						s.catchUp(o);
 					} catch (Exception e) {
@@ -265,7 +278,7 @@ public class Objectivity implements GlbMemberDynamicState, DBObj {
 			return;
 		getEnv().executeInTransaction(txn -> {
 			for (Long remove : removeIds) {
-				IdObjectStore<?, ?> s = storeName.getStore(txn);
+				ModelStore<?, ?> s = storeName.getStore(txn);
 				try {
 					s.delete(remove);
 				} catch (Exception e) {
@@ -285,7 +298,7 @@ public class Objectivity implements GlbMemberDynamicState, DBObj {
 			return;
 		getEnv().executeInTransaction(txn -> {
 			for (Long hid : removeHids) {
-				IdObjectStore<?, ?> s = storeName.getStore(txn);
+				ModelStore<?, ?> s = storeName.getStore(txn);
 				try {
 					Long id = s.getIdByHid(hid);
 					if (id == null)
@@ -358,6 +371,10 @@ public class Objectivity implements GlbMemberDynamicState, DBObj {
 	 */
 	public <T> T getUser(Function<UserStore, T> f) {
 		return readTryW(txn -> f.apply(new UserStore(txn)));
+	}
+
+	public <T> T getModelCondition(Function<ModelConditionStore, T> f) {
+		return readTryW(txn -> f.apply(new ModelConditionStore(txn)));
 	}
 
 	public <T> T getWeb(Function<WebStore, T> f) {
@@ -459,7 +476,7 @@ public class Objectivity implements GlbMemberDynamicState, DBObj {
 			IntegrityByStore byStore = readRet(txn -> {
 				//tmpを外側に出してbyStoreに一元化するとたまに例外が出る
 				IntegrityByStore tmp = new IntegrityByStore();
-				IdObjectStore<?, ?> s = storeName.getStore(txn);
+				ModelStore<?, ?> s = storeName.getStore(txn);
 				HashStore hs = s.getHashStore();
 				RecycleHidStore rs = s.getRecycleHidStore();
 
@@ -643,9 +660,8 @@ public class Objectivity implements GlbMemberDynamicState, DBObj {
 			if (writeZero) {
 				//書き込む
 				DistributedVote managerVote = new DistributedVote();
-				managerVote.setRegistererUserId(IdObjectI.getSystemId());
-				managerVote
-						.setMainAdministratorUserId(IdObjectI.getSystemId());
+				managerVote.setRegistererUserId(ModelI.getSystemId());
+				managerVote.setMainAdministratorUserId(ModelI.getSystemId());
 				managerVote.setId(electionId);
 				//HIDも0(electionId)想定でいい
 				managerVote.setHid(electionId);
@@ -685,8 +701,9 @@ public class Objectivity implements GlbMemberDynamicState, DBObj {
 						Role r = new Role();
 						r.setName(roleName);
 						r.setExplanation(roleName + " Administrators");
-						r.setRegistererUserId(IdObjectI.getSystemId());
-						r.setMainAdministratorUserId(IdObjectI.getVoteId());
+						r.setRegistererUserId(ModelI.getSystemId());
+						r.setMainAdministratorUserId(ModelI.getVoteId());
+						r.setLocale(Locale.ENGLISH);
 						Long createdId = rs.create(r);
 						if (createdId == null) {
 							Glb.getLogger().error("Failed to create role",

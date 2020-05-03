@@ -9,6 +9,7 @@ import javax.management.modelmbean.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import glb.*;
@@ -18,7 +19,7 @@ import jetbrains.exodus.env.*;
 
 public class ObjectivityCoreStore
 		extends IndividualityObjectStore<ObjectivityCoreI, ObjectivityCore>
-		implements SingleObjectStore {
+		implements SingleObjectStoreI {
 
 	private static transient ObjectivityCore cache;
 	private static transient ByteIterable cacheBi;

@@ -2,6 +2,7 @@ package bei7473p5254d69jcuat.tenyutalk.model.promise;
 
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.*;
 import bei7473p5254d69jcuat.tenyutalk.*;
+import bei7473p5254d69jcuat.tenyutalk.reference.*;
 import glb.util.*;
 
 /**
@@ -49,4 +50,7 @@ public interface CreativeObjectI extends IndividualityObjectI {
 			throw new IllegalStateException("firstId is null");
 		return id.equals(firstId);
 	}
+
+	TenyutalkReferenceFlexible<? extends CreativeObjectI> getReference();
+
 }

@@ -3,10 +3,14 @@ package bei7473p5254d69jcuat.tenyu.reference;
 import java.util.function.*;
 
 import bei7473p5254d69jcuat.tenyu.db.store.*;
-import bei7473p5254d69jcuat.tenyu.db.store.game.*;
-import bei7473p5254d69jcuat.tenyu.db.store.game.item.*;
-import bei7473p5254d69jcuat.tenyu.db.store.game.statebyuser.*;
-import bei7473p5254d69jcuat.tenyu.db.store.sociality.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.item.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.statebyuser.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.tenyupedia.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import jetbrains.exodus.env.*;
 
 /**
@@ -71,22 +75,28 @@ public enum StoreNameObjectivity implements StoreNameEnum {
 			URLProvementRegexStore.modelName),
 	DISTRIBUTED_VOTE_RESULT(
 			txn -> new DistributedVoteResultStore(txn),
-			DistributedVoteResultStore.modelName),;
+			DistributedVoteResultStore.modelName),
+	TAG(txn -> new TagStore(txn), TagStore.modelName),
+	MODEL_CONDITION(
+			txn -> new ModelConditionStore(txn),
+			ModelConditionStore.modelName),
+	CERTIFICATION(
+			txn -> new CertificationStore(txn),
+			CertificationStore.modelName);
 
 	private final Function<Transaction,
-			IdObjectStore<? extends IdObjectI, ?>> getStore;
+			ModelStore<? extends ModelI, ?>> getStore;
 
 	private final String modelname;
 
 	private StoreNameObjectivity(
-			Function<Transaction,
-					IdObjectStore<? extends IdObjectI, ?>> getStore,
+			Function<Transaction, ModelStore<? extends ModelI, ?>> getStore,
 			String modelname) {
 		this.getStore = getStore;
 		this.modelname = modelname;
 	}
 
-	public IdObjectStore<? extends IdObjectI, ?> getStore(Transaction txn) {
+	public ModelStore<? extends ModelI, ?> getStore(Transaction txn) {
 		return getStore.apply(txn);
 	}
 
@@ -102,5 +112,6 @@ public enum StoreNameObjectivity implements StoreNameEnum {
 		}
 		return false;
 	}
+
 
 }

@@ -9,6 +9,7 @@ import bei7473p5254d69jcuat.tenyu.communication.request.catchup.GetUpdatedIDList
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.satellite.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.catchup.AbstractCatchUpState.*;
 import glb.*;
 
@@ -114,7 +115,7 @@ public class CatchUpStateByStoreStepUpdatedId
 					+ 1; historyIndex <= majorityHistoryIndex; historyIndex++) {
 				try {
 					//DBにあるか
-					IdObjectStore<? extends IdObjectI,
+					ModelStore<? extends ModelI,
 							?> s = storeName.getStore(txn);
 					CatchUpUpdatedIDList l = s.getCatchUpUpdatedIDListStore()
 							.get((Long) historyIndex);

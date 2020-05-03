@@ -33,7 +33,7 @@ public class TenyutalkFolder extends CreativeObject implements TenyutalkFolderI 
 	 * 客観系モデルの参照一覧
 	 */
 	private List<TenyuReferenceSimple<
-			? extends IdObject>> models = new ArrayList<>();
+			? extends Model>> models = new ArrayList<>();
 
 	/**
 	 * １フォルダ内の最大要素数。要素は{@link #getSize()}。
@@ -271,12 +271,12 @@ public class TenyutalkFolder extends CreativeObject implements TenyutalkFolderI 
 				+ ", models=" + models + "]";
 	}
 
-	public List<TenyuReferenceSimple<? extends IdObject>> getModels() {
+	public List<TenyuReferenceSimple<? extends Model>> getModels() {
 		return models;
 	}
 
 	public void setModels(
-			List<TenyuReferenceSimple<? extends IdObject>> models) {
+			List<TenyuReferenceSimple<? extends Model>> models) {
 		this.models = models;
 	}
 

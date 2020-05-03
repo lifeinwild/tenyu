@@ -4,7 +4,7 @@ import bei7473p5254d69jcuat.tenyu.db.*;
 import glb.util.*;
 import jetbrains.exodus.env.*;
 
-public interface AgendaContentI extends Storable {
+public interface AgendaContentI extends StorableI {
 	@Override
 	default boolean validateAtUpdate(ValidationResult r) {
 		//更新は無いのでここで仮の実装を与える

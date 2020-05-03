@@ -26,7 +26,7 @@ import jetbrains.exodus.env.*;
  *
  * @author exceptiontenyu@gmail.com
  */
-public class UserMessageList implements Storable{
+public class UserMessageList implements StorableI{
 	/**
 	 * 現在の想定される反映時負荷量。
 	 * メッセージ件数と一致しない。loadSize()の合計

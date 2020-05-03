@@ -14,9 +14,9 @@ import jetbrains.exodus.env.*;
  *
  */
 public class GeneralVersioning
-		implements Storable, Comparable<GeneralVersioning> {
+		implements StorableI, Comparable<GeneralVersioning> {
 	/**
-	 * 直前のバージョンの参照元に変化が想定されるなら+1
+	 * 直前のバージョンの参照元（依存した創作物等）に変化が想定されるなら+1
 	 * 既存のAPIの削除や修正など。
 	 */
 	private long major;
@@ -120,7 +120,6 @@ public class GeneralVersioning
 		}
 	}
 
-
 	public ReleaseLevel getLevel() {
 		return level;
 	}
@@ -160,9 +159,11 @@ public class GeneralVersioning
 		return true;
 	}
 
-	@Override
-	public String toString() {
-		//この文字列フォーマットはファイルパスに使用されるので変更してはならない
+	/**
+	 * この文字列フォーマットはファイルパスに使用されるので変更してはならない
+	 * @return	変更されないバージョンが含まれたファイルパスに使用できる文字列
+	 */
+	public String toStr() {
 		return major + delimiter + minor + delimiter + patch + delimiter
 				+ level;
 	}
@@ -190,6 +191,33 @@ public class GeneralVersioning
 	@Override
 	public boolean validateAtDelete(ValidationResult r) {
 		boolean b = true;
+		return b;
+	}
+
+	@Override
+	public boolean validateAtUpdateChange(ValidationResult r, Object old) {
+		boolean b = true;
+		GeneralVersioning o = null;
+		if (!(old instanceof GeneralVersioning)) {
+			return false;
+		}
+		o = (GeneralVersioning) old;
+
+		if (major < o.major) {
+			r.add(Lang.VERSION, Lang.VERSION_MAJOR, Lang.ERROR_INVALID,
+					"major=" + major + " old.major=" + o.major);
+			b = false;
+		}
+		if (minor < o.minor) {
+			r.add(Lang.VERSION, Lang.VERSION_MINOR, Lang.ERROR_INVALID,
+					"minor=" + minor + " old.minor=" + o.minor);
+			b = false;
+		}
+		if (patch < o.patch) {
+			r.add(Lang.VERSION, Lang.VERSION_PATCH, Lang.ERROR_INVALID,
+					"patch=" + patch + " old.patch=" + o.patch);
+			b = false;
+		}
 		return b;
 	}
 
@@ -233,6 +261,12 @@ public class GeneralVersioning
 		}
 		//patchまですべて等しい場合
 		return 0;
+	}
+
+	@Override
+	public String toString() {
+		return "GeneralVersioning [major=" + major + ", minor=" + minor
+				+ ", patch=" + patch + ", level=" + level + "]";
 	}
 
 }

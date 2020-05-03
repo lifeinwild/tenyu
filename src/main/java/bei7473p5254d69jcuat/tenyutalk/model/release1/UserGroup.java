@@ -4,6 +4,7 @@ import java.util.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import glb.*;
 import glb.util.*;
@@ -16,7 +17,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class UserGroup implements Storable {
+public class UserGroup implements StorableI {
 	/**
 	 * 重複無しユーザーID一覧
 	 */
@@ -51,7 +52,7 @@ public class UserGroup implements Storable {
 						"userIds.size()=" + userIds.size());
 				b = false;
 			} else {
-				if (!IdObject.validateIdStandard(userIds)) {
+				if (!Model.validateIdStandard(userIds)) {
 					r.add(Lang.USER_GROUP_USERIDS, Lang.ERROR_INVALID,
 							"userIds=" + userIds);
 					b = false;

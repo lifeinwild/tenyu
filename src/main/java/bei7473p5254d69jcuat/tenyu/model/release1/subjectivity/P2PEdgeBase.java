@@ -1,11 +1,12 @@
 package bei7473p5254d69jcuat.tenyu.model.release1.subjectivity;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.env.*;
 
-public class P2PEdgeBase implements Storable {
+public class P2PEdgeBase implements StorableI {
 
 	/**
 	 * 共通鍵交換または共通鍵梱包使用時のロックオブジェクトでもある
@@ -25,7 +26,7 @@ public class P2PEdgeBase implements Storable {
 	 *
 	 * TODO:ノードIDとの使い分け
 	 * そもそもリレーションとかエッジ的なものに一意なIDを振る場合、
-	 * 綺麗に設計できない印象がある。IdObject系でもそういうものがある。
+	 * 綺麗に設計できない印象がある。{@link Model}系でもそういうものがある。
 	 * 対応していけないほど複雑というわけではない、ただ綺麗ではない。
 	 * リレーション中の各データに検索性を与えるのもコストがかかったり、
 	 * コードが増える。

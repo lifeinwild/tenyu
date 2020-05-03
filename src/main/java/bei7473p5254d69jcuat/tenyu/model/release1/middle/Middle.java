@@ -5,6 +5,7 @@ import java.util.concurrent.*;
 
 import bei7473p5254d69jcuat.tenyu.communication.mutual.right.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.db.store.single.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.catchup.*;
@@ -34,7 +35,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class Middle extends IdObject
+public class Middle extends Model
 		implements GlbMemberDynamicState, MiddleI {
 	public static Middle loadOrCreate() {
 		return Glb.getDb(Glb.getFile().getMiddleDBPath())
@@ -111,8 +112,8 @@ public class Middle extends IdObject
 	}
 
 	private Middle() {
-		setId(SingleObjectStore.getDefaultIdStatic());
-		setHid(SingleObjectStore.getDefaultHidStatic());
+		setId(SingleObjectStoreI.getDefaultIdStatic());
+		setHid(SingleObjectStoreI.getDefaultHidStatic());
 	}
 
 	/**
@@ -326,25 +327,25 @@ public class Middle extends IdObject
 	}
 
 	@Override
-	protected final boolean validateAtCreateIdObjectConcrete(
+	protected final boolean validateAtCreateModelConcrete(
 			ValidationResult r) {
 		return true;
 	}
 
 	@Override
-	protected boolean validateAtUpdateChangeIdObjectConcrete(ValidationResult r,
+	protected boolean validateAtUpdateChangeModelConcrete(ValidationResult r,
 			Object old) {
 		return true;
 	}
 
 	@Override
-	protected final boolean validateAtUpdateIdObjectConcrete(
+	protected final boolean validateAtUpdateModelConcrete(
 			ValidationResult r) {
 		return true;
 	}
 
 	@Override
-	public boolean validateReferenceIdObjectConcrete(ValidationResult r,
+	public boolean validateReferenceModelConcrete(ValidationResult r,
 			Transaction txn) {
 		return true;
 	}
@@ -375,7 +376,7 @@ public class Middle extends IdObject
 	}
 
 	@Override
-	public IdObjectGui<?, ?, ?, ?, ?, ?> getGui(String guiName,
+	public ModelGui<?, ?, ?, ?, ?, ?> getGui(String guiName,
 			String cssIdPrefix) {
 		return new MiddleGui(guiName, cssIdPrefix);
 	}

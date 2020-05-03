@@ -4,6 +4,7 @@ import java.nio.*;
 import java.util.*;
 
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
 import bei7473p5254d69jcuat.tenyu.reference.*;
@@ -178,7 +179,7 @@ public class DistributedTradable extends IndividualityObject
 			r.add(Lang.DISTRIBUTEDTRADABLE_CONFIRMED_OWNER, Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (!IdObject
+			if (!Model
 					.validateIdStandardNotSpecialId(confirmedOwnerUserId)) {
 				r.add(Lang.DISTRIBUTEDTRADABLE_CONFIRMED_OWNER,
 						Lang.ERROR_INVALID);
@@ -189,7 +190,7 @@ public class DistributedTradable extends IndividualityObject
 			r.add(Lang.DISTRIBUTEDTRADABLE_FIRST_OWNER, Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (!IdObject.validateIdStandardNotSpecialId(firstOwnerUserId)) {
+			if (!Model.validateIdStandardNotSpecialId(firstOwnerUserId)) {
 				r.add(Lang.DISTRIBUTEDTRADABLE_FIRST_OWNER, Lang.ERROR_INVALID);
 				b = false;
 			}

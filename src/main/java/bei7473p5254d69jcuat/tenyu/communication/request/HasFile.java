@@ -3,6 +3,7 @@ package bei7473p5254d69jcuat.tenyu.communication.request;
 import java.nio.file.*;
 
 import bei7473p5254d69jcuat.tenyu.communication.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.subjectivity.*;
 import glb.*;

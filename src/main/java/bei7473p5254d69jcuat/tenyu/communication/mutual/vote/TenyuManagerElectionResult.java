@@ -5,6 +5,7 @@ import java.util.Map.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import glb.*;
 
 /**
@@ -39,7 +40,7 @@ public class TenyuManagerElectionResult {
 		//有効なUserの影響割合合計
 		double total = 0;
 		for (Entry<Long, Double> e : powers.entrySet()) {
-			if (e.getKey() < IdObjectI.getFirstId()) {
+			if (e.getKey() < ModelI.getFirstId()) {
 				continue;
 			}
 

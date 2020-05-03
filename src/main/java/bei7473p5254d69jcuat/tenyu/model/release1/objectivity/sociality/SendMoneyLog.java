@@ -6,7 +6,7 @@ import glb.*;
 import glb.util.*;
 import jetbrains.exodus.env.*;
 
-public class SendMoneyLog implements Storable {
+public class SendMoneyLog implements StorableI {
 	/**
 	 * 送金額
 	 */

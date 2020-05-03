@@ -3,6 +3,8 @@ package bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.vote
 import java.util.*;
 
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.vote.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
 import bei7473p5254d69jcuat.tenyu.reference.*;
@@ -104,16 +106,16 @@ public class DistributedVote extends IndividualityObject implements DistributedV
 	@Override
 	public List<Long> getSpecialMainAdministratorIds() {
 		List<Long> r = new ArrayList<>();
-		r.add(IdObjectI.getSystemId());
-		r.add(IdObjectI.getVoteId());
+		r.add(ModelI.getSystemId());
+		r.add(ModelI.getVoteId());
 		return r;
 	}
 
 	@Override
 	public List<Long> getSpecialRegistererIds() {
 		List<Long> r = new ArrayList<>();
-		r.add(IdObjectI.getSystemId());
-		r.add(IdObjectI.getVoteId());
+		r.add(ModelI.getSystemId());
+		r.add(ModelI.getVoteId());
 		return r;
 	}
 

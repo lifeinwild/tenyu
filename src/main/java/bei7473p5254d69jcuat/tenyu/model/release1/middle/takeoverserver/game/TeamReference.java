@@ -18,7 +18,7 @@ public class TeamReference {
 		if (teamClassId < 0)
 			return false;
 		if (ratingGameId == null
-				|| !IdObject.validateIdStandardNotSpecialId(ratingGameId))
+				|| !Model.validateIdStandardNotSpecialId(ratingGameId))
 			return false;
 		return true;
 	}

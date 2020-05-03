@@ -16,7 +16,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class AddrInfo implements Storable {
+public class AddrInfo implements StorableI {
 	private static int fqdnMax = 50;
 
 	public static int getFqdnMax() {

@@ -12,7 +12,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class LoadSetting implements Storable {
+public class LoadSetting implements StorableI {
 	/**
 	 * シリアライズした時のデータ増加量の想定値
 	 */

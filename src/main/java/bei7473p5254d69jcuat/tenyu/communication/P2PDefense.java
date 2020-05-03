@@ -29,7 +29,7 @@ import jetbrains.exodus.env.*;
 * @author exceptiontenyu@gmail.com
 *
 */
-public class P2PDefense extends IdObject
+public class P2PDefense extends Model
 		implements GlbMemberDynamicState, P2PDefenseI {
 
 	/**
@@ -95,7 +95,7 @@ public class P2PDefense extends IdObject
 	}
 
 	public P2PDefense() {
-		SingleObjectStore.setup(this);
+		SingleObjectStoreI.setup(this);
 	}
 
 	/**
@@ -259,7 +259,7 @@ public class P2PDefense extends IdObject
 		save();
 	}
 
-	private final boolean validateAtCommonIdObjectConcrete(ValidationResult r) {
+	private final boolean validateAtCommonModelConcrete(ValidationResult r) {
 		boolean b = true;
 		boolean v = dupCheck != null && isaToCount != null
 				&& userIdToSize != null && p2pEdgeToCountSimpleMessage != null
@@ -272,31 +272,31 @@ public class P2PDefense extends IdObject
 	}
 
 	@Override
-	protected final boolean validateAtCreateIdObjectConcrete(
+	protected final boolean validateAtCreateModelConcrete(
 			ValidationResult r) {
 		boolean b = true;
-		if (!validateAtCommonIdObjectConcrete(r))
+		if (!validateAtCommonModelConcrete(r))
 			b = false;
 		return b;
 	}
 
 	@Override
-	protected boolean validateAtUpdateChangeIdObjectConcrete(ValidationResult r,
+	protected boolean validateAtUpdateChangeModelConcrete(ValidationResult r,
 			Object old) {
 		return true;
 	}
 
 	@Override
-	protected final boolean validateAtUpdateIdObjectConcrete(
+	protected final boolean validateAtUpdateModelConcrete(
 			ValidationResult r) {
 		boolean b = true;
-		if (!validateAtCommonIdObjectConcrete(r))
+		if (!validateAtCommonModelConcrete(r))
 			b = false;
 		return b;
 	}
 
 	@Override
-	public boolean validateReferenceIdObjectConcrete(ValidationResult r,
+	public boolean validateReferenceModelConcrete(ValidationResult r,
 			Transaction txn) throws Exception {
 		return true;
 	}

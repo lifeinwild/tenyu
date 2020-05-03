@@ -4,6 +4,9 @@ import java.util.*;
 
 import bei7473p5254d69jcuat.tenyu.communication.mutual.vote.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.vote.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.reference.*;
@@ -37,8 +40,8 @@ public class DistributedVoteResult extends AdministratedObject
 	private long startHistoryIndex;
 
 	public DistributedVoteResult() {
-		registererUserId = IdObjectI.getSystemId();
-		mainAdministratorUserId = IdObjectI.getVoteId();
+		registererUserId = ModelI.getSystemId();
+		mainAdministratorUserId = ModelI.getVoteId();
 	}
 
 	/**
@@ -53,7 +56,7 @@ public class DistributedVoteResult extends AdministratedObject
 
 	private List<Long> getAdministratorCommon() {
 		List<Long> r = new ArrayList<>();
-		r.add(IdObjectI.getSystemId());
+		r.add(ModelI.getSystemId());
 		return r;
 	}
 
@@ -82,12 +85,12 @@ public class DistributedVoteResult extends AdministratedObject
 
 	@Override
 	public Long getSpecialMainAdministratorId() {
-		return IdObjectI.getVoteId();
+		return ModelI.getVoteId();
 	}
 
 	@Override
 	public Long getSpecialRegistererId() {
-		return IdObjectI.getSystemId();
+		return ModelI.getSystemId();
 	}
 
 	@Override
@@ -137,7 +140,7 @@ public class DistributedVoteResult extends AdministratedObject
 					Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (!IdObject.validateIdStandardNotSpecialId(distributedVoteId)) {
+			if (!Model.validateIdStandardNotSpecialId(distributedVoteId)) {
 				vr.add(Lang.DISTRIBUTEDVOTE_RESULT_DISTRIBUTEDVOTE_ID_AND_STARTHISTORYINDEX,
 						Lang.ERROR_INVALID);
 				b = false;

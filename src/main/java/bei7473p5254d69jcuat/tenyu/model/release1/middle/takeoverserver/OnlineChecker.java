@@ -9,6 +9,7 @@ import bei7473p5254d69jcuat.tenyu.communication.P2P.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.useredge.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.useredge.IsOnline.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.role.*;

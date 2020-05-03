@@ -4,7 +4,7 @@ import java.io.*;
 import java.nio.file.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
-import bei7473p5254d69jcuat.tenyu.db.store.game.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.game.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.*;
 import bei7473p5254d69jcuat.tenyu.ui.common.*;

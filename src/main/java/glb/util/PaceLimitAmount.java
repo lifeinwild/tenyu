@@ -13,7 +13,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class PaceLimitAmount implements Storable {
+public class PaceLimitAmount implements StorableI {
 	/**
 	 * 現在の量
 	 */

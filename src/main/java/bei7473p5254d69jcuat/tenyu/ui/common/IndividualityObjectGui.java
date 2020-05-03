@@ -8,6 +8,7 @@ import org.controlsfx.control.textfield.*;
 import com.ibm.icu.text.*;
 
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
 import glb.*;

@@ -12,6 +12,10 @@ import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
  */
 public interface StaticGameI extends IndividualityObjectI {
 	/**
+	 * 現実を意味する常駐空間
+	 */
+	public static final Long real = 0L;
+	/**
 	 * ユーザーが常駐空間ゲームに対して何らかの操作をした時、
 	 * サーバーとして適切な権限があるかの判定に使われるかもしれない。
 	 * ゲームは管理者ユーザーを持つが、それは管理者としての操作のため。

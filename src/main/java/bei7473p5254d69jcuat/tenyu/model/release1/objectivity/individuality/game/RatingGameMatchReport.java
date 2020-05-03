@@ -8,7 +8,8 @@ import java.util.Map.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
-import bei7473p5254d69jcuat.tenyu.db.store.game.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
@@ -22,7 +23,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class RatingGameMatchReport implements Storable {
+public class RatingGameMatchReport implements StorableI {
 
 	public static final int commentMax = 2000;
 
@@ -424,7 +425,7 @@ public class RatingGameMatchReport implements Storable {
 			r.add(Lang.RATINGGAME_MATCH_REPORT_MATCHID, Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (!IdObject.validateIdStandardNotSpecialId(matchId)) {
+			if (!Model.validateIdStandardNotSpecialId(matchId)) {
 				r.add(Lang.RATINGGAME_MATCH_REPORT_MATCHID, Lang.ERROR_INVALID);
 				b = false;
 			}
@@ -436,7 +437,7 @@ public class RatingGameMatchReport implements Storable {
 			if (!playerNode.validate(r)) {
 				b = false;
 			} else {
-				if (!IdObject.validateIdStandardNotSpecialId(
+				if (!Model.validateIdStandardNotSpecialId(
 						playerNode.getUserId())) {
 					r.add(Lang.RATINGGAME_MATCH_REPORT_PLAYERUSERID,
 							Lang.ERROR_INVALID);

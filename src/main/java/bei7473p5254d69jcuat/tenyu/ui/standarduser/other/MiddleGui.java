@@ -9,7 +9,7 @@ import glb.*;
 import jetbrains.exodus.env.*;
 
 public class MiddleGui extends
-		IdObjectGui<MiddleI,
+		ModelGui<MiddleI,
 				Middle,
 				Middle,
 				MiddleStore,
@@ -21,7 +21,7 @@ public class MiddleGui extends
 	}
 
 	public static class MiddleTableItem
-			extends IdObjectTableItem<MiddleI, Middle> {
+			extends ModelTableItem<MiddleI, Middle> {
 
 		public MiddleTableItem(Middle src) {
 			super(src);

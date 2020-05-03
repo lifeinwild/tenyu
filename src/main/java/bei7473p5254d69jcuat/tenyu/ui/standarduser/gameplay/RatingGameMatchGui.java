@@ -1,6 +1,6 @@
 package bei7473p5254d69jcuat.tenyu.ui.standarduser.gameplay;
 
-import bei7473p5254d69jcuat.tenyu.db.store.game.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.game.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.*;
 import bei7473p5254d69jcuat.tenyu.ui.common.*;

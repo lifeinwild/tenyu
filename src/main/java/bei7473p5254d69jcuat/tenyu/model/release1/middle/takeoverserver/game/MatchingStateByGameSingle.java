@@ -41,7 +41,7 @@ public class MatchingStateByGameSingle extends AbstractMatchingStateByGame {
 	public boolean addApplicant(NodeIdentifierUser node) {
 		if (node == null)
 			return false;
-		if (!IdObject.validateIdStandardNotSpecialId(node.getUserId()))
+		if (!Model.validateIdStandardNotSpecialId(node.getUserId()))
 			return false;
 		if (applicants.size() >= max)
 			return false;

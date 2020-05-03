@@ -1,5 +1,6 @@
 package bei7473p5254d69jcuat.tenyu.reference;
 
+import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
 import jetbrains.exodus.env.*;
 
@@ -14,7 +15,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public interface StoreName {
+public interface StoreName extends StorableI {
 	ObjectStore<?, ?> getStore(Transaction txn);
 
 	String getModelName();

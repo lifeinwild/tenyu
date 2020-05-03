@@ -1,13 +1,13 @@
 package bei7473p5254d69jcuat.tenyu.model.release1.objectivity.sociality;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
-import bei7473p5254d69jcuat.tenyu.db.store.sociality.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.sociality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.env.*;
 
-public class Edge implements Storable {
+public class Edge implements StorableI {
 	/**
 	 * ここへのエッジ
 	 */
@@ -40,7 +40,7 @@ public class Edge implements Storable {
 			vr.add(Lang.EDGE_DESTSOCIALITYID, Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (!IdObject.validateIdStandardNotSpecialId(destSocialityId)) {
+			if (!Model.validateIdStandardNotSpecialId(destSocialityId)) {
 				vr.add(Lang.EDGE_DESTSOCIALITYID, Lang.ERROR_INVALID);
 				b = false;
 			}

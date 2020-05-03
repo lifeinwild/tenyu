@@ -2,7 +2,7 @@ package bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game
 
 import java.util.*;
 
-import bei7473p5254d69jcuat.tenyu.db.store.game.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.game.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.takeoverserver.game.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
@@ -43,6 +43,11 @@ public class RatingGame extends IndividualityObject implements RatingGameI {
 	public static List<Long> getAdministratorUserIdCreateStatic() {
 		return Glb.getObje().getRole(rs -> rs
 				.getByName(RatingGame.class.getSimpleName()).getAdminUserIds());
+	}
+
+	@Override
+	public boolean isMainAdministratorChangable() {
+		return true;
 	}
 
 	/**
@@ -189,14 +194,13 @@ public class RatingGame extends IndividualityObject implements RatingGameI {
 			}
 		}
 
-		if(!randomMatch && !teamMatch) {
+		if (!randomMatch && !teamMatch) {
 			r.add(Lang.RATINGGAME_TEAMCLASS, Lang.ERROR_EMPTY);
 			b = false;
 		}
 
 		return b;
 	}
-
 
 	@Override
 	protected final boolean validateAtCreateIndividualityObjectConcrete(
@@ -282,8 +286,8 @@ public class RatingGame extends IndividualityObject implements RatingGameI {
 	}
 
 	@Override
-	public boolean validateReferenceIndividualityObjectConcrete(ValidationResult r,
-			Transaction txn) throws Exception {
+	public boolean validateReferenceIndividualityObjectConcrete(
+			ValidationResult r, Transaction txn) throws Exception {
 		boolean b = true;
 		if (teamClasses != null) {
 			for (TeamClass t : teamClasses) {
@@ -326,6 +330,7 @@ public class RatingGame extends IndividualityObject implements RatingGameI {
 	public boolean validateNameSub(ValidationResult r) {
 		return true;
 	}
+
 	@Override
 	public StoreNameEnum getStoreName() {
 		return StoreNameObjectivity.RATING_GAME;

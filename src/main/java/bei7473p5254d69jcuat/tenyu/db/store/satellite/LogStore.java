@@ -4,7 +4,7 @@ import static bei7473p5254d69jcuat.tenyu.db.DBUtil.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
-import bei7473p5254d69jcuat.tenyu.db.store.IdObjectStore.*;
+import bei7473p5254d69jcuat.tenyu.db.store.ModelStore.*;
 import glb.*;
 import jetbrains.exodus.*;
 import jetbrains.exodus.env.*;
@@ -17,7 +17,7 @@ import jetbrains.exodus.env.*;
  *
  * @param <V>
  */
-public abstract class LogStore<V extends Storable>
+public abstract class LogStore<V extends StorableI>
 		extends SatelliteStore<Long, V> {
 
 	public LogStore(Transaction txn) {

@@ -11,7 +11,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class ObjectivityCoreConfig implements Storable {
+public class ObjectivityCoreConfig implements StorableI {
 	/**
 	 * 権限者によって作成または更新される非量的情報は
 	 * この期間が過ぎてから有効になる。

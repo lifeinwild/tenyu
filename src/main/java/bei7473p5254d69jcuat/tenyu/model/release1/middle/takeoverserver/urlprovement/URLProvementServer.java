@@ -12,6 +12,7 @@ import bei7473p5254d69jcuat.tenyu.communication.request.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.server.urlprovementserver.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.useredge.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.takeoverserver.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;

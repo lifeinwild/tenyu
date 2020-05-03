@@ -2,10 +2,10 @@ package bei7473p5254d69jcuat.tenyutalk.reference;
 
 import com.esotericsoftware.kryo.*;
 
-import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.reference.*;
 import glb.*;
+import glb.util.*;
 import jetbrains.exodus.env.*;
 
 /**
@@ -38,6 +38,27 @@ public class StoreNameRegister implements StoreName {
 
 	public int getRegisterId() {
 		return registerId;
+	}
+
+	private boolean validateCommon(ValidationResult r) {
+		boolean b = true;
+		return b;
+	}
+
+	@Override
+	public boolean validateAtCreate(ValidationResult r) {
+		return validateCommon(r);
+	}
+
+	@Override
+	public boolean validateAtUpdate(ValidationResult r) {
+		return validateCommon(r);
+	}
+
+	@Override
+	public boolean validateReference(ValidationResult r, Transaction txn)
+			throws Exception {
+		return validateCommon(r);
 	}
 
 }

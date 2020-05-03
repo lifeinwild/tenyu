@@ -8,6 +8,7 @@ import java.util.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyutalk.model.promise.*;
 import glb.*;
 import glb.util.*;

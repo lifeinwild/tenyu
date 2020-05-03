@@ -21,7 +21,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class TeamClass implements Storable {
+public class TeamClass implements StorableI {
 	public static final int memberCountMax = 1000 * 100;
 	public static final int roleNameMax = 200;
 	private int memberCount;

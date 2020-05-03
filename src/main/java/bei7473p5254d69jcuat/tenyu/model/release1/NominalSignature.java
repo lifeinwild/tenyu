@@ -4,6 +4,7 @@ import java.nio.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import glb.*;
 import glb.util.*;
@@ -16,7 +17,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class NominalSignature implements Storable {
+public class NominalSignature implements StorableI {
 	/**
 	 * 署名者
 	 */
@@ -79,7 +80,7 @@ public class NominalSignature implements Storable {
 			r.add(Lang.NOMINAL_SIGNATURE_SIGNERUSERID, Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (!IdObject.validateIdStandard(signerUserId)) {
+			if (!Model.validateIdStandard(signerUserId)) {
 				r.add(Lang.NOMINAL_SIGNATURE_SIGNERUSERID, Lang.ERROR_INVALID,
 						"signerUserId=" + signerUserId);
 				b = false;

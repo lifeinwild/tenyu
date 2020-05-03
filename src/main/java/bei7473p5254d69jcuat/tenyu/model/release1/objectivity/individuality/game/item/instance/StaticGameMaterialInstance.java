@@ -1,14 +1,14 @@
 package bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.item.instance;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
-import bei7473p5254d69jcuat.tenyu.db.store.game.item.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.item.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.item.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.env.*;
 
-public class StaticGameMaterialInstance implements Storable {
+public class StaticGameMaterialInstance implements StorableI {
 	/**
 	 * 材料の種別
 	 */
@@ -37,7 +37,7 @@ public class StaticGameMaterialInstance implements Storable {
 					Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (!IdObject.validateIdStandardNotSpecialId(gameMaterialClassId)) {
+			if (!Model.validateIdStandardNotSpecialId(gameMaterialClassId)) {
 				r.add(Lang.STATICGAME_MATERIAL_INSTANCE_CLASS_ID,
 						Lang.ERROR_INVALID);
 				b = false;

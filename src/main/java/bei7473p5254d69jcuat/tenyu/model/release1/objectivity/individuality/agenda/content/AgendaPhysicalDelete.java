@@ -65,7 +65,7 @@ public class AgendaPhysicalDelete implements AgendaContentI {
 			StoreNameObjectivity storeName = byStore.getStoreName();
 			if (storeName == null)
 				continue;
-			IdObjectStore<?, ?> s = storeName.getStore(txn);
+			ModelStore<?, ?> s = storeName.getStore(txn);
 
 			for (Long id : byStore.getIds()) {
 				s.delete(id);
@@ -117,7 +117,7 @@ public class AgendaPhysicalDelete implements AgendaContentI {
 		return b;
 	}
 
-	public static class TenyuPhysicalDeleteByStore implements Storable {
+	public static class TenyuPhysicalDeleteByStore implements StorableI {
 		public static final int deleteIdMax = 1000 * 1000 * 10;
 		private List<Long> ids = new ArrayList<>();
 		/**
@@ -192,7 +192,7 @@ public class AgendaPhysicalDelete implements AgendaContentI {
 						Lang.ERROR_EMPTY);
 				b = false;
 			} else {
-				if (!IdObject.validateIdStandardNotSpecialId(ids)) {
+				if (!Model.validateIdStandardNotSpecialId(ids)) {
 					vr.add(Lang.AGENDA_PHYSICALDELETE_BYSTORE_IDS,
 							Lang.ERROR_INVALID);
 					b = false;
@@ -221,7 +221,7 @@ public class AgendaPhysicalDelete implements AgendaContentI {
 		public boolean validateReference(ValidationResult vr, Transaction txn)
 				throws Exception {
 			boolean b = true;
-			IdObjectStore<?, ?> s = storeName.getStore(txn);
+			ModelStore<?, ?> s = storeName.getStore(txn);
 			if (s == null) {
 				vr.add(Lang.AGENDA_PHYSICALDELETE_BYSTORE_STORENAME,
 						Lang.ERROR_INVALID);

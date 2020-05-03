@@ -1,6 +1,6 @@
 package bei7473p5254d69jcuat.tenyu.ui.standarduser.user;
 
-import bei7473p5254d69jcuat.tenyu.db.store.sociality.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.sociality.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.sociality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.sociality.*;
@@ -74,7 +74,7 @@ public class SocialityGui extends
 		buildSubmitButton(gui -> {
 			try {
 				Long id = Long.valueOf(getIdInput().getText());
-				return IdObject.validateIdStandard(id);
+				return Model.validateIdStandard(id);
 			} catch (Exception e) {
 				Glb.debug(e);
 				return false;

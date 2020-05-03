@@ -3,6 +3,8 @@ package bei7473p5254d69jcuat.tenyu.model.release1.objectivity.role;
 import java.util.*;
 
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.role.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
@@ -95,19 +97,19 @@ public class Role extends IndividualityObject implements RoleI {
 
 	@Override
 	public Long getSpecialMainAdministratorId() {
-		return IdObjectI.getVoteId();
+		return ModelI.getVoteId();
 	}
 
 	@Override
 	public List<Long> getSpecialMainAdministratorIds() {
 		List<Long> r = new ArrayList<>();
-		r.add(IdObjectI.getVoteId());
+		r.add(ModelI.getVoteId());
 		return r;
 	}
 
 	@Override
 	public Long getSpecialRegistererId() {
-		return IdObjectI.getSystemId();
+		return ModelI.getSystemId();
 	}
 
 	public boolean isAdmin(Long userId) {
@@ -161,7 +163,7 @@ public class Role extends IndividualityObject implements RoleI {
 				r.add(Lang.ROLE_ADMINS, Lang.ERROR_TOO_MANY,
 						"size=" + adminUserIds.size());
 				b = false;
-			} else if (!IdObject.validateIdStandardNotSpecialId(adminUserIds)) {
+			} else if (!Model.validateIdStandardNotSpecialId(adminUserIds)) {
 				r.add(Lang.ROLE_ADMINS, Lang.ERROR_INVALID,
 						"admins=" + adminUserIds);
 				b = false;

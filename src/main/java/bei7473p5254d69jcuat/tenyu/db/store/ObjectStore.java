@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
-import bei7473p5254d69jcuat.tenyu.db.store.IdObjectStore.*;
+import bei7473p5254d69jcuat.tenyu.db.store.ModelStore.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.*;
 import glb.*;
 import jetbrains.exodus.*;
@@ -46,7 +46,7 @@ import jetbrains.exodus.env.*;
  *
  * ここで扱えるインデックスは完全一致や前方一致等の単純なものに限られる。
  * 複雑な検索は外部のグラフDBでやるという設計。
- * 参照：{@link IdObjectStore}
+ * 参照：{@link ModelStore}
  *
  * サブインデックス毎にKVS上のストアが１つ作られる。
  * サブインデックスのメンバー変数はNotNull

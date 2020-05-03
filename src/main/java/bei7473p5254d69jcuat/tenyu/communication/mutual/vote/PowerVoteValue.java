@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.Map.*;
 
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.vote.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.subjectivity.*;
@@ -101,7 +102,7 @@ public class PowerVoteValue implements VoteValue {
 					Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (!IdObject.validateIdStandardNotSpecialId(distributedVoteId)) {
+			if (!Model.validateIdStandardNotSpecialId(distributedVoteId)) {
 				r.add(Lang.DISTRIBUTEDVOTE_VOTEVALUE_DISTRIBUTEDVOTE_ID,
 						Lang.ERROR_INVALID);
 				b = false;

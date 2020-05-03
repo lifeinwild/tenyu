@@ -22,7 +22,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class Chat implements Storable {
+public class Chat implements StorableI {
 	private static final int windowMax = 20;
 
 	private static final int messageMax = 1000 * 1000 * 20;
@@ -215,7 +215,7 @@ public class Chat implements Storable {
 				b = false;
 			} else {
 				for (Entry<Long, ChatMessage> e : chatMessages.entrySet()) {
-					if (!IdObject.validateIdStandardNotSpecialId(e.getKey())) {
+					if (!Model.validateIdStandardNotSpecialId(e.getKey())) {
 						r.add(Lang.CHAT, Lang.ID, Lang.ERROR_INVALID,
 								"key:id=" + e.getKey());
 						b = false;

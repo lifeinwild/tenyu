@@ -13,7 +13,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class Cookie implements Storable {
+public class Cookie implements StorableI {
 	private Map<String, String> data = new LinkedHashMap<>();
 
 	public Map<String, String> getData() {

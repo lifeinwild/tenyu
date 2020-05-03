@@ -137,7 +137,7 @@ public class CatchUpStateByStoreStepRecycleHid
 
 		//自分のこのストアのリサイクルHIDの件数
 		long count = Glb.getObje().readRet(txn -> {
-			IdObjectStore<?, ?> s = storeName.getStore(txn);
+			ModelStore<?, ?> s = storeName.getStore(txn);
 			RecycleHidStore rs = s.getRecycleHidStore();
 			return rs.count();
 		});

@@ -4,6 +4,7 @@ import java.nio.file.*;
 
 import bei7473p5254d69jcuat.tenyu.communication.*;
 import bei7473p5254d69jcuat.tenyu.communication.netty.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.*;
 import glb.*;
 import glb.util.*;

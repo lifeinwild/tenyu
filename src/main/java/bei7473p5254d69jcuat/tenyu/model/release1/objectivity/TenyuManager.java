@@ -2,6 +2,7 @@ package bei7473p5254d69jcuat.tenyu.model.release1.objectivity;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.env.*;
@@ -12,7 +13,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class TenyuManager implements Storable {
+public class TenyuManager implements StorableI {
 	/**
 	 * 全体の意思決定への影響割合
 	 * 1.0-0
@@ -101,7 +102,7 @@ public class TenyuManager implements Storable {
 			r.add(Lang.TENYU_MANAGER_USERID, Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (!IdObject.validateIdStandardNotSpecialId(userId)) {
+			if (!Model.validateIdStandardNotSpecialId(userId)) {
 				r.add(Lang.TENYU_MANAGER_USERID, Lang.ERROR_INVALID);
 				b = false;
 			}

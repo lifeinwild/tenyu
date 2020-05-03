@@ -3,9 +3,11 @@ package bei7473p5254d69jcuat.tenyu.model.release1.objectivity.sociality;
 import java.nio.*;
 import java.util.*;
 
-import bei7473p5254d69jcuat.tenyu.db.store.*;
-import bei7473p5254d69jcuat.tenyu.db.store.game.*;
-import bei7473p5254d69jcuat.tenyu.db.store.sociality.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.sociality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
@@ -29,12 +31,12 @@ public class Sociality extends AdministratedObject
 	public static byte[] createIndividualityObjectId(byte nodeTypeId,
 			long individualityObjectId) {
 		//ここに値が設置される
-		byte[] nodeId = new byte[NodeType.getIdSize() + IdObjectI.getIdSize()];
+		byte[] nodeId = new byte[NodeType.getIdSize() + ModelI.getIdSize()];
 		//頭にNodeTypeを特定する情報が設置される
 		nodeId[0] = nodeTypeId;
-		//次にIdObjectのidを特定する情報が設置される
+		//次にModelのidを特定する情報が設置される
 		ByteBuffer buf = ByteBuffer.wrap(nodeId, NodeType.getIdSize(),
-				IdObjectI.getIdSize());
+				ModelI.getIdSize());
 		buf.putLong(individualityObjectId);
 		return buf.array();
 	}
@@ -44,24 +46,13 @@ public class Sociality extends AdministratedObject
 	 * {@link Sociality#individualityObjectConcreteId} == {@link IndividualityObject#getId()}
 	 *
 	 * @param nodeTypeId	NodeTypeのID
-	 * @param individualityObjectId		IdObjectのID
+	 * @param individualityObjectConcreteId		{@link ModelI#getId()}
 	 * @return				individualityObjectId
 	 */
 	public static byte[] createIndividualityObjectId(NodeType type,
-			long individualityObjectId) {
-		return createIndividualityObjectId(type.getId(), individualityObjectId);
+			long individualityObjectConcreteId) {
+		return createIndividualityObjectId(type.getId(), individualityObjectConcreteId);
 	}
-
-	/*
-	@Override
-	public Long getSpecialMainAdministratorId() {
-		if (type == NodeType.COOPERATIVE_ACCOUNT
-				|| type == NodeType.FLOWNETWORK_ABSTRACTNOMINAL
-				|| type == NodeType.WEB)
-			return IdObjectI.getNullId();
-		return null;
-	}
-	*/
 
 	/**
 	 * @return	単独でBAN操作が可能なユーザーID一覧
@@ -138,7 +129,8 @@ public class Sociality extends AdministratedObject
 	protected double flowFromCooperativeAccount;
 
 	/**
-	 * 個性系具象クラスID
+	 * 社会性は非社会性モデルのオブジェクトと１：１対応する。
+	 * 社会性を持ちうるのは少なくとも{@link IndividualityObjectI}以下。
 	 */
 	protected Long individualityObjectConcreteId;
 
@@ -310,11 +302,11 @@ public class Sociality extends AdministratedObject
 			return r;
 		switch (type) {
 		case COOPERATIVE_ACCOUNT:
-			r.add(IdObjectI.getVoteId());
+			r.add(ModelI.getVoteId());
 			break;
 		case FLOWNETWORK_ABSTRACTNOMINAL:
 		case WEB:
-			r.add(IdObjectI.getNullId());
+			r.add(ModelI.getNullId());
 			break;
 		case RATINGGAME:
 		case STATICGAME:
@@ -332,9 +324,9 @@ public class Sociality extends AdministratedObject
 			return null;
 		switch (type) {
 		case COOPERATIVE_ACCOUNT:
-			return IdObjectI.getSystemId();
+			return ModelI.getSystemId();
 		case FLOWNETWORK_ABSTRACTNOMINAL:
-			return IdObjectI.getVoteId();
+			return ModelI.getVoteId();
 		case WEB:
 		case RATINGGAME:
 		case STATICGAME:
@@ -453,7 +445,7 @@ public class Sociality extends AdministratedObject
 					Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (!IdObject.validateIdStandardNotSpecialId(
+			if (!Model.validateIdStandardNotSpecialId(
 					individualityObjectConcreteId)) {
 				r.add(Lang.SOCIALITY_INDIVIDUALITY_OBJECT_CONCRETE_ID,
 						Lang.ERROR_INVALID);
@@ -477,7 +469,7 @@ public class Sociality extends AdministratedObject
 				r.add(Lang.SOCIALITY_BLACKLIST, Lang.ERROR_INVALID);
 				b = false;
 			} else {
-				if (!IdObject.validateIdStandardNotSpecialId(blackList)) {
+				if (!Model.validateIdStandardNotSpecialId(blackList)) {
 					r.add(Lang.SOCIALITY_BLACKLIST, Lang.ERROR_INVALID);
 					b = false;
 				}
@@ -594,17 +586,11 @@ public class Sociality extends AdministratedObject
 		//対応オブジェクトがDB上に無い場合true
 		boolean noDBIndividualityObject = false;
 
-		IdObject dbIndividualityObject = null;
+		Model dbIndividualityObject = null;
 		switch (type) {
 		case FLOWNETWORK_ABSTRACTNOMINAL:
 			dbIndividualityObject = new FlowNetworkAbstractNominalStore(txn)
 					.get(individualityObjectConcreteId);
-			/*
-			if (!IdObjectDBI.getNullId()
-					.equals(mainAdministratorUserId)) {
-				r.add(Lang.ADMINISTRATEDOBJECT_ADMINISTRATOR, Lang.ERROR_INVALID);
-			}
-			*/
 			break;
 		case COOPERATIVE_ACCOUNT:
 			//共同主体は管理者無しでIndividualityObjectもDBに記録されない

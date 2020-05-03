@@ -3,14 +3,14 @@ package bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game
 import java.util.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
-import bei7473p5254d69jcuat.tenyu.db.store.game.item.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.item.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.item.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.env.*;
 
-public class StaticGameEquipmentInstance implements Storable {
+public class StaticGameEquipmentInstance implements StorableI {
 	/**
 	 * オプションの最大数
 	 */
@@ -79,7 +79,7 @@ public class StaticGameEquipmentInstance implements Storable {
 					Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (!IdObject
+			if (!Model
 					.validateIdStandardNotSpecialId(gameEquipmentClassId)) {
 				r.add(Lang.STATICGAME_EQUIPMENT_INSTANCE_CLASS_ID,
 						Lang.ERROR_INVALID);

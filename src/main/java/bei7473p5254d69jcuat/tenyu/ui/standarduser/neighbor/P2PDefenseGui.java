@@ -8,7 +8,7 @@ import glb.*;
 import jetbrains.exodus.env.*;
 
 public class P2PDefenseGui extends
-		IdObjectGui<P2PDefenseI,
+		ModelGui<P2PDefenseI,
 				P2PDefense,
 				P2PDefense,
 				P2PDefenseStore,
@@ -20,7 +20,7 @@ public class P2PDefenseGui extends
 	}
 
 	public static class P2PDefenseTableItem
-			extends IdObjectTableItem<P2PDefenseI, P2PDefense> {
+			extends ModelTableItem<P2PDefenseI, P2PDefense> {
 
 		public P2PDefenseTableItem(P2PDefense src) {
 			super(src);

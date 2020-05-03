@@ -3,7 +3,7 @@ package bei7473p5254d69jcuat.tenyu.communication.request.gui.right.user;
 import bei7473p5254d69jcuat.tenyu.communication.*;
 import bei7473p5254d69jcuat.tenyu.communication.packaging.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.gui.right.*;
-import bei7473p5254d69jcuat.tenyu.db.store.sociality.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.sociality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.sociality.*;
 import glb.*;
 import glb.util.*;

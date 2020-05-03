@@ -14,7 +14,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class UserScope implements Storable {
+public class UserScope implements StorableI {
 	public static final int acceptedMax = 1000 * 10;
 	public static final int deniedMax = 1000 * 10;
 

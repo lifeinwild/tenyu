@@ -19,6 +19,7 @@ import bei7473p5254d69jcuat.tenyu.communication.request.AbstractStandardResponse
 import bei7473p5254d69jcuat.tenyu.communication.request.gui.GuiCausedSimpleMessageGui.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.takeoverserver.usermessagelist.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.role.*;

@@ -13,7 +13,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class ServerList implements Storable {
+public class ServerList implements StorableI {
 
 	public static final int serverMax = 200;
 	private List<NodeIdentifierUser> servers = new ArrayList<>();

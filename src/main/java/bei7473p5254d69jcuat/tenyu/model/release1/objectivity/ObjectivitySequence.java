@@ -1,10 +1,11 @@
 package bei7473p5254d69jcuat.tenyu.model.release1.objectivity;
 
 import bei7473p5254d69jcuat.tenyu.db.store.*;
-import bei7473p5254d69jcuat.tenyu.db.store.sociality.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.sociality.*;
 import glb.*;
 import jetbrains.exodus.env.*;
@@ -28,7 +29,7 @@ import jetbrains.exodus.env.*;
  * 管理ツールによってそのようなチェックを行う。
  * 管理ツールもモデルクラスを意識した複雑な設計を持つだろう。
  *
- * 各IdObjectはID削除通知を受け取れる必要がある
+ * 各{@link Model}はID削除通知を受け取れる必要がある
  * その通知に対してIDを単に削除するか削除済みIDへ置き換えるかは各モデルクラスで定義
  *
  * 運営上の削除更新計画の要素一覧
@@ -102,7 +103,7 @@ public class ObjectivitySequence {
 
 		//この場合管理者不在になるので、後から管理者を設定する手段が用意されている必要がある
 		if (admin == null)
-			admin = IdObjectI.getNullId();
+			admin = ModelI.getNullId();
 
 		if (type == NodeType.USER && registerer == null)
 			registerer = nid;

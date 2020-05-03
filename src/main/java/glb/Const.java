@@ -10,8 +10,8 @@ import java.util.Base64.*;
 
 import javax.crypto.*;
 
-import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.satellite.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
 import glb.util.*;
@@ -349,7 +349,7 @@ public class Const {
 			authorOffPubBase64 = authorPublicKeys.get(3);//2は旧オフライン公開鍵
 		}
 		//OtherPublicKeys:PublicKeys.txt
-		author.setId(IdObjectI.getFirstId());
+		author.setId(ModelI.getFirstId());
 		author.setHid(HashStore.getFirstHid());
 		author.setSpecifiedId(true);
 		author.setMainAdministratorUserId(author.getId());
@@ -376,9 +376,16 @@ public class Const {
 				Base64.getDecoder().decode(authorOffPubBase64));
 		author.setTimezone(ZoneId.of("Japan"));
 
-		author.setRegistererUserId(IdObjectI.getSystemId());
+		author.setRegistererUserId(ModelI.getSystemId());
 
 		author.addTag("Author");
+
+		author.setCreateDate(0);
+		author.setCreateHistoryIndex(0);
+		author.setUpdateDate(0);
+		author.setUpdateHistoryIndex(0);
+
+		author.setLocale(Locale.JAPANESE);
 		return author;
 	}
 

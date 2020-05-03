@@ -1,5 +1,7 @@
 package bei7473p5254d69jcuat.tenyutalk.reference;
 
+import java.nio.*;
+
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyutalk.model.promise.*;
 import bei7473p5254d69jcuat.tenyutalk.ui.reference.*;
@@ -22,7 +24,6 @@ import jetbrains.exodus.env.*;
  */
 public class TenyutalkReferenceFlexible<V extends CreativeObjectI>
 		extends TenyutalkReferenceBase<V> {
-
 	/**
 	 * オブジェクト作成時点の参照先オブジェクトのバージョン
 	 */
@@ -52,6 +53,36 @@ public class TenyutalkReferenceFlexible<V extends CreativeObjectI>
 	private boolean ignorePatch = true;
 
 	@Override
+	public byte[] getStoreKey() {
+		byte[] firstIdB = ByteBuffer.allocate(Long.BYTES).putLong(firstId)
+				.array();
+		ByteBuffer buf = ByteBuffer.allocate(Long.BYTES * 3);
+		int vBytes = 0;
+		if (ignoreMajor) {
+			buf.putLong(version.getMajor());
+			vBytes += Long.BYTES;
+			if (ignoreMinor) {
+				buf.putLong(version.getMinor());
+				vBytes += Long.BYTES;
+				if (ignorePatch) {
+					buf.putLong(version.getPatch());
+					vBytes += Long.BYTES;
+				}
+			}
+		}
+		byte[] vB = buf.array();
+		byte[] r = new byte[firstIdB.length + vBytes];
+		System.arraycopy(firstIdB, 0, r, 0, firstIdB.length);
+		System.arraycopy(vB, 0, r, firstIdB.length, vBytes);
+		return r;
+	}
+
+	@Override
+	public Long getId() {
+		return firstId;
+	}
+
+	@Override
 	public TenyutalkReferenceFlexibleGui<V> getGui(String guiName,
 			String cssIdPrefix) {
 		return new TenyutalkReferenceFlexibleGui<V>(guiName, cssIdPrefix);
@@ -75,7 +106,7 @@ public class TenyutalkReferenceFlexible<V extends CreativeObjectI>
 			r.add(Lang.TENYUTALK_REFERENCE_FLEXIBLE_FIRST_ID, Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (!IdObject.validateIdStandard(firstId)) {
+			if (!Model.validateIdStandard(firstId)) {
 				r.add(Lang.TENYUTALK_REFERENCE_FLEXIBLE_FIRST_ID,
 						Lang.ERROR_INVALID, "firstId=" + firstId);
 				b = false;
@@ -85,11 +116,13 @@ public class TenyutalkReferenceFlexible<V extends CreativeObjectI>
 			r.add(Lang.TENYUTALK_REFERENCE_FLEXIBLE_VERSION, Lang.ERROR_EMPTY);
 			b = false;
 		}
+
 		return b;
 	}
 
 	@Override
-	public boolean validateAtUpdateChange(ValidationResult r, Object old) {
+	protected boolean validateAtUpdateChangeTenyutalkReferenceBaseConcrete(
+			ValidationResult r, Object old) {
 		if (!(old instanceof TenyutalkReferenceFlexible<?>)) {
 			r.add(Lang.OLD_OBJECT_AT_UPDATE, Lang.ERROR_INVALID,
 					"old.getClass()=" + old.getClass());
@@ -98,15 +131,17 @@ public class TenyutalkReferenceFlexible<V extends CreativeObjectI>
 		TenyutalkReferenceFlexible<
 				?> old2 = (TenyutalkReferenceFlexible<?>) old;
 		boolean b = true;
-		if (!super.validateAtUpdateChange(r, old)) {
-			b = false;
-		}
 		if (Glb.getUtil().notEqual(firstId, old2.getFirstId())) {
 			r.add(Lang.TENYUTALK_REFERENCE_FLEXIBLE_FIRST_ID,
 					Lang.ERROR_NOT_EQUAL, "this.firstId=" + firstId
 							+ " old.firstId=" + old2.getFirstId());
 			b = false;
 		}
+
+		if (!version.validateAtUpdateChange(r, old2)) {
+			b = false;
+		}
+
 		return b;
 	}
 
@@ -212,7 +247,6 @@ public class TenyutalkReferenceFlexible<V extends CreativeObjectI>
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		@SuppressWarnings("rawtypes")
 		TenyutalkReferenceFlexible other = (TenyutalkReferenceFlexible) obj;
 		if (firstId == null) {
 			if (other.firstId != null)

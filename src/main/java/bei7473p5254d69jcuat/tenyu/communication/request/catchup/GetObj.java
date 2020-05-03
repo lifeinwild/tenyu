@@ -5,8 +5,8 @@ import java.util.*;
 import bei7473p5254d69jcuat.tenyu.communication.*;
 import bei7473p5254d69jcuat.tenyu.communication.netty.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.*;
-import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import glb.*;
 import glb.util.*;
 import io.netty.channel.*;
@@ -70,19 +70,19 @@ public class GetObj extends AbstractByStoreMessage {
 				+ hidList);
 
 		//返信されるオブジェクト一覧
-		List<IdObjectI> objs = new ArrayList<>();
+		List<ModelI> objs = new ArrayList<>();
 
 		//ID
 		if (idList != null) {
 			long[] ids = idList.uncompress();
 			Glb.getObje().read(txn -> {
-				IdObjectStore<? extends IdObjectI,
+				ModelStore<? extends ModelI,
 						?> s = storeName.getStore(txn);
 				if (s == null)
 					return;
 				int count = 0;
 				for (Long id : ids) {
-					IdObjectI o = s.getRawObj(id);
+					ModelI o = s.getRawObj(id);
 					if (o == null)
 						continue;
 					objs.add(o);
@@ -97,13 +97,13 @@ public class GetObj extends AbstractByStoreMessage {
 		if (hidList != null) {
 			long[] hids = hidList.uncompress();
 			Glb.getObje().read(txn -> {
-				IdObjectStore<? extends IdObjectI,
+				ModelStore<? extends ModelI,
 						?> s = storeName.getStore(txn);
 				if (s == null)
 					return;
 				int count = 0;
 				for (Long hid : hids) {
-					IdObjectI o = s.getRawObjByHid(hid);
+					ModelI o = s.getRawObjByHid(hid);
 					if (o == null)
 						continue;
 					objs.add(o);
@@ -138,15 +138,15 @@ public class GetObj extends AbstractByStoreMessage {
 	public static class GetObjResponse extends AbstractByStoreMessageResponse {
 		/**
 		 * idまたはhidで取得されたオブジェクト一覧
-		 * 要素のIDがIdObject#getNullId()と一致する場合、削除されたことを意味する
+		 * 要素のIDが{@link ModelI#getNullId()}と一致する場合、削除されたことを意味する
 		 */
-		private List<IdObjectI> objs;
+		private List<ModelI> objs;
 
-		public void setObjs(List<IdObjectI> objs) {
+		public void setObjs(List<ModelI> objs) {
 			this.objs = objs;
 		}
 
-		public List<IdObjectI> getObjs() {
+		public List<ModelI> getObjs() {
 			return objs;
 		}
 

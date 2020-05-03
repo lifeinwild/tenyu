@@ -13,7 +13,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class RegexAndSelect implements Storable {
+public class RegexAndSelect implements StorableI {
 	/**
 	 * 入力された文字列に適用される正規表現
 	 */

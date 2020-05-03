@@ -2,8 +2,8 @@ package bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game
 
 import java.util.*;
 
-import bei7473p5254d69jcuat.tenyu.db.store.game.*;
-import bei7473p5254d69jcuat.tenyu.db.store.game.item.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.item.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.game.item.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
@@ -33,13 +33,18 @@ public class StaticGameEquipmentClass extends IndividualityObject
 					Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (!IdObject.validateIdStandardNotSpecialId(staticGameId)) {
+			if (!Model.validateIdStandardNotSpecialId(staticGameId)) {
 				r.add(Lang.STATICGAME_EQUIPMENT_CLASS_STATICGAME_ID,
 						Lang.ERROR_INVALID, "staticGameId=" + staticGameId);
 				b = false;
 			}
 		}
 		return b;
+	}
+
+	@Override
+	public boolean isMainAdministratorChangable() {
+		return true;
 	}
 
 	@Override

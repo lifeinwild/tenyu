@@ -2,7 +2,7 @@ package bei7473p5254d69jcuat.tenyu.model.release1.objectivity.sociality;
 
 import java.util.*;
 
-import bei7473p5254d69jcuat.tenyu.db.store.sociality.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.sociality.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.sociality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.reference.*;
@@ -89,7 +89,7 @@ public class SocialityIncomeSharing extends AdministratedObject
 					Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (!IdObject.validateIdStandardNotSpecialId(senderSocialityId)) {
+			if (!Model.validateIdStandardNotSpecialId(senderSocialityId)) {
 				r.add(Lang.SOCIALITY_INCOMESHARING_SENDERSOCIALITYID,
 						Lang.ERROR_INVALID);
 				b = false;
@@ -101,7 +101,7 @@ public class SocialityIncomeSharing extends AdministratedObject
 					Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (!IdObject.validateIdStandardNotSpecialId(receiverSocialityId)) {
+			if (!Model.validateIdStandardNotSpecialId(receiverSocialityId)) {
 				r.add(Lang.SOCIALITY_INCOMESHARING_RECEIVERSOCIALITYID,
 						Lang.ERROR_INVALID);
 				b = false;

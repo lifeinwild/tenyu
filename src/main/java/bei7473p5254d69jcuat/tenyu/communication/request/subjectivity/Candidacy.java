@@ -66,7 +66,7 @@ public class Candidacy extends Request implements SignedPackageContent {
 	protected boolean validateRequestConcrete(Message m) {
 		Long candidateUserId = m.getUserId();
 
-		if (!IdObject.validateIdStandardNotSpecialId(candidateUserId)) {
+		if (!Model.validateIdStandardNotSpecialId(candidateUserId)) {
 			return false;
 		}
 

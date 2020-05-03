@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.function.*;
 
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 
 /**
  * 検索系GUIの抽象化のために作成
@@ -17,7 +18,7 @@ import bei7473p5254d69jcuat.tenyu.db.store.*;
  * @param <T2>
  * @param <S>
  */
-public class SearchFuncs<T1 extends IdObjectI, T2 extends T1> {
+public class SearchFuncs<T1 extends ModelI, T2 extends T1> {
 	/**
 	 * 検索結果のクリア処理など
 	 */

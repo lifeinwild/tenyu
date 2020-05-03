@@ -20,7 +20,7 @@ import jetbrains.exodus.env.*;
  * もう一つ、極一部のインスタンスだけが必要とする情報もあり、
  * この方法で対応するとDBのサイズを小さくできる可能性が高い。
  */
-public class AdditionalSetting implements Storable {
+public class AdditionalSetting implements StorableI {
 	public static final int maxKeyLen = 100;
 	public static final int maxSize = 20;
 	public static final int maxValLen = 100;

@@ -45,7 +45,7 @@ public class Util {
 		Security.addProvider(new BouncyCastleProvider());
 	}
 
-	public boolean validateReference(Collection<? extends Storable> storables,
+	public boolean validateReference(Collection<? extends StorableI> storables,
 			ValidationResult r, Transaction txn) {
 		return validateCollection(storables, r, e -> {
 			try {
@@ -57,12 +57,12 @@ public class Util {
 		});
 	}
 
-	public boolean validateAtDelete(Collection<? extends Storable> storables,
+	public boolean validateAtDelete(Collection<? extends StorableI> storables,
 			ValidationResult r) {
 		return validateCollection(storables, r, e -> e.validateAtDelete(r));
 	}
 
-	public boolean validateAtUpdate(Collection<? extends Storable> storables,
+	public boolean validateAtUpdate(Collection<? extends StorableI> storables,
 			ValidationResult r) {
 		return validateCollection(storables, r, e -> e.validateAtUpdate(r));
 	}
@@ -91,7 +91,7 @@ public class Util {
 	}
 
 	/**
-	 * 多くの場合{@link Storable#validateAtUpdateChange(ValidationResult, Object)}は
+	 * 多くの場合{@link StorableI#validateAtUpdateChange(ValidationResult, Object)}は
 	 * 単にサブクラスの実装を呼び出すだけでは済まない。
 	 * ホストクラス側にサブクラスのメンバー変数を意識した検証ロジックを書く必要がある。
 	 * それがvalidate
@@ -111,14 +111,14 @@ public class Util {
 		return true;
 	}
 
-	public boolean validateAtCreate(Collection<? extends Storable> storables,
+	public boolean validateAtCreate(Collection<? extends StorableI> storables,
 			ValidationResult r) {
 		return validateCollection(storables, r, e -> e.validateAtCreate(r));
 	}
 
-	private boolean validateCollection(Collection<? extends Storable> storables,
-			ValidationResult r, Function<Storable, Boolean> f) {
-		for (Storable e : storables) {
+	private boolean validateCollection(Collection<? extends StorableI> storables,
+			ValidationResult r, Function<StorableI, Boolean> f) {
+		for (StorableI e : storables) {
 			if (!f.apply(e)) {
 				return false;
 			}

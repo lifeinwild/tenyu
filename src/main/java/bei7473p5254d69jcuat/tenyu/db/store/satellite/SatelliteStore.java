@@ -17,10 +17,10 @@ import jetbrains.exodus.env.*;
  *
  * 永続化されるが客観ではないモデル。
  *
- * IdObjectStore系と検証処理の構造を分けるために作成した。
- * IdObjectStoreの検証処理が多様化・複雑化していたため、
+ * {@link ModelStore}系と検証処理の構造を分けるために作成した。
+ * {@link ModelStore}の検証処理が多様化・複雑化していたため、
  * その抽象化を考えるより他のモデルクラスを別系統にまとめた方が良いと判断した。
- * 実質的に非IdObjectStore系を扱うための抽象クラス
+ * 実質的に非{@link ModelStore}系を扱うための抽象クラス
  *
  * このクラスに定義された検証系インターフェースは
  * 必要ならオーバーライドする事を想定している。
@@ -28,7 +28,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public abstract class SatelliteStore<K, V extends Storable>
+public abstract class SatelliteStore<K, V extends StorableI>
 		extends ObjectStore<K, V> {
 
 	public SatelliteStore(Transaction txn) {
@@ -60,8 +60,7 @@ public abstract class SatelliteStore<K, V extends Storable>
 
 		//書き込み
 		if (!putDirect(cnvKey(key), cnvVal(val)))
-			throw new Exception(
-					"IdObjectStore:" + key.getClass().getSimpleName());
+			throw new Exception(key.getClass().getSimpleName());
 		return true;
 	}
 

@@ -4,6 +4,7 @@ import bei7473p5254d69jcuat.tenyu.communication.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.gui.*;
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.ui.standarduser.neighbor.*;
 import glb.*;
 
@@ -25,7 +26,7 @@ public class UserRegistrationIntroduceOfferTableItem
 	}
 
 	protected void updateUser() {
-		setUserId(IdObjectI.getNullId());
+		setUserId(ModelI.getNullId());
 		setName(offer.getInfo().getMe().getName());
 		setExplanation(offer.getInfo().getMe().getExplanation());
 	}

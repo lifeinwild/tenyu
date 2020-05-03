@@ -8,6 +8,7 @@ import bei7473p5254d69jcuat.tenyu.communication.request.catchup.GetObj.*;
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.satellite.HashStore.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.catchup.AbstractCatchUpState.*;
 import glb.*;
 import glb.util.*;
@@ -25,7 +26,7 @@ public class CatchUpStateByStoreStepGetObj extends AbstractCatchUpByStoreStep {
 	private AsyncRequestStatesSerialSharding<
 			GetObj> objRequests = new AsyncRequestStatesSerialSharding<>();
 
-	private List<IdObjectI> tmpObjs = new ArrayList<>();
+	private List<ModelI> tmpObjs = new ArrayList<>();
 
 	@Override
 	public String toString() {
@@ -84,7 +85,7 @@ public class CatchUpStateByStoreStepGetObj extends AbstractCatchUpByStoreStep {
 				//取得されたデータ
 				Message resM = get.getReq().getRes();
 				GetObjResponse res = (GetObjResponse) resM.getContent();
-				for (IdObjectI e : res.getObjs()) {
+				for (ModelI e : res.getObjs()) {
 					//一時リストに書き込み
 					tmpObjs.add(e);
 				}
@@ -102,7 +103,7 @@ public class CatchUpStateByStoreStepGetObj extends AbstractCatchUpByStoreStep {
 
 	private String toStringTmpObjs() {
 		StringBuilder sb = new StringBuilder();
-		for (IdObjectI e : tmpObjs) {
+		for (ModelI e : tmpObjs) {
 			sb.append(e.getId() + " ");
 		}
 		return sb.toString();

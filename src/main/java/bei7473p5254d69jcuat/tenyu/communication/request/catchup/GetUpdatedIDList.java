@@ -40,7 +40,7 @@ public class GetUpdatedIDList extends AbstractByStoreMessage {
 		GetUpdatedIDListResponse res = new GetUpdatedIDListResponse();
 		res.setStoreName(storeName);
 		Glb.getObje().read(txn -> {
-			IdObjectStore<?, ?> s = storeName.getStore(txn);
+			ModelStore<?, ?> s = storeName.getStore(txn);
 			res.setList(
 					s.getCatchUpUpdatedIDListStore().get((Long) historyIndex));
 		});

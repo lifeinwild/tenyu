@@ -1,6 +1,6 @@
 package bei7473p5254d69jcuat.tenyu.ui.creator.game.staticgame;
 
-import bei7473p5254d69jcuat.tenyu.db.store.game.item.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.item.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.game.item.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.item.*;
 import bei7473p5254d69jcuat.tenyu.ui.common.*;

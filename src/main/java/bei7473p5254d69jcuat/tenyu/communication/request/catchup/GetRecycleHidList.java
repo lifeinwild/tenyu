@@ -47,7 +47,7 @@ public class GetRecycleHidList extends AbstractByStoreMessage {
 		GetRecycleHidListResponse res = new GetRecycleHidListResponse();
 		res.setStoreName(storeName);
 		Glb.getObje().read(txn -> {
-			IdObjectStore<?, ?> s = storeName.getStore(txn);
+			ModelStore<?, ?> s = storeName.getStore(txn);
 			res.setList(s.getRecycleHidStore().getIDList(index));
 		});
 

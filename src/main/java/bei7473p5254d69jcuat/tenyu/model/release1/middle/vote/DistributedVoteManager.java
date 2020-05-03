@@ -7,7 +7,10 @@ import java.util.concurrent.*;
 import bei7473p5254d69jcuat.tenyu.communication.mutual.right.*;
 import bei7473p5254d69jcuat.tenyu.communication.mutual.vote.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.db.store.single.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.vote.*;
 import glb.*;
@@ -357,7 +360,7 @@ public class DistributedVoteManager {
 	/**
 	 * 全体運営者選出投票の分散合意のID
 	 */
-	public static final Long managerElectionId = IdObjectI
+	public static final Long managerElectionId = ModelI
 			.getFirstId();
 
 	public void start() {

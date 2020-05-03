@@ -3,7 +3,9 @@ package bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.agen
 import java.util.*;
 
 import bei7473p5254d69jcuat.tenyu.db.store.*;
-import bei7473p5254d69jcuat.tenyu.db.store.sociality.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.sociality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.agenda.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.sociality.*;
@@ -231,7 +233,7 @@ public class AgendaBAN implements AgendaContentI {
 				r.add(Lang.AGENDA_BAN_IDS, Lang.ERROR_TOO_MANY);
 				b = false;
 			} else {
-				if (!IdObject.validateIdStandard(banSocialityIds)) {
+				if (!Model.validateIdStandard(banSocialityIds)) {
 					r.add(Lang.AGENDA_BAN_IDS, Lang.ERROR_INVALID);
 					b = false;
 				}
@@ -245,7 +247,7 @@ public class AgendaBAN implements AgendaContentI {
 				r.add(Lang.AGENDA_BAN_IDS_USER, Lang.ERROR_TOO_MANY);
 				b = false;
 			} else {
-				if (!IdObject.validateIdStandard(banSocialityIdsUser)) {
+				if (!Model.validateIdStandard(banSocialityIdsUser)) {
 					r.add(Lang.AGENDA_BAN_IDS_USER, Lang.ERROR_INVALID);
 					b = false;
 				}
@@ -260,7 +262,7 @@ public class AgendaBAN implements AgendaContentI {
 				r.add(Lang.AGENDA_BAN_IDS_USER_CHAIN, Lang.ERROR_TOO_MANY);
 				b = false;
 			} else {
-				if (!IdObject.validateIdStandard(banSocialityIdsUserChain)) {
+				if (!Model.validateIdStandard(banSocialityIdsUserChain)) {
 					r.add(Lang.AGENDA_BAN_IDS_USER_CHAIN, Lang.ERROR_INVALID);
 					b = false;
 				}

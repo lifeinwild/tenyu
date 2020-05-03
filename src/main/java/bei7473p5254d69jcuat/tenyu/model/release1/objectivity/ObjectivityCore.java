@@ -4,7 +4,8 @@ import java.util.*;
 import java.util.concurrent.atomic.*;
 
 import bei7473p5254d69jcuat.tenyu.db.store.*;
-import bei7473p5254d69jcuat.tenyu.db.store.game.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.*;
 import bei7473p5254d69jcuat.tenyu.db.store.single.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.takeoverserver.game.*;
@@ -144,7 +145,7 @@ public class ObjectivityCore extends IndividualityObject implements ObjectivityC
 	protected ObjectivityCore() {
 		setName("Cooperative Account");
 		explanation = "The central node of flow network";
-		SingleObjectStore.setup(this);
+		SingleObjectStoreI.setup(this);
 		latestAcceptedPlatformSoftware = new TenyuPlatformSoftware();
 		latestAcceptedPlatformSoftware.setRelease(1);
 	}
@@ -206,12 +207,12 @@ public class ObjectivityCore extends IndividualityObject implements ObjectivityC
 
 	@Override
 	public Long getSpecialMainAdministratorId() {
-		return IdObjectI.getNullId();
+		return ModelI.getNullId();
 	}
 
 	@Override
 	public Long getSpecialRegistererId() {
-		return IdObjectI.getNullId();
+		return ModelI.getNullId();
 	}
 
 	/**

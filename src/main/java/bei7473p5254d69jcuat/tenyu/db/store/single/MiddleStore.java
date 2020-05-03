@@ -16,8 +16,8 @@ import glb.util.*;
 import jetbrains.exodus.*;
 import jetbrains.exodus.env.*;
 
-public class MiddleStore extends IdObjectStore<MiddleI, Middle>
-		implements SingleObjectStore {
+public class MiddleStore extends ModelStore<MiddleI, Middle>
+		implements SingleObjectStoreI {
 	public static final String modelName = Middle.class.getSimpleName();
 
 	public MiddleStore(Transaction txn) {
@@ -62,42 +62,42 @@ public class MiddleStore extends IdObjectStore<MiddleI, Middle>
 	}
 
 	@Override
-	protected final List<StoreInfo> getStoresIdObjectConcrete() {
+	protected final List<StoreInfo> getStoresModelConcrete() {
 		List<StoreInfo> r = new ArrayList<StoreInfo>();
 		r.add(getMainStoreInfo());
 		return r;
 	}
 
 	@Override
-	protected boolean createIdObjectConcrete(MiddleI o) throws Exception {
+	protected boolean createModelConcrete(MiddleI o) throws Exception {
 		return true;
 	}
 
 	@Override
-	protected boolean dbValidateAtUpdateIdObjectConcrete(MiddleI updated,
+	protected boolean dbValidateAtUpdateModelConcrete(MiddleI updated,
 			MiddleI old, ValidationResult r) {
 		return true;
 	}
 
 	@Override
-	protected boolean deleteIdObjectConcrete(MiddleI o) throws Exception {
+	protected boolean deleteModelConcrete(MiddleI o) throws Exception {
 		return true;
 	}
 
 	@Override
-	protected boolean existIdObjectConcrete(MiddleI o, ValidationResult r)
+	protected boolean existModelConcrete(MiddleI o, ValidationResult r)
 			throws Exception {
 		return true;
 	}
 
 	@Override
-	protected boolean noExistIdObjectConcrete(MiddleI o, ValidationResult r)
+	protected boolean noExistModelConcrete(MiddleI o, ValidationResult r)
 			throws Exception {
 		return true;
 	}
 
 	@Override
-	protected boolean updateIdObjectConcrete(MiddleI updated, MiddleI old)
+	protected boolean updateModelConcrete(MiddleI updated, MiddleI old)
 			throws Exception {
 		return true;
 	}

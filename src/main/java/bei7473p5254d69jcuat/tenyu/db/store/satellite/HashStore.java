@@ -11,7 +11,9 @@ import java.util.function.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.db.store.satellite.HashStore.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.reference.*;
 import glb.*;
 import jetbrains.exodus.*;
@@ -21,29 +23,29 @@ import jetbrains.exodus.env.*;
  * ハッシュ木ストア
  * https://ja.wikipedia.org/wiki/%E3%83%8F%E3%83%83%E3%82%B7%E3%83%A5%E6%9C%A8
  *
- * このストアへの書き込みはシングルスレッドかつIdObjectでなければ扱えない。
- * HIDはIdObjectのメンバーとして扱っているので。
+ * このストアへの書き込みはシングルスレッドかつ{@link ModelI}でなければ扱えない。
+ * HIDは{@link ModelI}のメンバーとして扱っているので。
  *
- * HashStoreはUserStoreやEdgeStore等の内部状態になり、
- * IdObjectStoreの具象クラス毎にストアが作られる。
+ * {@link HashStore}は{@link UserStore}等
+ * {@link ModelStore}の具象クラス毎にストアが作られる。
  *
  * 最上位ハッシュは常にハッシュツリー全体に依存するハッシュ値になり、
  * ここが一致するならそのクラスの全データが一致している。
  *
- * HashStoreValueのバージョンアップは困難。
+ * {@link HashStoreValue}のバージョンアップは困難。
  * 例えば配列の要素数が変わった場合、単品で終える事はできない。
  * 膨大なオブジェクト全体を一斉に更新するしかない。
  * 全レコードのバージョンが一致しているという前提で
  * いくつかのレコードのバージョンを調べて、
  * そのバージョンから最新バージョンまで繰り返しバージョンアップする。
  * それは非常に遅いので、DBが大規模化したら最後、
- * 基本的にHashStoreのバージョンアップは出来ないというつもりで居るべき。
+ * 基本的に{@link HashStore}のバージョンアップは出来ないというつもりで居るべき。
  *
  * @author exceptiontenyu@gmail.com
  *
  */
 public class HashStore extends ObjectStore<byte[], HashStoreValue>
-		implements Satellite {
+		implements SatelliteI {
 	/**
 	 * ハッシュ値のサイズ
 	 */
@@ -153,7 +155,7 @@ public class HashStore extends ObjectStore<byte[], HashStoreValue>
 
 	}
 	*/
-	private static ByteIterable meaningLessKey = cnvL(IdObjectI.getFirstId());
+	private static ByteIterable meaningLessKey = cnvL(ModelI.getFirstId());
 
 	/**
 	 * key : data
@@ -748,7 +750,7 @@ public class HashStore extends ObjectStore<byte[], HashStoreValue>
 		ByteIterable bi = util.get(getLastIdStoreInfo(), meaningLessKey);
 		//最初lastIdはnullでその場合最初のID-1を設定して計算を合わせる
 		if (bi == null)
-			return IdObjectI.getFirstId() - 1;
+			return ModelI.getFirstId() - 1;
 		return cnvL(bi);
 	}
 
@@ -949,7 +951,7 @@ public class HashStore extends ObjectStore<byte[], HashStoreValue>
 
 	/**
 	 * 実データ削除時に呼ぶ
-	 * @param hid	削除されたIdObjectのHID
+	 * @param hid	削除された{@link ModelI}のHID
 	 * @param recycle	削除されたHIDをリサイクルするか
 	 * @return		削除できたか
 	 * @throws Exception

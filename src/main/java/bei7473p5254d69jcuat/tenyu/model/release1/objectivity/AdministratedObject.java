@@ -5,6 +5,9 @@ import java.util.*;
 import org.jetbrains.annotations.*;
 
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
 import bei7473p5254d69jcuat.tenyu.ui.common.*;
 import glb.*;
@@ -30,7 +33,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public abstract class AdministratedObject extends IdObject
+public abstract class AdministratedObject extends Model
 		implements AdministratedObjectI {
 	/**
 	 * 管理者のユーザーID
@@ -43,7 +46,7 @@ public abstract class AdministratedObject extends IdObject
 	 * 管理者は当然この客観オブジェクトの編集権限を持つ。
 	 * しかしこの管理者と社会性の管理者は、多くの場合同じだが、データとしては分けられている。
 	 */
-	protected Long mainAdministratorUserId = IdObjectI.getNullId();
+	protected Long mainAdministratorUserId = ModelI.getNullId();
 
 	/**
 	 * 基本的に、この情報を登録したユーザーのID。
@@ -52,7 +55,7 @@ public abstract class AdministratedObject extends IdObject
 	 *
 	 * 客観コア、抽象ノード名目等一部のオブジェクトは特殊な登録者が設定される。
 	 */
-	protected Long registererUserId = IdObjectI.getNullId();
+	protected Long registererUserId = ModelI.getNullId();
 
 	@Override
 	public boolean equals(Object obj) {
@@ -184,15 +187,15 @@ public abstract class AdministratedObject extends IdObject
 		this.registererUserId = registererUserId;
 	}
 
-	private final boolean validateAtCommonIdObjectConcrete(ValidationResult r) {
+	private final boolean validateAtCommonModelConcrete(ValidationResult r) {
 		boolean b = true;
 		/*
 		 * FlowNetworkAbstractNominalが反例になった
 		//各モデルクラスにおいてid==0でなければ登録者IDはNullIdではない。
 		//複雑な条件なので長期的に見てこの条件が成立し続けるのか分からないので
 		//ログだけ出して処理を止めずに続行する。
-		if (id != null && id != IdObjectI.getFirstId()
-				&& registererUserId < IdObjectI.getFirstId()) {
+		if (id != null && id != ModelI.getFirstId()
+				&& registererUserId < ModelI.getFirstId()) {
 			Glb.getLogger().warn(new Exception("Invalid registererUserId"));
 		}
 		*/
@@ -228,7 +231,7 @@ public abstract class AdministratedObject extends IdObject
 					r.add(Lang.ADMINISTRATEDOBJECT_ADMINISTRATOR,
 							Lang.ERROR_INVALID);
 					b = false;
-				} else if (!IdObject.validateIdStandardNotSpecialId(
+				} else if (!Model.validateIdStandardNotSpecialId(
 						mainAdministratorUserId)) {
 					r.add(Lang.ADMINISTRATEDOBJECT_ADMINISTRATOR,
 							Lang.ERROR_INVALID);
@@ -240,10 +243,10 @@ public abstract class AdministratedObject extends IdObject
 	}
 
 	@Override
-	protected final boolean validateAtCreateIdObjectConcrete(
+	protected final boolean validateAtCreateModelConcrete(
 			ValidationResult r) {
 		boolean b = true;
-		if (!validateAtCommonIdObjectConcrete(r))
+		if (!validateAtCommonModelConcrete(r))
 			b = false;
 		if (!validateAtCreateAdministratedObjectConcrete(r))
 			b = false;
@@ -254,7 +257,7 @@ public abstract class AdministratedObject extends IdObject
 			ValidationResult r);
 
 	@Override
-	protected boolean validateAtUpdateChangeIdObjectConcrete(ValidationResult r,
+	protected boolean validateAtUpdateChangeModelConcrete(ValidationResult r,
 			Object old) {
 		if (!(old instanceof AdministratedObject)) {
 			r.add(Lang.OLD_OBJECT_AT_UPDATE, Lang.ERROR_INVALID,
@@ -270,10 +273,10 @@ public abstract class AdministratedObject extends IdObject
 			ValidationResult r, Object old);
 
 	@Override
-	protected final boolean validateAtUpdateIdObjectConcrete(
+	protected final boolean validateAtUpdateModelConcrete(
 			ValidationResult r) {
 		boolean b = true;
-		if (!validateAtCommonIdObjectConcrete(r))
+		if (!validateAtCommonModelConcrete(r))
 			b = false;
 		if (!validateAtUpdateAdministratedObjectConcrete(r))
 			b = false;
@@ -289,13 +292,13 @@ public abstract class AdministratedObject extends IdObject
 	 */
 	protected void validateMainAdministratorNotNullId(ValidationResult r) {
 		if (mainAdministratorUserId == null
-				|| mainAdministratorUserId.equals(IdObjectI.getNullId())) {
+				|| mainAdministratorUserId.equals(ModelI.getNullId())) {
 			r.add(Lang.ADMINISTRATEDOBJECT_ADMINISTRATOR, Lang.ERROR_EMPTY);
 		}
 	}
 
 	@Override
-	public boolean validateReferenceIdObjectConcrete(ValidationResult r,
+	public boolean validateReferenceModelConcrete(ValidationResult r,
 			Transaction txn) throws Exception {
 		boolean b = true;
 		//登録者IDが許容可能特殊ID一覧に含まれず、かつDB上に存在するIDか

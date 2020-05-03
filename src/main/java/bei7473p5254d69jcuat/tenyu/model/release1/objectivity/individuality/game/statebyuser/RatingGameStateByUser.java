@@ -2,8 +2,8 @@ package bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game
 
 import java.util.*;
 
-import bei7473p5254d69jcuat.tenyu.db.store.game.*;
-import bei7473p5254d69jcuat.tenyu.db.store.game.statebyuser.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.statebyuser.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.game.statebyuser.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.*;
@@ -159,7 +159,7 @@ public class RatingGameStateByUser extends AdministratedObject
 			r.add(Lang.RATINGGAME_STATEBYUSER_RATINGGAME_ID, Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (!IdObject.validateIdStandardNotSpecialId(ratingGameId)) {
+			if (!Model.validateIdStandardNotSpecialId(ratingGameId)) {
 				r.add(Lang.RATINGGAME_STATEBYUSER_RATINGGAME_ID,
 						Lang.ERROR_INVALID, "ratingGameId=" + ratingGameId);
 				b = false;

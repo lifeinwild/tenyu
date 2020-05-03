@@ -553,7 +553,7 @@ public class Glb {
 		//どんな型情報も４バイト以下になる。１バイトで表現できるIDなら１バイトのようだ
 		//プリミティブ型はデフォルトで登録されている
 		//idは指定する事もできるので、指定すべきだろう。順序に依存すべきでない。
-		//IdObject系のうちSingleObjectでないものは、そのメンバー変数のクラスを含め
+		//Model系のうちSingleObjectでないものは、そのメンバー変数のクラスを含め
 		//登録すべきだろう
 		//しかしその作業はある程度モデルクラスが整ってからでいいかもしれない
 		//現状、クラス登録をしなくても動作する設定になっている。
@@ -766,7 +766,7 @@ public class Glb {
 		Glb.getObje().execute(txn -> {
 			for (StoreNameObjectivity storeName : StoreNameObjectivity
 					.values()) {
-				IdObjectStore<?, ?> s = storeName.getStore(txn);
+				ModelStore<?, ?> s = storeName.getStore(txn);
 				s.initStores();
 				try {
 					RecycleHidStore recycle = new RecycleHidStore(storeName,
@@ -798,12 +798,13 @@ public class Glb {
 		if (middle == null) {
 			middle = Middle.loadOrCreate();
 		}
+
+		setupStores();
+
 		if (tenyutalk == null) {
 			tenyutalk = new Tenyutalk(
 					Glb.getMiddle().getMyNodeIdentifierUser());
 		}
-
-		setupStores();
 
 		if (flow == null) {
 			flow = new FlowComputationState();

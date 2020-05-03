@@ -1,7 +1,8 @@
 package bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.agenda.content;
 
 import bei7473p5254d69jcuat.tenyu.db.store.*;
-import bei7473p5254d69jcuat.tenyu.db.store.sociality.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.sociality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.agenda.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.sociality.*;
@@ -42,7 +43,7 @@ public class AgendaSocialityChange implements AgendaContentI {
 			r.add(Lang.AGENDA_SOCIALITYCHANGE_NEWADMINUSERID, Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (!IdObject.validateIdStandardNotSpecialId(newAdminUserId)) {
+			if (!Model.validateIdStandardNotSpecialId(newAdminUserId)) {
 				r.add(Lang.AGENDA_SOCIALITYCHANGE_NEWADMINUSERID,
 						Lang.ERROR_INVALID, "newAdminUserId=" + newAdminUserId);
 				b = false;
@@ -52,7 +53,7 @@ public class AgendaSocialityChange implements AgendaContentI {
 			r.add(Lang.AGENDA_SOCIALITYCHANGE_SOCIALITYID, Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (!IdObject.validateIdStandardNotSpecialId(socialityId)) {
+			if (!Model.validateIdStandardNotSpecialId(socialityId)) {
 				r.add(Lang.AGENDA_SOCIALITYCHANGE_SOCIALITYID,
 						Lang.ERROR_INVALID, "socialityId=" + socialityId);
 				b = false;

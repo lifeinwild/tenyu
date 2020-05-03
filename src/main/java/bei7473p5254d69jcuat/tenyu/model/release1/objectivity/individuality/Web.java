@@ -2,8 +2,9 @@ package bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality;
 
 import java.util.*;
 
-import bei7473p5254d69jcuat.tenyu.db.store.*;
-import bei7473p5254d69jcuat.tenyu.db.store.sociality.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.sociality.*;
@@ -54,6 +55,11 @@ public class Web extends IndividualityObject implements ChainVersionup, WebI {
 	}
 
 	@Override
+	public boolean isMainAdministratorChangable() {
+		return true;
+	}
+
+	@Override
 	public List<Long> getAdministratorUserIdUpdate() {
 		//対応する社会性の管理者が管理者
 		List<Long> r = new ArrayList<>();
@@ -69,7 +75,7 @@ public class Web extends IndividualityObject implements ChainVersionup, WebI {
 	@Override
 	public Long getSpecialMainAdministratorId() {
 		//nullIdの場合もある。URL証明前
-		return IdObjectI.getNullId();
+		return ModelI.getNullId();
 	}
 
 	@Override
@@ -81,8 +87,7 @@ public class Web extends IndividualityObject implements ChainVersionup, WebI {
 		setName(url);
 	}
 
-	private final boolean validateCommon(
-			ValidationResult r) {
+	private final boolean validateCommon(ValidationResult r) {
 		return true;
 	}
 
@@ -128,8 +133,8 @@ public class Web extends IndividualityObject implements ChainVersionup, WebI {
 	}
 
 	@Override
-	public boolean validateReferenceIndividualityObjectConcrete(ValidationResult r,
-			Transaction txn) throws Exception {
+	public boolean validateReferenceIndividualityObjectConcrete(
+			ValidationResult r, Transaction txn) throws Exception {
 		return true;
 	}
 
@@ -142,7 +147,6 @@ public class Web extends IndividualityObject implements ChainVersionup, WebI {
 	public WebStore getStore(Transaction txn) {
 		return new WebStore(txn);
 	}
-
 
 	@Override
 	public StoreNameEnum getStoreName() {

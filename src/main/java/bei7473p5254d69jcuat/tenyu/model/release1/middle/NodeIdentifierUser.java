@@ -5,6 +5,7 @@ import java.nio.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
 import glb.*;
@@ -17,7 +18,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class NodeIdentifierUser implements NodeIdentifier, Storable {
+public class NodeIdentifierUser implements NodeIdentifier, StorableI {
 	private Long userId;
 	private int nodeNumber;
 	private transient byte[] identifier = null;
@@ -159,7 +160,7 @@ public class NodeIdentifierUser implements NodeIdentifier, Storable {
 
 	public boolean validate(ValidationResult vr) {
 		boolean b = true;
-		if (!IdObject.validateIdStandard(userId)) {
+		if (!Model.validateIdStandard(userId)) {
 			vr.add(Lang.USER_ID, Lang.ERROR_INVALID, "userId=" + userId);
 			b = false;
 		}

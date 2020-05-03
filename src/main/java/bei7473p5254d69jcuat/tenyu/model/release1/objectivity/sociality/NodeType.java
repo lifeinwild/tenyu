@@ -2,7 +2,8 @@ package bei7473p5254d69jcuat.tenyu.model.release1.objectivity.sociality;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
-import bei7473p5254d69jcuat.tenyu.db.store.game.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.*;
 import bei7473p5254d69jcuat.tenyu.db.store.single.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
@@ -96,7 +97,7 @@ public enum NodeType {
 	 * @param txn
 	 * @return	ノードタイプに対応するストア
 	 */
-	public IdObjectStore<?, ?> getStore(Transaction txn) {
+	public ModelStore<?, ?> getStore(Transaction txn) {
 		try {
 			switch (id) {
 			case 1:

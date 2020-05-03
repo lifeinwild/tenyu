@@ -2,8 +2,8 @@ package bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game
 
 import java.util.*;
 
-import bei7473p5254d69jcuat.tenyu.db.store.game.*;
-import bei7473p5254d69jcuat.tenyu.db.store.game.item.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.item.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.game.item.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
@@ -28,16 +28,22 @@ public class StaticGameMaterialClass extends IndividualityObject
 	private boolean validateCommon(ValidationResult r) {
 		boolean b = true;
 		if (staticGameId == null) {
-			r.add(Lang.STATICGAME_MATERIAL_CLASS_STATICGAME_ID, Lang.ERROR_EMPTY);
+			r.add(Lang.STATICGAME_MATERIAL_CLASS_STATICGAME_ID,
+					Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (!IdObject.validateIdStandardNotSpecialId(staticGameId)) {
+			if (!Model.validateIdStandardNotSpecialId(staticGameId)) {
 				r.add(Lang.STATICGAME_MATERIAL_CLASS_STATICGAME_ID,
 						Lang.ERROR_INVALID, "staticGameId=" + staticGameId);
 				b = false;
 			}
 		}
 		return b;
+	}
+
+	@Override
+	public boolean isMainAdministratorChangable() {
+		return true;
 	}
 
 	@Override
@@ -101,7 +107,8 @@ public class StaticGameMaterialClass extends IndividualityObject
 		boolean b = true;
 		StaticGameStore s = new StaticGameStore(txn);
 		if (s.get(staticGameId) == null) {
-			r.add(Lang.STATICGAME_MATERIAL_CLASS_STATICGAME_ID, Lang.ERROR_DB_NOTFOUND_REFERENCE,
+			r.add(Lang.STATICGAME_MATERIAL_CLASS_STATICGAME_ID,
+					Lang.ERROR_DB_NOTFOUND_REFERENCE,
 					"staticGameId=" + staticGameId);
 			b = false;
 		}

@@ -13,7 +13,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class CommonKeyExchangeState implements Storable {
+public class CommonKeyExchangeState implements StorableI {
 	private CommonKeyInfo commonKeyInfo = new CommonKeyInfo();
 	/**
 	 * 共通鍵交換の時に設定され、その後の確認処理で利用される。

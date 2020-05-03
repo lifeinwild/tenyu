@@ -15,8 +15,8 @@ import glb.util.*;
 import jetbrains.exodus.*;
 import jetbrains.exodus.env.*;
 
-public class P2PDefenseStore extends IdObjectStore<P2PDefenseI, P2PDefense>
-		implements SingleObjectStore {
+public class P2PDefenseStore extends ModelStore<P2PDefenseI, P2PDefense>
+		implements SingleObjectStoreI {
 	public static final String modelName = P2PDefense.class.getSimpleName();
 
 	public P2PDefenseStore(Transaction txn) {
@@ -61,44 +61,44 @@ public class P2PDefenseStore extends IdObjectStore<P2PDefenseI, P2PDefense>
 	}
 
 	@Override
-	protected final List<StoreInfo> getStoresIdObjectConcrete() {
+	protected final List<StoreInfo> getStoresModelConcrete() {
 		List<StoreInfo> r = new ArrayList<StoreInfo>();
 		r.add(getMainStoreInfo());
 		return r;
 	}
 
 	@Override
-	protected boolean createIdObjectConcrete(P2PDefenseI o)
+	protected boolean createModelConcrete(P2PDefenseI o)
 			throws Exception {
 		return true;
 	}
 
 	@Override
-	protected boolean dbValidateAtUpdateIdObjectConcrete(
+	protected boolean dbValidateAtUpdateModelConcrete(
 			P2PDefenseI updated, P2PDefenseI old, ValidationResult r) {
 		return true;
 	}
 
 	@Override
-	protected boolean deleteIdObjectConcrete(P2PDefenseI o)
+	protected boolean deleteModelConcrete(P2PDefenseI o)
 			throws Exception {
 		return true;
 	}
 
 	@Override
-	protected boolean existIdObjectConcrete(P2PDefenseI o, ValidationResult r)
+	protected boolean existModelConcrete(P2PDefenseI o, ValidationResult r)
 			throws Exception {
 		return true;
 	}
 
 	@Override
-	protected boolean noExistIdObjectConcrete(P2PDefenseI o,
+	protected boolean noExistModelConcrete(P2PDefenseI o,
 			ValidationResult r) throws Exception {
 		return true;
 	}
 
 	@Override
-	protected boolean updateIdObjectConcrete(P2PDefenseI updated,
+	protected boolean updateModelConcrete(P2PDefenseI updated,
 			P2PDefenseI old) throws Exception {
 		return true;
 	}

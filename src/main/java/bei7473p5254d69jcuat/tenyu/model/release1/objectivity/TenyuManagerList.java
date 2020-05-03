@@ -9,7 +9,7 @@ import glb.*;
 import glb.util.*;
 import jetbrains.exodus.env.*;
 
-public class TenyuManagerList implements Storable {
+public class TenyuManagerList implements StorableI {
 	/**
 	 * 全体運営者の最大数。
 	 * 単に可変長データに対して最大長を設定しておくという観点から設定するだけで、

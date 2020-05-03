@@ -2,7 +2,8 @@ package bei7473p5254d69jcuat.tenyu.model.release1.objectivity.other;
 
 import java.util.*;
 
-import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.other.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
@@ -41,6 +42,12 @@ public class FreeKVPair extends AdministratedObject implements FreeKVPairI {
 	public static String getDelimiter() {
 		return delimiter;
 	}
+
+	@Override
+	public boolean isMainAdministratorChangable() {
+		return true;
+	}
+
 
 	private String key;
 

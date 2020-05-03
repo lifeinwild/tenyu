@@ -2,7 +2,7 @@ package bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game
 
 import java.util.*;
 
-import bei7473p5254d69jcuat.tenyu.db.store.game.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.game.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
@@ -38,6 +38,11 @@ public class StaticGame extends IndividualityObject implements StaticGameI {
 	public static List<Long> getAdministratorUserIdCreateStatic() {
 		return Glb.getObje().getRole(rs -> rs
 				.getByName(StaticGame.class.getSimpleName()).getAdminUserIds());
+	}
+
+	@Override
+	public boolean isMainAdministratorChangable() {
+		return true;
 	}
 
 	/**

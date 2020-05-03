@@ -23,7 +23,7 @@ import jetbrains.exodus.env.*;
  *
  * MiddleのDBではなくObjectivityのDBに記録される。
  * 同調対象ではない。
- * IdObjectStore全般がサブストアとして持つ。
+ * {@link ModelStore}全般がサブストアとして持つ。
  *
  * トランザクションの必要性から客観DBに記録されるが整合性情報に影響しない。
  * このストアの必要性は同調処理の加速にあり、無くても性能が劣化するだけ。
@@ -32,7 +32,7 @@ import jetbrains.exodus.env.*;
  *
  */
 public class CatchUpUpdatedIDListStore extends
-		SatelliteStore<Long, CatchUpUpdatedIDList> implements Satellite {
+		SatelliteStore<Long, CatchUpUpdatedIDList> implements SatelliteI {
 	/**
 	 * 1ヒストリーインデックスあたりの最大件数
 	 */
@@ -49,7 +49,7 @@ public class CatchUpUpdatedIDListStore extends
 
 	/**
 	 * storeName : updatedId
-	 * 各IdObjectStoreは更新されたIDをここに記録する。
+	 * 各{@link ModelStore}は更新されたIDをここに記録する。
 	 * トランザクションの終わりにcommitUpdated()を通じてDBに書き込まれる。
 	 *
 	 * 多数のインスタンスが作成されてそれぞれ更新処理をしても共通の情報を作成できるように
@@ -229,7 +229,7 @@ public class CatchUpUpdatedIDListStore extends
 	public static void clearOldRecordAll(Transaction txn) {
 		//TODO StoreNamesObjectivity以外のストアへの対応。今のところほかのストアでは使われないが。
 		for (StoreNameObjectivity storeName : StoreNameObjectivity.values()) {
-			IdObjectStore<?, ?> s = storeName.getStore(txn);
+			ModelStore<?, ?> s = storeName.getStore(txn);
 			long count = s.getCatchUpUpdatedIDListStore().clearOldRecord();
 			Glb.getLogger().info("clearOldRecord " + storeName
 					+ " removedHistoryIndexCount=" + count);

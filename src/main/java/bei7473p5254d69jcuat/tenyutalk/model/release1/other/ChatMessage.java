@@ -13,7 +13,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class ChatMessage implements Storable {
+public class ChatMessage implements StorableI {
 	public static final int categoryMax = 50;
 	public static final String defaultCategory = "default";
 
@@ -265,7 +265,7 @@ public class ChatMessage implements Storable {
 			r.add(Lang.CHAT_MESSAGE, Lang.ID, Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (IdObject.validateIdStandardNotSpecialId(id)) {
+			if (Model.validateIdStandardNotSpecialId(id)) {
 				r.add(Lang.CHAT_MESSAGE, Lang.ID, Lang.ERROR_INVALID,
 						"id=" + id);
 				b = false;
@@ -275,7 +275,7 @@ public class ChatMessage implements Storable {
 			r.add(Lang.CHAT_MESSAGE, Lang.USER_ID, Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (IdObject.validateIdStandardNotSpecialId(userId)) {
+			if (Model.validateIdStandardNotSpecialId(userId)) {
 				r.add(Lang.CHAT_MESSAGE, Lang.USER_ID, Lang.ERROR_INVALID,
 						"userId=" + userId);
 				b = false;

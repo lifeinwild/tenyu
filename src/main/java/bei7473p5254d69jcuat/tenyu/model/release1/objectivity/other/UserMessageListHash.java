@@ -4,6 +4,8 @@ import java.util.*;
 
 import bei7473p5254d69jcuat.tenyu.communication.mutual.right.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.other.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.reference.*;
@@ -40,7 +42,7 @@ public class UserMessageListHash extends AdministratedObject
 	public UserMessageListHash(UserMessageList l, long historyIndex) {
 		this.hash = l.hash();
 		this.historyIndex = historyIndex;
-		this.registererUserId = IdObjectI.getSystemId();
+		this.registererUserId = ModelI.getSystemId();
 	}
 
 	public List<Long> getAdministratorUserIdCreate() {
@@ -67,12 +69,12 @@ public class UserMessageListHash extends AdministratedObject
 
 	@Override
 	public Long getSpecialMainAdministratorId() {
-		return IdObjectI.getNullId();
+		return ModelI.getNullId();
 	}
 
 	@Override
 	public Long getSpecialRegistererId() {
-		return IdObjectI.getSystemId();
+		return ModelI.getSystemId();
 	}
 
 	@Override

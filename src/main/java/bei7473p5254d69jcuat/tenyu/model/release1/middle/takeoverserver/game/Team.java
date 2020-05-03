@@ -5,7 +5,8 @@ import java.util.concurrent.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
-import bei7473p5254d69jcuat.tenyu.db.store.sociality.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.sociality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
@@ -23,7 +24,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class Team implements Storable {
+public class Team implements StorableI {
 	public static final int nameMax = IndividualityObject.nameMax + 50;
 
 	public static final int passwordMax = 50;
@@ -378,7 +379,7 @@ public class Team implements Storable {
 			vr.add(Lang.GAMEPLAY_MATCHING_TEAM_RATINGGAME_ID, Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (!IdObject.validateIdStandard(ratingGameId)) {
+			if (!Model.validateIdStandard(ratingGameId)) {
 				vr.add(Lang.GAMEPLAY_MATCHING_TEAM_RATINGGAME_ID,
 						Lang.ERROR_INVALID, "ratingGameId=" + ratingGameId);
 				b = false;
@@ -398,7 +399,7 @@ public class Team implements Storable {
 						Lang.ERROR_TOO_MANY);
 				b = false;
 			} else {
-				if (!IdObject
+				if (!Model
 						.validateIdStandardNotSpecialId(getMemberUserIds())) {
 					vr.add(Lang.GAMEPLAY_MATCHING_TEAM_MEMBERS,
 							Lang.ERROR_INVALID);
@@ -419,7 +420,7 @@ public class Team implements Storable {
 			vr.add(Lang.GAMEPLAY_MATCHING_TEAM_ADMIN, Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (!IdObject.validateIdStandardNotSpecialId(admin.getUserId())) {
+			if (!Model.validateIdStandardNotSpecialId(admin.getUserId())) {
 				vr.add(Lang.GAMEPLAY_MATCHING_TEAM_ADMIN, Lang.ERROR_INVALID);
 				b = false;
 			}

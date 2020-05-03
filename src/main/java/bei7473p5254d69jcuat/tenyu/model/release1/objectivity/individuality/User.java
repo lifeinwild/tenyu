@@ -8,7 +8,8 @@ import java.util.*;
 import java.util.Map.*;
 
 import bei7473p5254d69jcuat.tenyu.communication.request.useredge.*;
-import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.takeoverserver.game.*;
@@ -511,14 +512,14 @@ public class User extends IndividualityObject implements ChainVersionup, UserI {
 	@Override
 	public Long getSpecialMainAdministratorId() {
 		//Userはメイン管理者を設定する必要が無い
-		return IdObjectI.getNullId();
+		return ModelI.getNullId();
 	}
 
 	@Override
 	public Long getSpecialRegistererId() {
 		if (pcPublicKey != null && Glb.getConst()
 				.isAuthorPublicKey(new ByteArrayWrapper(pcPublicKey))) {
-			return IdObjectI.getSystemId();
+			return ModelI.getSystemId();
 		}
 		return null;
 	}
@@ -729,7 +730,7 @@ public class User extends IndividualityObject implements ChainVersionup, UserI {
 			//作者以外紹介者が必要
 			if (!author) {
 				if (registererUserId == null
-						|| IdObjectI.getNullId().equals(registererUserId)) {
+						|| ModelI.getNullId().equals(registererUserId)) {
 					r.add(Lang.ADMINISTRATEDOBJECT_REGISTERER,
 							Lang.ERROR_NO_INVITER);
 					b = false;
@@ -986,8 +987,8 @@ public class User extends IndividualityObject implements ChainVersionup, UserI {
 
 		//抽象クラスでも類似した判定をしているが
 		//NullIdが許容できない事がこの文脈で判明するので
-		if (getId() != null && IdObjectI.getNullId().equals(getId())) {
-			r.add(Lang.IDOBJECT_ID, Lang.ERROR_INVALID);
+		if (getId() != null && ModelI.getNullId().equals(getId())) {
+			r.add(Lang.ID, Lang.ERROR_INVALID);
 			b = false;
 		}
 		return b;

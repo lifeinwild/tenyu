@@ -2,7 +2,7 @@ package bei7473p5254d69jcuat.tenyu.model.release1.objectivity.sociality;
 
 import java.util.*;
 
-import bei7473p5254d69jcuat.tenyu.db.store.sociality.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.sociality.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.sociality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
@@ -116,7 +116,7 @@ public class EdgeLog extends AdministratedObject implements EdgeLogI {
 			r.add(Lang.SOCIALITY_EDGELOG_FROM_SOCIALITYID, Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (!IdObject.validateIdStandardNotSpecialId(fromSocialityId)) {
+			if (!Model.validateIdStandardNotSpecialId(fromSocialityId)) {
 				r.add(Lang.SOCIALITY_EDGELOG_FROM_SOCIALITYID,
 						Lang.ERROR_INVALID);
 				b = false;
@@ -127,7 +127,7 @@ public class EdgeLog extends AdministratedObject implements EdgeLogI {
 			r.add(Lang.SOCIALITY_EDGELOG_TO_SOCIALITYID, Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (!IdObject.validateIdStandardNotSpecialId(toSocialityId)) {
+			if (!Model.validateIdStandardNotSpecialId(toSocialityId)) {
 				r.add(Lang.SOCIALITY_EDGELOG_TO_SOCIALITYID,
 						Lang.ERROR_INVALID);
 				b = false;

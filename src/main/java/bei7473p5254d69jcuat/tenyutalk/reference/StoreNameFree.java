@@ -2,10 +2,10 @@ package bei7473p5254d69jcuat.tenyutalk.reference;
 
 import org.apache.commons.lang.*;
 
-import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.reference.*;
 import bei7473p5254d69jcuat.tenyutalk.db.*;
 import glb.*;
+import glb.util.*;
 import jetbrains.exodus.env.*;
 
 /**
@@ -41,6 +41,31 @@ public class StoreNameFree implements StoreName {
 	@Override
 	public String getModelName() {
 		return storeName;
+	}
+
+	private boolean validateCommon(ValidationResult r) {
+		boolean b = true;
+		if (storeName == null) {
+			r.add(Lang.STORE_NAME_FREE, Lang.STORE_NAME, Lang.ERROR_EMPTY);
+			b = false;
+		}
+		return b;
+	}
+
+	@Override
+	public boolean validateAtCreate(ValidationResult r) {
+		return validateCommon(r);
+	}
+
+	@Override
+	public boolean validateAtUpdate(ValidationResult r) {
+		return validateCommon(r);
+	}
+
+	@Override
+	public boolean validateReference(ValidationResult r, Transaction txn)
+			throws Exception {
+		return validateCommon(r);
 	}
 
 }

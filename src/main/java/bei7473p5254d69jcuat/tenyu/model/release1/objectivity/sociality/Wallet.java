@@ -15,7 +15,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public strictfp class Wallet implements Storable {
+public strictfp class Wallet implements StorableI {
 
 	/**
 	 * 初期残高

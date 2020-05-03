@@ -34,7 +34,7 @@ public class TeamGui extends ObjectGui<Team> {
 
 	public GridPane buildSearchFromServer() {
 		searchDates = new DateList();
-		//IdObject系の検索と違う概念だがreadとも違う
+		//Model系の検索と違う概念だがreadとも違う
 		//サーバーにアクセスして現在登録されているチーム一覧を取得する等
 
 		//チーム名検索

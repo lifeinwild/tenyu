@@ -3,6 +3,7 @@ package bei7473p5254d69jcuat.tenyu.reference;
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 
 /**
  * 参照
@@ -13,8 +14,19 @@ import bei7473p5254d69jcuat.tenyu.model.promise.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public interface TenyuReference<V> extends HasGui, Storable {
+public interface TenyuReference<V extends ModelI> extends HasGui, StorableI {
 	public static final int notificationMessagesMax = 200;
+
+	/**
+	 * @return	IDやストア名など、対象を一意に特定するのに必要な情報を入れたbyte[]
+	 */
+	byte[] getStoreKey();
+
+	StoreName getStoreName();
+
+	void setStoreName(StoreNameObjectivity storeName);
+
+	Long getId();
 
 	/**
 	 * ここに通知メッセージが定義されることは、

@@ -19,7 +19,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class CandidacyList implements Storable {
+public class CandidacyList implements StorableI {
 	/**
 	 * 立候補者の増加ペースは制限される
 	 * 没案。最大件数の制限と信用に基づく優先で十分と判断した。

@@ -14,7 +14,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class UserEdge implements Storable {
+public class UserEdge implements StorableI {
 	/**
 	 * 相手ノードを特定する識別子
 	 */
@@ -73,7 +73,7 @@ public class UserEdge implements Storable {
 		} else {
 			if (!identifier.validate(r)) {
 				b = false;
-			} else if (!IdObject
+			} else if (!Model
 					.validateIdStandardNotSpecialId(identifier.getUserId())) {
 				r.add(Lang.USER_ID, Lang.ERROR_INVALID);
 				b = false;

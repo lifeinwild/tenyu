@@ -6,6 +6,7 @@ import bei7473p5254d69jcuat.tenyu.communication.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.*;
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.reference.*;
 import glb.*;
 import io.netty.channel.*;
@@ -66,10 +67,10 @@ public class GetObjRange extends P2PEdgeCommonKeyRequest {
 		GetObjRangeResponse res = new GetObjRangeResponse();
 		boolean r = Glb.getObje().readRet(txn -> {
 			//対象ストア
-			IdObjectStore<?, ?> s = storeName.getStore(txn);
+			ModelStore<?, ?> s = storeName.getStore(txn);
 			//要求されたIDを順次設定
 			for (long i = startId; i < count; i++) {
-				IdObjectI o = s.getRawObj(i);
+				ModelI o = s.getRawObj(i);
 				//抜けがあるデータを返すと同調処理を壊す可能性がある
 				if (o == null)
 					return false;
@@ -104,9 +105,9 @@ public class GetObjRange extends P2PEdgeCommonKeyRequest {
 		/**
 		 * 問い合わされたオブジェクトの一覧
 		 */
-		private List<IdObjectI> objs = new ArrayList<>();
+		private List<ModelI> objs = new ArrayList<>();
 
-		public List<IdObjectI> getObjs() {
+		public List<ModelI> getObjs() {
 			return objs;
 		}
 
@@ -126,7 +127,7 @@ public class GetObjRange extends P2PEdgeCommonKeyRequest {
 			return true;
 		}
 
-		public void setObjs(List<IdObjectI> objs) {
+		public void setObjs(List<ModelI> objs) {
 			this.objs = objs;
 		}
 

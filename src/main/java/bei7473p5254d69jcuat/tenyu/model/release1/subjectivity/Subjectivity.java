@@ -47,7 +47,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class Subjectivity extends IdObject
+public class Subjectivity extends Model
 		implements ChainVersionup, GlbMemberDynamicState, SubjectivityI {
 	public static final int neighborMax = 2000;
 
@@ -254,8 +254,8 @@ public class Subjectivity extends IdObject
 			1000, neighborMax);
 
 	protected Subjectivity() {
-		setId(SingleObjectStore.getDefaultIdStatic());
-		setHid(SingleObjectStore.getDefaultHidStatic());
+		setId(SingleObjectStoreI.getDefaultIdStatic());
+		setHid(SingleObjectStoreI.getDefaultHidStatic());
 	}
 
 	public long getCommonKeyExchangeIntervalAfter() {
@@ -533,7 +533,7 @@ public class Subjectivity extends IdObject
 	}
 
 	@Override
-	protected final boolean validateAtCreateIdObjectConcrete(
+	protected final boolean validateAtCreateModelConcrete(
 			ValidationResult r) {
 		//TODO 検証処理を書くべきか迷った。falseになるとセーブされなくなる
 		//そもそも検証処理の必要性が弱い
@@ -541,25 +541,25 @@ public class Subjectivity extends IdObject
 	}
 
 	@Override
-	protected boolean validateAtUpdateChangeIdObjectConcrete(ValidationResult r,
+	protected boolean validateAtUpdateChangeModelConcrete(ValidationResult r,
 			Object old) {
 		return true;
 	}
 
 	@Override
-	protected final boolean validateAtUpdateIdObjectConcrete(
+	protected final boolean validateAtUpdateModelConcrete(
 			ValidationResult r) {
 		return true;
 	}
 
 	@Override
-	public boolean validateReferenceIdObjectConcrete(ValidationResult r,
+	public boolean validateReferenceModelConcrete(ValidationResult r,
 			Transaction txn) throws Exception {
 		return true;
 	}
 
 	@Override
-	public IdObjectGui<?, ?, ?, ?, ?, ?> getGui(String guiName,
+	public ModelGui<?, ?, ?, ?, ?, ?> getGui(String guiName,
 			String cssIdPrefix) {
 		return new SubjectivityGui(guiName, cssIdPrefix);
 	}

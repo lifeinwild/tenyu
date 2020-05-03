@@ -4,6 +4,7 @@ import java.util.function.*;
 
 import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.single.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import jetbrains.exodus.env.*;
 
 /**
@@ -23,18 +24,18 @@ public enum StoreNameSingle implements StoreNameEnum {
 	MIDDLE(txn -> new MiddleStore(txn), MiddleStore.modelName),
 	P2P_DEFENSE(txn -> new P2PDefenseStore(txn), P2PDefenseStore.modelName),;
 	private final Function<Transaction,
-			IdObjectStore<? extends IdObjectI, ?>> getStore;
+			ModelStore<? extends ModelI, ?>> getStore;
 	private final String modelname;
 
 	private StoreNameSingle(
 			Function<Transaction,
-					IdObjectStore<? extends IdObjectI, ?>> getStore,
+					ModelStore<? extends ModelI, ?>> getStore,
 			String modelname) {
 		this.getStore = getStore;
 		this.modelname = modelname;
 	}
 
-	public IdObjectStore<? extends IdObjectI, ?> getStore(Transaction txn) {
+	public ModelStore<? extends ModelI, ?> getStore(Transaction txn) {
 		return getStore.apply(txn);
 	}
 

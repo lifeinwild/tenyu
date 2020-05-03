@@ -3,7 +3,7 @@ package bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game
 import java.util.*;
 import java.util.Map.*;
 
-import bei7473p5254d69jcuat.tenyu.db.store.game.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.game.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.takeoverserver.game.*;
@@ -277,7 +277,7 @@ public class RatingGameMatch extends AdministratedObject
 			r.add(Lang.RATINGGAME_MATCH_RATINGGAME_ID, Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (!IdObject.validateIdStandardNotSpecialId(ratingGameId)) {
+			if (!Model.validateIdStandardNotSpecialId(ratingGameId)) {
 				r.add(Lang.RATINGGAME_MATCH_RATINGGAME_ID, Lang.ERROR_INVALID);
 				b = false;
 			}

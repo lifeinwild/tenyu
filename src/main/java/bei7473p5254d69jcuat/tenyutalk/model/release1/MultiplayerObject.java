@@ -3,6 +3,7 @@ package bei7473p5254d69jcuat.tenyutalk.model.release1;
 import java.util.*;
 
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
 import bei7473p5254d69jcuat.tenyutalk.db.*;
@@ -191,7 +192,7 @@ public abstract class MultiplayerObject extends CreativeObject
 			r.add(Lang.MULTIPLAYER, Lang.HOST_USER_ID, Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (!IdObject.validateIdStandardNotSpecialId(hostUserId)) {
+			if (!Model.validateIdStandardNotSpecialId(hostUserId)) {
 				r.add(Lang.MULTIPLAYER, Lang.HOST_USER_ID, Lang.ERROR_INVALID,
 						"hostUserId=" + hostUserId);
 				b = false;
@@ -209,7 +210,7 @@ public abstract class MultiplayerObject extends CreativeObject
 				b = false;
 			} else {
 				for (Long participantUserId : participantUserIds) {
-					if (!IdObject.validateIdStandardNotSpecialId(
+					if (!Model.validateIdStandardNotSpecialId(
 							participantUserId)) {
 						r.add(Lang.MULTIPLAYER, Lang.PARTICIPANT_USER_ID,
 								Lang.ERROR_INVALID,

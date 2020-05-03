@@ -5,10 +5,15 @@ import java.util.regex.*;
 
 import com.ibm.icu.text.*;
 
-import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.tenyupedia.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.tenyupedia.*;
 import bei7473p5254d69jcuat.tenyu.ui.common.*;
+import bei7473p5254d69jcuat.tenyutalk.model.promise.*;
+import bei7473p5254d69jcuat.tenyutalk.reference.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.env.*;
@@ -63,53 +68,6 @@ public abstract class IndividualityObject extends AdministratedObject
 					b = false;
 				}
 				if (!validateText(e, explanation, vr))
-					b = false;
-			}
-		} catch (Exception ex) {
-			vr.add(e, Lang.ERROR_INVALID);
-			b = false;
-		}
-		return b;
-	}
-
-	/**
-	 * タグ一覧を検証する
-	 * @param tags
-	 * @param vr
-	 * @return
-	 */
-	public static boolean validateTag(HashSet<String> tags,
-			ValidationResult vr) {
-		if (tags != null) {
-			for (String tag : tags) {
-				if (!validateTag(tag, vr)) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * １個のタグを検証する
-	 * @param tag
-	 * @param vr
-	 * @return
-	 */
-	public static boolean validateTag(String tag, ValidationResult vr) {
-		boolean b = true;
-		Lang e = Lang.INDIVIDUALITY_OBJECT_TAGS;
-		try {
-			if (tag == null || tag.length() <= 0) {
-				vr.add(e, Lang.ERROR_EMPTY);
-				b = false;
-			} else {
-				if (tag.length() > IndividualityObjectI.tagLenMax) {
-					vr.add(e, Lang.ERROR_TOO_LONG, tag.length() + " / "
-							+ IndividualityObjectI.tagLenMax);
-					b = false;
-				}
-				if (!validateText(e, tag, vr))
 					b = false;
 			}
 		} catch (Exception ex) {
@@ -175,6 +133,53 @@ public abstract class IndividualityObject extends AdministratedObject
 	public static boolean validateName(String name, ValidationResult vr,
 			int nameMax) {
 		return validateName(Lang.INDIVIDUALITY_OBJECT_NAME, name, vr, nameMax);
+	}
+
+	/**
+	 * タグ一覧を検証する
+	 * @param tags
+	 * @param vr
+	 * @return
+	 */
+	public static boolean validateTag(HashSet<String> tags,
+			ValidationResult vr) {
+		if (tags != null) {
+			for (String tag : tags) {
+				if (!validateTag(tag, vr)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * １個のタグを検証する
+	 * @param tag
+	 * @param vr
+	 * @return
+	 */
+	public static boolean validateTag(String tag, ValidationResult vr) {
+		boolean b = true;
+		Lang e = Lang.INDIVIDUALITY_OBJECT_TAGS;
+		try {
+			if (tag == null || tag.length() <= 0) {
+				vr.add(e, Lang.ERROR_EMPTY);
+				b = false;
+			} else {
+				if (tag.length() > IndividualityObjectI.tagLenMax) {
+					vr.add(e, Lang.ERROR_TOO_LONG, tag.length() + " / "
+							+ IndividualityObjectI.tagLenMax);
+					b = false;
+				}
+				if (!validateText(e, tag, vr))
+					b = false;
+			}
+		} catch (Exception ex) {
+			vr.add(e, Lang.ERROR_INVALID);
+			b = false;
+		}
+		return b;
 	}
 
 	/**
@@ -254,30 +259,54 @@ public abstract class IndividualityObject extends AdministratedObject
 	}
 
 	/**
+	 * この個性オブジェクト固有のCSS
+	 */
+	protected TenyutalkReferenceFlexible<? extends CreativeObjectI> css;
+
+	/**
 	 * このオブジェクトの説明
 	 * このオブジェクトに関するURLを含める事を強く想定
 	 */
 	protected String explanation;
 
 	/**
+	 * このオブジェクトにおいて主に使用されている言語
+	 */
+	protected Locale locale = Locale.ENGLISH;
+
+	/**
 	 * このオブジェクトの名前
 	 */
 	protected String name;
+
+	protected List<Long> tagIds = new ArrayList<>();
 
 	/**
 	 * タグ一覧
 	 */
 	private HashSet<String> tags;
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result
-				+ ((explanation == null) ? 0 : explanation.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((tags == null) ? 0 : tags.hashCode());
-		return result;
+	public boolean addTag(Long tagId) {
+		if (tagId == null || tagIds.size() > tagMax || tagIds.contains(tagId)
+				|| tagId.equals(getId()))
+			return false;
+		return tagIds.add(tagId);
+	}
+
+	/**
+	 * @param tag
+	 * @return	追加されたか
+	 */
+	public boolean addTag(String tag) {
+		if (tag == null)
+			return false;
+		if (tags == null)
+			tags = new LinkedHashSet<>();//順序保障のためLinked必須
+		return tags.add(tag);
+	}
+
+	public boolean addTag(Tag t) {
+		return addTag(t.getId());
 	}
 
 	@Override
@@ -289,15 +318,30 @@ public abstract class IndividualityObject extends AdministratedObject
 		if (getClass() != obj.getClass())
 			return false;
 		IndividualityObject other = (IndividualityObject) obj;
+		if (css == null) {
+			if (other.css != null)
+				return false;
+		} else if (!css.equals(other.css))
+			return false;
 		if (explanation == null) {
 			if (other.explanation != null)
 				return false;
 		} else if (!explanation.equals(other.explanation))
 			return false;
+		if (locale == null) {
+			if (other.locale != null)
+				return false;
+		} else if (!locale.equals(other.locale))
+			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
 		} else if (!name.equals(other.name))
+			return false;
+		if (tagIds == null) {
+			if (other.tagIds != null)
+				return false;
+		} else if (!tagIds.equals(other.tagIds))
 			return false;
 		if (tags == null) {
 			if (other.tags != null)
@@ -311,6 +355,14 @@ public abstract class IndividualityObject extends AdministratedObject
 		return explanation;
 	}
 
+	@Override
+	abstract public IndividualityObjectGui<?, ?, ?, ?, ?, ?> getGui(
+			String guiName, String cssIdPrefix);
+
+	public Locale getLocale() {
+		return locale;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -319,12 +371,62 @@ public abstract class IndividualityObject extends AdministratedObject
 		return nameMax;
 	}
 
+	@Override
+	abstract public IndividualityObjectStore<? extends AdministratedObjectI,
+			? extends AdministratedObjectI> getStore(Transaction txn);
+
+	public List<Long> getTagIds() {
+		return tagIds;
+	}
+
+	@Override
+	public HashSet<String> getTags() {
+		return tags;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((css == null) ? 0 : css.hashCode());
+		result = prime * result
+				+ ((explanation == null) ? 0 : explanation.hashCode());
+		result = prime * result + ((locale == null) ? 0 : locale.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((tagIds == null) ? 0 : tagIds.hashCode());
+		result = prime * result + ((tags == null) ? 0 : tags.hashCode());
+		return result;
+	}
+
+	public boolean removeTag(Tag t) {
+		return tagIds.remove(t.getId());
+	}
+
 	public void setExplanation(String explanation) {
 		this.explanation = explanation;
 	}
 
+	public void setLocale(Locale locale) {
+		this.locale = locale;
+	}
+
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public void setTagIds(List<Long> tagIds) {
+		this.tagIds = tagIds;
+	}
+
+	public void setTags(HashSet<String> tags) {
+		this.tags = tags;
+	}
+
+	@Override
+	public String toString() {
+		return "IndividualityObject [css=" + css + ", explanation="
+				+ explanation + ", locale=" + locale + ", name=" + name
+				+ ", tagIds=" + tagIds + ", tags=" + tags + "]";
 	}
 
 	private final boolean validateAtCommonAdministratedObjectConcrete(
@@ -338,11 +440,30 @@ public abstract class IndividualityObject extends AdministratedObject
 			b = false;
 		if (!validateTag(tags, r))
 			b = false;
+		if (locale == null) {
+			r.add(Lang.INDIVIDUALITY_OBJECT, Lang.LOCALE, Lang.ERROR_EMPTY);
+			b = false;
+		}
+
+		if (tagIds == null) {
+			r.add(Lang.INDIVIDUALITY_OBJECT, Lang.TAG_IDS, Lang.ERROR_EMPTY);
+			b = false;
+		} else {
+			if (tagIds.size() > tagMax) {
+				r.add(Lang.INDIVIDUALITY_OBJECT, Lang.TAG_IDS,
+						Lang.ERROR_TOO_MANY, "size=" + tagIds.size());
+				b = false;
+			} else {
+				if (!Model.validateIdStandardNotSpecialId(tagIds)) {
+					r.add(Lang.INDIVIDUALITY_OBJECT, Lang.TAG_IDS,
+							Lang.ERROR_INVALID);
+					b = false;
+				}
+			}
+		}
+
 		return b;
 	}
-
-	protected abstract boolean validateAtCreateIndividualityObjectConcrete(
-			ValidationResult r);
 
 	@Override
 	protected final boolean validateAtCreateAdministratedObjectConcrete(
@@ -355,8 +476,19 @@ public abstract class IndividualityObject extends AdministratedObject
 		return b;
 	}
 
-	abstract protected boolean validateAtUpdateChangeIndividualityObjectConcrete(
-			ValidationResult r, Object old);
+	protected abstract boolean validateAtCreateIndividualityObjectConcrete(
+			ValidationResult r);
+
+	@Override
+	protected final boolean validateAtUpdateAdministratedObjectConcrete(
+			ValidationResult r) {
+		boolean b = true;
+		if (!validateAtCommonAdministratedObjectConcrete(r))
+			b = false;
+		if (!validateAtUpdateIndividualityObjectConcrete(r))
+			b = false;
+		return b;
+	}
 
 	@Override
 	protected boolean validateAtUpdateChangeAdministratedObjectConcrete(
@@ -383,19 +515,11 @@ public abstract class IndividualityObject extends AdministratedObject
 		return b;
 	}
 
+	abstract protected boolean validateAtUpdateChangeIndividualityObjectConcrete(
+			ValidationResult r, Object old);
+
 	protected abstract boolean validateAtUpdateIndividualityObjectConcrete(
 			ValidationResult r);
-
-	@Override
-	protected final boolean validateAtUpdateAdministratedObjectConcrete(
-			ValidationResult r) {
-		boolean b = true;
-		if (!validateAtCommonAdministratedObjectConcrete(r))
-			b = false;
-		if (!validateAtUpdateIndividualityObjectConcrete(r))
-			b = false;
-		return b;
-	}
 
 	/**
 	 * 具象クラスでファイルパスやURL等をnameにするとき、ここに適切な検証処理を追加する。
@@ -403,50 +527,35 @@ public abstract class IndividualityObject extends AdministratedObject
 	 */
 	abstract protected boolean validateNameSub(ValidationResult r);
 
-	abstract protected boolean validateReferenceIndividualityObjectConcrete(
-			ValidationResult r, Transaction txn) throws Exception;
-
 	@Override
 	protected final boolean validateReferenceAdministratedObjectConcrete(
 			ValidationResult r, Transaction txn) throws Exception {
 		boolean b = true;
+		TagStore s = new TagStore(txn);
+		for (Long tagId : tagIds) {
+			if (s.get(tagId) == null) {
+				r.add(Lang.INDIVIDUALITY_OBJECT, Lang.TAG_IDS,
+						Lang.ERROR_DB_NOTFOUND_REFERENCE, "tagId=" + tagId);
+				b = false;
+				break;
+			}
+		}
+
 		if (!validateReferenceIndividualityObjectConcrete(r, txn))
 			b = false;
 		return b;
 	}
 
-	@Override
-	abstract public IndividualityObjectStore<? extends AdministratedObjectI,
-			? extends AdministratedObjectI> getStore(Transaction txn);
+	abstract protected boolean validateReferenceIndividualityObjectConcrete(
+			ValidationResult r, Transaction txn) throws Exception;
 
-	@Override
-	abstract public IndividualityObjectGui<?, ?, ?, ?, ?, ?> getGui(
-			String guiName, String cssIdPrefix);
-
-	@Override
-	public HashSet<String> getTags() {
-		return tags;
+	public TenyutalkReferenceFlexible<? extends CreativeObjectI> getCss() {
+		return css;
 	}
 
-	/**
-	 * @param tag
-	 * @return	追加されたか
-	 */
-	public boolean addTag(String tag) {
-		if (tag == null)
-			return false;
-		if (tags == null)
-			tags = new LinkedHashSet<>();//順序保障のためLinked必須
-		return tags.add(tag);
+	public void setCss(
+			TenyutalkReferenceFlexible<? extends CreativeObjectI> css) {
+		this.css = css;
 	}
 
-	public void setTags(HashSet<String> tags) {
-		this.tags = tags;
-	}
-
-	@Override
-	public String toString() {
-		return "IndividualityObject [explanation=" + explanation + ", name="
-				+ name + ", tags=" + tags + "]";
-	}
 }

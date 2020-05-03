@@ -8,6 +8,7 @@ import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
+import bei7473p5254d69jcuat.tenyu.reference.*;
 import bei7473p5254d69jcuat.tenyutalk.*;
 import bei7473p5254d69jcuat.tenyutalk.db.*;
 import bei7473p5254d69jcuat.tenyutalk.model.promise.*;
@@ -608,4 +609,31 @@ public abstract class CreativeObject extends IndividualityObject
 		return b;
 	}
 
+	@Override
+	public TenyutalkReferenceFlexible<
+			? extends CreativeObjectI> getReference() {
+		TenyutalkReferenceFlexible<
+				? extends CreativeObject> r = new TenyutalkReferenceFlexible<>();
+		String notificationMes = getName() + " " + getVersion() + " "
+				+ getExplanation();
+		notificationMes = notificationMes.substring(0,
+				TenyuReference.notificationMessagesMax);
+		//TODO
+		/*
+		r.setFirstId(firstId);
+		r.setCssIdPrefix(cssIdPrefix);
+		r.setCache(cache);
+		r.setIgnoreMajor(false);
+		r.setIgnoreMinor(false);
+		r.setIgnorePatch(true);
+		r.setName(getName());
+		r.setNodes(nodes);
+		r.setOption(option);
+		r.setStoreName(storeName);
+		r.setUploaderUserId(getRegistererUserId());
+		r.setVersion(getVersion());
+		r.setNotificationMessage(n);
+		*/
+		return r;
+	}
 }

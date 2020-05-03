@@ -380,6 +380,8 @@ public class DBUtil {
 						ctx.getCnvValue().apply(c.getValue()));
 				putCount++;
 
+				//検索インターフェースに削除機能がある。使わない事もできるが
+				//検索というよりpairへのシーケンシャルアクセスインターフェースという事になる
 				if (ctx.getDeleteFunc() != null
 						&& ctx.getDeleteFunc().apply(ctx)) {
 					c.deleteCurrent();
@@ -878,7 +880,7 @@ public class DBUtil {
 	public boolean put(StoreInfo sInfo, ByteIterable key, ByteIterable val)
 			throws IOException {
 		if (!getStore(sInfo).put(txn, key, val))
-			throw new IOException();
+			throw new IOException("Failed to put");
 		return true;
 	}
 

@@ -2,7 +2,8 @@ package bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality;
 
 import java.util.*;
 
-import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.sociality.*;
@@ -40,6 +41,11 @@ public class FlowNetworkAbstractNominal extends IndividualityObject
 		return new ArrayList<>();
 	}
 
+	@Override
+	public boolean isMainAdministratorChangable() {
+		return true;
+	}
+
 	public List<Long> getAdministratorUserIdCreate() {
 		return getAdministratorUserIdCreateStatic();
 	}
@@ -56,12 +62,12 @@ public class FlowNetworkAbstractNominal extends IndividualityObject
 
 	@Override
 	public Long getSpecialMainAdministratorId() {
-		return IdObjectI.getNullId();//作成当初null、その後ユーザーが設定される
+		return ModelI.getNullId();//作成当初null、その後ユーザーが設定される
 	}
 
 	@Override
 	public Long getSpecialRegistererId() {
-		return IdObjectI.getVoteId();
+		return ModelI.getVoteId();
 	}
 
 	@Override
@@ -101,8 +107,8 @@ public class FlowNetworkAbstractNominal extends IndividualityObject
 	}
 
 	@Override
-	public boolean validateReferenceIndividualityObjectConcrete(ValidationResult r,
-			Transaction txn) throws Exception {
+	public boolean validateReferenceIndividualityObjectConcrete(
+			ValidationResult r, Transaction txn) throws Exception {
 		return true;
 	}
 

@@ -3,12 +3,13 @@ package bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.agen
 import java.util.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.env.*;
 
-public class TenyuPlatformSoftware implements Storable {
+public class TenyuPlatformSoftware implements StorableI {
 	public static final int filesMax = 2000;
 
 	/**

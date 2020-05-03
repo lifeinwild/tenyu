@@ -6,6 +6,7 @@ import java.util.*;
 import bei7473p5254d69jcuat.tenyu.communication.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.*;
 import bei7473p5254d69jcuat.tenyu.reference.*;
@@ -226,7 +227,7 @@ public class TenyutalkFile extends CreativeObject implements TenyutalkFileI {
 		}
 		String s = Glb.getConst().getFileSeparator();
 		return Glb.getFile().getTenyutalkFileDir() + uploader.getName() + s
-				+ fileName + GeneralVersioning.delimiter + getVersion();
+				+ fileName + GeneralVersioning.delimiter + getVersion().toStr();
 	}
 
 	@Override

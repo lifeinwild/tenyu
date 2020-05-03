@@ -12,7 +12,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class DistributedVoteChoice implements Storable {
+public class DistributedVoteChoice implements StorableI {
 	/**
 	 * GUIに選択肢として表示される文字列
 	 */

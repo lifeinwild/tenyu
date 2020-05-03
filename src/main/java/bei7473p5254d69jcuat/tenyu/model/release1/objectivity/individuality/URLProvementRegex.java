@@ -3,7 +3,8 @@ package bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality;
 import java.util.*;
 import java.util.regex.*;
 
-import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.*;
 import bei7473p5254d69jcuat.tenyu.reference.*;
 import bei7473p5254d69jcuat.tenyu.ui.standarduser.web.*;
@@ -54,6 +55,11 @@ public class URLProvementRegex extends IndividualityObject
 	 */
 	private String urlRegex;
 
+	@Override
+	public boolean isMainAdministratorChangable() {
+		return true;
+	}
+
 	public boolean addContentRegex(RegexAndSelect contentRegex) {
 		return contentRegexes.add(contentRegex);
 	}
@@ -87,12 +93,12 @@ public class URLProvementRegex extends IndividualityObject
 
 	@Override
 	public Long getSpecialMainAdministratorId() {
-		return IdObjectI.getVoteId();
+		return ModelI.getVoteId();
 	}
 
 	@Override
 	public Long getSpecialRegistererId() {
-		return IdObjectI.getVoteId();
+		return ModelI.getVoteId();
 	}
 
 	public String getUrlRegex() {

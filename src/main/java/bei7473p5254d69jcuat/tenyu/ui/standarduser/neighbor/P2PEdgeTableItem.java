@@ -2,6 +2,7 @@ package bei7473p5254d69jcuat.tenyu.ui.standarduser.neighbor;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.subjectivity.*;
 import glb.*;
@@ -26,7 +27,7 @@ public class P2PEdgeTableItem extends AbstractP2PEdgeAndUserTableItem<P2PEdge> {
 			setExplanation(u.getExplanation());
 			setUserId(userId);
 		} else {
-			setUserId(IdObjectI.getNullId());
+			setUserId(ModelI.getNullId());
 		}
 	}
 
