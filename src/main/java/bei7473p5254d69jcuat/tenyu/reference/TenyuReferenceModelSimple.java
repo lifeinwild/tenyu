@@ -2,6 +2,7 @@ package bei7473p5254d69jcuat.tenyu.reference;
 
 import java.nio.*;
 import java.nio.charset.*;
+import java.util.*;
 
 import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
@@ -20,8 +21,8 @@ import jetbrains.exodus.env.*;
  *
  * @param <V>
  */
-public class TenyuReferenceSimple<V extends ModelI>
-		implements TenyuReference<V> {
+public class TenyuReferenceModelSimple<V extends ModelI>
+		implements TenyuReferenceModelI<V> {
 
 	/**
 	 * オブジェクトのストア内ID
@@ -33,11 +34,34 @@ public class TenyuReferenceSimple<V extends ModelI>
 	 */
 	private StoreNameEnum storeName;
 
-	@SuppressWarnings("unused")
-	private TenyuReferenceSimple() {
+	/**
+	 * キャッシュ
+	 */
+	private transient V cache;
+
+	@Override
+	public void getParams(LinkedHashMap<String, String> params) {
+		params.put("id", id.toString());
+		params.put("storeNameEnum", storeName.name());
 	}
 
-	public TenyuReferenceSimple(Long id, StoreNameEnum storeName) {
+	public void clearCache() {
+		cache = null;
+	}
+
+	public void setCache(V cache) {
+		this.cache = cache;
+	}
+
+	public V getCache() {
+		return cache;
+	}
+
+	@SuppressWarnings("unused")
+	private TenyuReferenceModelSimple() {
+	}
+
+	public TenyuReferenceModelSimple(Long id, StoreNameEnum storeName) {
 		this.id = id;
 		this.storeName = storeName;
 	}
@@ -51,7 +75,7 @@ public class TenyuReferenceSimple<V extends ModelI>
 		if (getClass() != obj.getClass())
 			return false;
 		@SuppressWarnings("rawtypes")
-		TenyuReferenceSimple other = (TenyuReferenceSimple) obj;
+		TenyuReferenceModelSimple other = (TenyuReferenceModelSimple) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -73,10 +97,10 @@ public class TenyuReferenceSimple<V extends ModelI>
 	}
 
 	@Override
-	public String getNotificationMessage() {
+	public String getSimpleExplanationForUser() {
 		StringBuilder sb = new StringBuilder();
 		//Tenyutalk系では通知メッセージ表示でgetObjはしたくないが
-		//これは客観系なので問題ない
+		//これは客観系なので性能的な問題がない
 		V o = getObj();
 		String d = Glb.getUtil().getLocalDateStr(o.getCreateDate());
 		sb.append(" ").append(d);
@@ -92,9 +116,11 @@ public class TenyuReferenceSimple<V extends ModelI>
 
 	@Override
 	public V getObj() {
+		if (getCache() != null)
+			return getCache();
 		if (storeName == null)
 			return null;
-		return Glb.getObje().readRet(txn -> {
+		setCache(Glb.getObje().readRet(txn -> {
 			Object tmp = storeName.getStore(txn);
 			if (tmp == null || !(tmp instanceof ModelStore))
 				return null;
@@ -102,7 +128,8 @@ public class TenyuReferenceSimple<V extends ModelI>
 			ModelStore<? extends ModelI,
 					V> s = (ModelStore<? extends ModelI, V>) tmp;
 			return s.get(getId());
-		});
+		}));
+		return getCache();
 	}
 
 	@Override
@@ -199,6 +226,18 @@ public class TenyuReferenceSimple<V extends ModelI>
 			b = false;
 		}
 		return b;
+	}
+
+	@Override
+	public long getUpdateDate() {
+		V obj = getObj();
+		return obj.getUpdateDate();
+	}
+
+	@Override
+	public long getCreateDate() {
+		V obj = getObj();
+		return obj.getCreateDate();
 	}
 
 }

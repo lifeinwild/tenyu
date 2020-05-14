@@ -5,7 +5,7 @@ import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import jetbrains.exodus.env.*;
 
-public interface HasStore {
+public interface HasStoreI {
 
 	/**
 	 * @return	このオブジェクトを永続化するストア

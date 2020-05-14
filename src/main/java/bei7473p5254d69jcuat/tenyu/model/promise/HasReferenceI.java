@@ -8,6 +8,6 @@ import bei7473p5254d69jcuat.tenyu.reference.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public interface HasReference {
-	TenyuReference<?> getReference();
+public interface HasReferenceI {
+	TenyuReferenceModelI<?> getReference();
 }
