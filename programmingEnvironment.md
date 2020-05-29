@@ -908,7 +908,7 @@ try{
 }
 ```
 
-Optionalが何やらNPEからプログラマーを守ってくれるという話がありますが、自分はこの意見に近く、ほとんど使う必要が無いと思いました。[モナド](#モナド)について調査した後でもそう思います。  
+Optionalが何やらNPEからプログラマーを守ってくれるという話がありますが、自分はこの意見に近く、ほとんど使う必要が無いと思いました。[モナド](#モナド_学習)について調査した後でもそう思います。  
 https://www.quora.com/Why-use-Optional-in-Java-8-instead-of-traditional-null-pointer-checks/answer/Alan-Mellor  
 
 パイプライン的記述をする場合Optionalは役立ちますが、Javaでそれをやってもただ少し書き方が違うだけで大した利益があるように思いません。  
@@ -1339,7 +1339,7 @@ http://codebetter.com/raymondlewallen/2005/02/22/developer-versus-programmer/
 # ReactiveX_学習
 http://reactivex.io/intro.html
 
-古典的なプログラミングがデータ構造やサブルーチンや抽象クラスやインターフェースなどを設計してきたのに対して、RPは非同期処理を設計する。つまりRPは非同期処理の（抽象的な）パターン化を行う。その手段はストリーム（イベント発生源、Observable）を[モナド](#モナド)にすることです。
+古典的なプログラミングがデータ構造やサブルーチンや抽象クラスやインターフェースなどを設計してきたのに対して、RPは非同期処理を設計する。つまりRPは非同期処理の（抽象的な）パターン化を行う。その手段はストリーム（イベント発生源、Observable）を[モナド](#モナド_学習)にすることです。
 
 ここのサンプルコードが分かりやすい。  
 https://qiita.com/rubytomato@github/items/40c2aeabf762cc9465ad
@@ -1354,7 +1354,7 @@ Observableにイベントの種類毎にハンドラとなるラムダを与え�
 １つのObservableの定義は１つの小さなシステム（複数のイベント及びそのハンドラ等）を定義している。
 
 さらに、２つのObservableの間に[単純な演算](http://reactivex.io/documentation/operators.html)が定義される。
-例えば２つのObservableを[merge](http://reactivex.io/documentation/operators/merge.html)する事が可能だが、mergeの時点でObservableがどのようなイベントをどんな順番で発生させるか未確定でもいい。つまりそのmergeされた２つのObservableは実データ（merge時点で確定していたデータ）としてmergeされたのではなく、モナド的仕組み（[モナド](#モナド)の3）によってmergeされたように振る舞う。Observable#map()等でハンドラを修飾していた場合もmerge後に維持される。  
+例えば２つのObservableを[merge](http://reactivex.io/documentation/operators/merge.html)する事が可能だが、mergeの時点でObservableがどのようなイベントをどんな順番で発生させるか未確定でもいい。つまりそのmergeされた２つのObservableは実データ（merge時点で確定していたデータ）としてmergeされたのではなく、モナド的仕組み（[モナド](#モナド_学習)の3）によってmergeされたように振る舞う。Observable#map()等でハンドラを修飾していた場合もmerge後に維持される。  
 
 非同期イベントシーケンス（Observable）というしばしば対象化されずオブジェクトとして扱われてこなかったようなものが、まるで数値のような取り回しの良い（mergeなど視覚的にイメージしやすい単純な演算が複数ある）ものとして扱われる。これは演算を通じて多種多様なシーケンスを生み出すような、ダイナミックにシーケンスを扱うシステムを想起させる（そのようなシステムの用途は不明だが）。Observableに対するmerge等の各種処理は未確定な将来の値を合成したりそれに応じてイベントハンドラ（ラムダ）の呼び出しタイミングが変わっていく（計算の合成戦略の動的変更）という特殊さがあり、モナド的であるメリットの１つと思う。
 
