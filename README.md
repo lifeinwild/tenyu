@@ -300,8 +300,8 @@ https://techvisor.jp/blog/archives/3140
 https://gigazine.net/news/20181204-tried-patent-after-job-interview/  
 http://blog.esuteru.com/archives/8307998.html  
 https://togetter.com/li/1190977  
-https://mangaka-shigoto.com/trouble/130/  
 http://blog.esuteru.com/archives/7819934.html  
+https://mangaka-shigoto.com/category/trouble
 
 [創作は時間がかかり計画的に生産できない](#創作とは)ので、利益を追求する企業の合理的帰結として、他社や個人の成果（ビジネスモデルもパクり対象になりうる）を模倣するのが有力です。
 パクる側はしばしば法的な侵害を問われないように表面的な部分だけ徹底的に置換します。そのためパクリが法的に立証される事はほとんどありません。そしてパクる側は創作活動にかかる時間を省略できます。  
@@ -309,7 +309,7 @@ https://blog.inst-inc.com/doyouknowttplookslikebestwayforsuccess/
 https://togetter.com/li/1466305  
 https://lexus.jp/magazine/20170517/20/exp_oyamada_02.html  
 
-広く模倣だと認識されていても権利侵害とみなされない場合もあります。例えばwowクローンのMMOはたくさんあり、いずれも広くwowクローンであると認識されていますが、権利侵害になりません。wowはその後商業的に成功したようですが、模倣作品に敗北する可能性もありました。ちなみに私の定義では模倣について明示していればパクりではありませんが、ほとんどの作品は明示していません。
+広く模倣だと認識されていても権利侵害とみなされない場合もあります。例えばwowクローンのMMOはたくさんあり、いずれも広くwowクローンであると認識されていますが、権利侵害になりません。wowはその後商業的に成功したようですが、模倣作品に敗北する可能性もありました。ほとんどの作品は訴訟リスクを避けるため参考にした作品を明示しません。
 
 他には、近年バトロワゲーム(PUBGやフォートナイト)が流行りましたが、個人制作のmodが起源のようです。
 https://ja.wikipedia.org/wiki/%E3%83%90%E3%83%88%E3%83%AB%E3%83%AD%E3%82%A4%E3%83%A4%E3%83%AB%E3%82%B2%E3%83%BC%E3%83%A0
