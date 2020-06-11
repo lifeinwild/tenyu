@@ -63,6 +63,11 @@ Tenyuについて身近なたとえで説明すると
 [広く他者に自分の成果を提供し](#主旨)、無料で利用してもらい、参考にした他者の成果を相互評価フローネットワーク上で公正に記述し、共同主体から自動的に貢献に応じた報酬が各作者に与えられる。
 Tenyuプロジェクトはそのための技術と構想があります。
 
+# 関連した文書
+https://github.com/lifeinwild/tenyu/blob/master/rpc.md  
+https://github.com/lifeinwild/tenyu/blob/master/tenyutalk.md  
+https://github.com/lifeinwild/tenyu/blob/master/programmingEnvironment.md  
+
 # 目次
 <!-- TOC -->
 
@@ -70,6 +75,7 @@ Tenyuプロジェクトはそのための技術と構想があります。
 - [概要](#概要)
 - [回収ではなく与えるプロジェクト](#回収ではなく与えるプロジェクト)
 - [簡易な説明](#簡易な説明)
+- [関連した文書](#関連した文書)
 - [目次](#目次)
 - [一般用語](#一般用語)
     - [ソフトウェア用語](#ソフトウェア用語)
