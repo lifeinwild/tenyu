@@ -52,6 +52,7 @@
 - [Lombokの使用範囲_考察_解釈](#lombokの使用範囲_考察_解釈)
 - [プログラミングの本質的進歩とは_解釈](#プログラミングの本質的進歩とは_解釈)
 - [汎用プログラミング言語でビルド処理を書く_案_経験](#汎用プログラミング言語でビルド処理を書く_案_経験)
+- [起動処理をJavaで書く_自己再起動_案](#起動処理をjavaで書く_自己再起動_案)
 - [プログラミング言語によるビルド処理が必要になった場面_経験](#プログラミング言語によるビルド処理が必要になった場面_経験)
 - [P2P_PKI_メモ](#p2p_pki_メモ)
 - [Smalltalk_解釈](#smalltalk_解釈)
@@ -95,6 +96,7 @@
 - [モナド_学習](#モナド_学習)
 - [var_代替案](#var_代替案)
 - [クラス設計の限界_解釈](#クラス設計の限界_解釈)
+- [zstandard](#zstandard)
 
 <!-- /TOC -->
 # バーチャルプラットフォーム_語の追加
@@ -503,8 +505,12 @@ https://findy-code.io/engineer-lab/github-programming-language-ranking
 
 # 私の使用言語
 私はCとJavaを主にやってきました。その他いくつかの言語を少しだけ触りました。  
+
 Cを学んだのはコンピューターに対する完全な制御性（なんでも作れる事）と性能を求めたからです。
-私がJavaを学び始めた頃、同僚のエンジニアがKotlinを私に勧めてきました。その人はあるプログラミング言語の作者で説得力がありました。実際、当時から今日まで様々な専門家がKotlinはbetter Javaであると評価しています。別の同僚は「なんでJavaなんかやるんや」と私に突っかかってきました。彼はメジャーな言語を嫌っていました。私が少しC#をやっていたこともあってC#をやれと言ってきました。私はそれでもJavaを選択しました。理由を言語化するのは難しいですが、当時の私は「C#はオープンじゃない（MS周辺のエコシステムを想定している）」というようなことを言っていました。Kotlinをやらなかったのは、当時まだ極めてマイナーであったこと、学習情報があまりに乏しかった事等があります。Kotlinについて最後まで悩み、明確な理由は難しいですがJavaを選びました。  
+
+Cで中規模システムを完成させた後、私はより**本格的な**言語を学びたいと思っていました。当時の私のイメージと感覚によれば、Javaがそれであると感じていました。
+
+それで私がJavaを学び始めた頃、同僚のエンジニアがKotlinを私に勧めてきました。その人はあるプログラミング言語の作者で説得力がありました。実際、当時から今日まで様々な専門家がKotlinはbetter Javaであると評価しています。別の同僚は「なんでJavaなんかやるんや」と私に突っかかってきました。彼はメジャーな言語を嫌っていました。私が少しC#をやっていたこともあってC#をやれと言ってきました。私はそれでもJavaを選択しました。理由を言語化するのは難しいですが、当時の私は「C#はオープンじゃない（MS周辺のエコシステムを想定している）」というようなことを言っていました。Kotlinをやらなかったのは、当時まだ極めてマイナーであったこと、学習情報があまりに乏しかった事等があります。Kotlinについて最後まで悩み、明確な理由は難しいですがJavaを選びました。  
 幸いにも今日CとJavaは人気言語の１，２位です。  
 https://www.tiobe.com/tiobe-index/  
 
@@ -574,6 +580,10 @@ WebがJDKや.NETを無視してwasmやwasiで独自のランタイムを作っ�
 WebAssemblyはどこでこのシナリオから外れるのか？WebAssemblyやWASIの新しい発明や思想が分からない限り私は懐疑的です。
 
 # 実行時依存性解決_案
+- codebase(jar等)にpom.xmlを標準搭載する。このアイデアは実行時依存性解決でなくてもコンパイル時に依存性解決（jarの同梱）をする場合でも単にjar hellの解決策として有効。
+- 実行時にpom.xmlを通じて依存性解決して実行時環境にmavenリポジトリを作成する
+- 実行時にpom.xmlを通じてcodebase毎に異なるバージョンのライブラリを使用する。codebase単位で各パッケージ名がどのバージョンのどのライブラリのものを参照するか決まる。というようにJDKを改修する。この改修はpom.xmlが無い場合従来通りのclass検索が行われるだけなので互換性に問題を生じさせないようにできるはず。
+
 ビルド時に依存性解決するだけではなく、配布物（jar）を極小化しつつ実行時にエンドユーザー環境で依存性解決しなおそうというアイデアです。リポジトリをエンドユーザー環境に構築すれば配布物がライブラリを同梱しなくなり小さくなります。
 
 Googleのような圧倒的なインフラを持っているところ（あるいはP2Pプラットフォーム）が、Maven Centralやjcenterのミラーを世界中の**エンドユーザーに提供**し、**エンドユーザー環境でローカルリポジトリを構築する**。そして**アプリケーションはpom.xml等に依存関係を記述し、pom.xmlをjarに同梱し、実行時にエンドユーザー環境で依存性解決する**。なお現状Maven Central等にエンドユーザーがアクセスする事はサーバへの虐待とみなされ、実行時依存性解決を実現するには桁違いのインフラが必要です。
@@ -644,6 +654,85 @@ antやgradleの必要性は分かりませんが、mavenのpom.xmlの「プロ�
 
 さらに、プログラミングではテストデータのセットアップ（大量のランダムなデータを格納したDBをセットアップする等）が必要になることがあります。
 それもある種のビルド処理に分類されると思いますが、アプリケーションコードと同じ文脈（ライブラリ、言語等）で記述するのが妥当です。
+
+# 起動処理をJavaで書く_自己再起動_案
+Javaアプリは起動時のVM引数に条件がある場合があり、起動スクリプトが用いられます。
+pure javaを謡っているアプリ（netbeans等）でも起動スクリプトや起動用exeファイルを使っていて、pure javaを破壊しています。javaでは環境毎に起動用プログラムを作成する事が標準的な方法として推奨されています。
+
+しかしpure javaで起動処理ができます。拡張子.jarのJavaアプリが可能です。
+
+この簡単なプログラムは、期待しているVM引数（ここではSerialGCの指定）があるかチェックして無ければ適切なVM引数で自身を再起動します。
+```
+	/**
+	 * Restart itself with the expected VM arguments.
+	 * That means you can have Java app extension of .jar.
+	 *
+	 * Pure Java startup process.
+	 * Alternative to startup scripts.
+	 * With this idea, you can eliminate the startup script with a very
+	 * simple program. Since startup scripts are environment dependent,
+	 * it is more cross-platform to be able to write startup operations
+	 * in pure java.
+	 *
+	 * 適切なJVM引数をつけて自身を起動しなおせるかテスト
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		String expectedGcName = "Copy";
+		boolean reboot = true;
+		String rebootedArg = "rebooted";
+
+		//再起動ならこれ以上再起動しない
+		for (String arg : args) {
+			if (arg.equals(rebootedArg)) {
+				System.out.println("don't reboot because already rebooted");
+				reboot = false;
+			}
+		}
+
+		System.out.println(Arrays.toString(args) + System.lineSeparator()
+				+ ManagementFactory.getRuntimeMXBean().getInputArguments());
+
+		//https://stackoverflow.com/questions/39929758/ps-marksweep-is-which-garbage-collector
+		List<GarbageCollectorMXBean> gcs = ManagementFactory
+				.getGarbageCollectorMXBeans();
+		for (GarbageCollectorMXBean gc : gcs) {
+			System.out.println(gc.getName() + System.lineSeparator());
+			if (gc.getName().equals(expectedGcName)) {
+				reboot = false;
+			}
+		}
+
+		try {
+			if (reboot) {
+				System.out.println("reboot itself");
+				Process p = Runtime.getRuntime()
+						.exec("java -XX:+UseSerialGC -jar JavaFXTest.jar "
+								+ rebootedArg);
+				try {
+					final BufferedReader reader = new BufferedReader(
+							new InputStreamReader(p.getInputStream()));
+					String line = null;
+					while ((line = reader.readLine()) != null) {
+						System.out.println(line);
+					}
+					reader.close();
+				} catch (final Exception e) {
+					e.printStackTrace();
+				}
+
+				System.out.println("exit");
+				System.exit(0);
+			} else {
+				System.out.println("report: executed by correct gc");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		launch(args);//javafx
+	}
+```
 
 # プログラミング言語によるビルド処理が必要になった場面_経験
 ビルド直前にフォルダやファイルのコピーをしたい事は良くあります。
@@ -1098,7 +1187,7 @@ LLVM（というよりJIT系のアイデア）とOSを統合的に考えると�
 ライブラリも統一された方が良い。
 
 # JPMS_解釈
-私はJPMSに強い疑問を持っています。結局私の中にあるJPMSへの疑問は、[自己完結型](#自己完結型の否定_批判)を推奨する事がJVMのメリットを失わせるのではないかという事と、[MavenとJDKを統合](#実行時依存性解決_案)するようなアイデアと比べてJPMSがどの程度合理的なのかということです。あるいは単にJPMSをコアモジュールに留めるというアイデアもありえて、JPMSの妥当性は不明です。
+私はJPMSに強い疑問を持っています。結局私の中にあるJPMSへの疑問は、[自己完結型](#自己完結型の否定_批判)を推奨する事がJVMのメリットを失わせるのではないかという事と、[MavenとJDKを統合](#実行時依存性解決_案)するようなアイデアと比べてJPMSがどの程度合理的なのかということです。
 
 - jar hellを解決するものと良く言われていますが、jar hellを解決しません。module-info.javaの依存性の記述においてバージョンを指定しないのでjar hellを解決できる可能性はありません。
   例えばこの記事がそれについて言及している。  
@@ -1113,7 +1202,7 @@ https://www.oracle.com/webfolder/technetwork/jp/javamagazine/Java-SO17-Modules.p
 
   ここでいうセキュリティの向上はほとんど宣伝文句です。アクセスできるクラスが少し減ってもほとんどセキュリティを向上させないと思います。ほとんどの文脈で必要とされるファイルシステムAPIやDBや通信APIがあればほとんどすべての攻撃が可能だからです。  
 
-- 自己完結型のため最小の実行ファイルを作成する事に寄与します。これによってクラウド適性、組み込み適性が高まります。[自己完結型の否定](#自己完結型の否定_批判)
+- 自己完結型のため最小の実行ファイルを作成する事に寄与します。これによって組み込み適性が高まります。[自己完結型の否定](#自己完結型の否定_批判)
 
 - module-info.javaによるカプセル化で保守性に貢献します。しかし、--add-opens等でmoduleでカプセル化されたクラスにアクセスできるようなので、どの程度保守性の改善が期待できるのか疑問です。
 
@@ -1127,6 +1216,24 @@ https://www.oracle.com/webfolder/technetwork/jp/javamagazine/Java-SO17-Modules.p
   2018 84%  
   https://www.jetbrains.com/research/devecosystem-2018/java/  
   さらに、Java9+へ移行したライブラリやアプリにおいてもどの程度JPMSに対応しているか差があるようです。
+
+JPMSがjar hellを解決すると主張する仕組み。jigsaw layers  
+https://www.slideshare.net/nikitalipsky94/escaping-the-jar-hell-with-jigsaw-layers-gee-con  
+- 21.JPMSは最初のドラフトではversion指定があったが削除された。
+- 50.例えversionを指定してもjar hellは解決されない。
+- 89.Jigsaw Layersが紹介されている。クラスローダーの委任モデルと似ているが、さらに子レイヤは親レイヤに対してサービスとして機能を提供する。こうする事でサービスの実装（どのバージョンのライブラリを使うか）は隠蔽され、バージョン競合問題は１レイヤ内で閉じる。
+- 111.サーブレットコンテナは普通モジュールについて何も知らない。つまりjigsaw layersに対応していない。これに対して「フォークして改修しろ」と答えている。Jigsaw Layersによるjar hellの解決は設計とコーディングのコストが生じる。
+
+このサンプルコードが分かりやすかった。  
+https://github.com/torstenwerner/java-9-no-jar-hell/blob/master/src/main/java/com/app/Main.java  
+
+- サービスを定義する必要がある。
+- 恐らくこの仕組みはサーブレットコンテナとアプリの間のようなある程度大きな枠組みにおいてのみ有効であり、あらゆるライブラリの利用シーンにおいてバージョン競合問題（jar hellの一種）を解決できるわけではない。
+
+**Jigsaw Layersはjar hellが極端に複雑化しないようにするもので無くせるわけではない**。
+通常のライブラリの利用場面でJigsaw Layersをいちいち使うという事は現実的ではない。サービスの定義が肥大化したり定義回数が増加する。
+
+やはり[codebaseにpom.xmlを標準搭載する](#実行時依存性解決_案)のが素直だと思う。そうすればjar単位で異なるバージョンのライブラリを使える。
 
 # アドインのセキュリティ_学習
 アドイン（アプレットという場合も）のセキュリティ（サンドボックス）を実現する方法。その他Javaのセキュリティ
@@ -1435,4 +1542,10 @@ Integer i = valueOf("1");
 そのような「個体ごとの適応（同じ目的を異なる方法で達成する）」がある対象はクラス設計(同種の全個体が同じ実装を持つという前提)が適さない。
 
 ゲームのオブジェクトはしばしば奇抜な発想（物体だったものが一時的に幽体になり衝突判定が無くなるとか）が要求され、属性をほとんど見出せない。だから**個体毎に異なる構造を持つ**という前提で、クラス設計を諦めて、[ECS](#EntityComponentSystem_学習)等の個体毎に異なる構造を許す設計が模索される。
+
+# zstandard
+apache commons compressがzstandardに対応しているが、zstd-jniに依存している。
+このようなライブラリはJDKとサポートするプラットフォームが異なる可能性があり、さらにjniのオーバーヘッドがある。
+このようなものは[JDKが直接実装](#fat_java_案)すべきだと思う。
+しかもzstandardはオプションを調整すればほとんどのケースに対応できる汎用的な圧縮アルゴリズム。
 

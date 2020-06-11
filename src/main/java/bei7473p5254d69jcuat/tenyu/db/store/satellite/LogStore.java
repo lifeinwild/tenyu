@@ -17,8 +17,8 @@ import jetbrains.exodus.env.*;
  *
  * @param <V>
  */
-public abstract class LogStore<V extends StorableI>
-		extends SatelliteStore<Long, V> {
+public abstract class LogStore<V extends ValidatableI>
+		extends ByNodeStore<Long, V> {
 
 	public LogStore(Transaction txn) {
 		super(txn);
@@ -48,11 +48,11 @@ public abstract class LogStore<V extends StorableI>
 		}
 	*/
 	protected static <R> R simpleReadAccess(StoreFunction<Transaction, R> f) {
-		return simpleReadAccess(Glb.getFile().getLogDBPath(), f);
+		return simpleReadAccess(Glb.getFile().getLogDBDir(), f);
 	}
 
 	protected static <R> R simpleAccess(StoreFunction<Transaction, R> f) {
-		return simpleAccess(Glb.getFile().getLogDBPath(), f);
+		return simpleAccess(Glb.getFile().getLogDBDir(), f);
 	}
 
 }

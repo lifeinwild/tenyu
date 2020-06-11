@@ -8,7 +8,7 @@ import bei7473p5254d69jcuat.tenyu.db.*;
 import glb.*;
 import jetbrains.exodus.env.*;
 
-public class CommonKeyInfo implements StorableI {
+public class CommonKeyInfo implements ValidatableI {
 
 	/**
 	 * 自分からこのノードへ通知した共通鍵。受信時に使用

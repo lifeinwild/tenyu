@@ -17,10 +17,10 @@ public class UserRegistrationBuilder extends GuiBuilder {
 		}, gui -> {
 			//登録申請を作る
 			UserRegistrationInfo info = new UserRegistrationInfo();
-			info.setMe(scr.getModelCache());
+			info.setNewUser(scr.getModelCache());
 
 			//作成日時を設定
-			info.getMe().setSubmitDate(System.currentTimeMillis());
+			info.getNewUser().setSubmitDate(System.currentTimeMillis());
 
 			info.setMobileByOffSign(cf.getKeys().getMyMobileKeySignByOffB());
 			info.setPcByOffSign(cf.getKeys().getMyPcKeySignByOffB());

@@ -33,6 +33,5 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/programming/tenyu/src/test/java/test-resources/policyTest.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

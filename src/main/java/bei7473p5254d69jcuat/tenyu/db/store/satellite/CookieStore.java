@@ -15,7 +15,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class CookieStore extends SatelliteStore<String, Cookie> {
+public class CookieStore extends ByNodeStore<String, Cookie> {
 	private String className;
 	private String userName;
 

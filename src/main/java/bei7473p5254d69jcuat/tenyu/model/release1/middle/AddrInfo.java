@@ -4,7 +4,7 @@ import java.net.*;
 import java.util.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.subjectivity.*;
 import glb.*;
 import glb.util.*;
@@ -16,7 +16,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class AddrInfo implements StorableI {
+public class AddrInfo implements ValidatableI {
 	private static int fqdnMax = 50;
 
 	public static int getFqdnMax() {

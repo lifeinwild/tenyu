@@ -91,7 +91,7 @@ public class UserEdgeList {
 		UserEdge edge = edgesUnsecure.get(identifier);
 		if (edge == null)
 			return false;
-		boolean r = Glb.getDb(Glb.getFile().getMiddleDBPath())
+		boolean r = Glb.getDb(Glb.getFile().getMiddleDBDir())
 				.computeInTransaction(txn -> {
 					try {
 						UserEdgeStore ues = new UserEdgeStore(txn);

@@ -17,14 +17,14 @@ import bei7473p5254d69jcuat.tenyu.communication.packaging.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.AbstractStandardResponse.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.gui.GuiCausedSimpleMessageGui.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.takeoverserver.usermessagelist.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.role.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.role.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.subjectivity.*;
 import bei7473p5254d69jcuat.tenyu.timer.*;
+import bei7473p5254d69jcuat.tenyutalk.file.*;
 import glb.*;
 import glb.Glb.*;
 import io.netty.bootstrap.*;
@@ -50,36 +50,6 @@ import io.netty.util.*;
  *
  */
 public class P2P implements GlbMemberDynamicState {
-	/*各メッセージクラスのreceivedに移動
-					if (c instanceof P2PSequenceMessage) {
-						con.close();//Client解放
-						//分散合意にメッセージを送る
-						P2PSequence s = channelToSeq
-								.get(((P2PSequenceMessage) c).getChannel());
-						s.receive(r);
-					} else if (c instanceof Request) {
-						//このアプリのリクエストは多数決や並列DLのために
-						//ほとんどの場合多数のノードに送られる。
-						Request req = (Request) c;
-						Response res = null;
-						if (req instanceof Greeting) {
-						} else if (req instanceof GetAddresses) {
-							//自分の近傍を回答する
-							GetAddressesResponse tmp = new GetAddressesResponse();
-							tmp.init((GetAddresses) req);
-							res = tmp;
-						} else if (req instanceof FileDownload) {
-							res = new FileDownloadResponse();
-						}
-						if (res != null && req.isValid(res) && res.validate()) {
-							con.sendTCP(res);
-						}
-						con.close();
-					} else	{
-						throw new Exception(
-								"IllegalMessage:" + c.getClass().getName());
-					}
-					*/
 
 	/**
 	 * レイテンシ計測前の初期値
@@ -1246,7 +1216,7 @@ public class P2P implements GlbMemberDynamicState {
 			responsedFilePath = (Path) in;
 		}
 
-		public TenyuFile getMeta() {
+		public TenyutalkFileMetadataI getMeta() {
 			return meta;
 		}
 
@@ -1265,7 +1235,7 @@ public class P2P implements GlbMemberDynamicState {
 		/**
 		 * 検証用情報
 		 */
-		private TenyuFile meta;
+		private TenyutalkFileMetadataI meta;
 
 		public long getSize() {
 			return size;

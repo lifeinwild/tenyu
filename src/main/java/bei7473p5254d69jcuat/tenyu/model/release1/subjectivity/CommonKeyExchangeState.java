@@ -3,7 +3,6 @@ package bei7473p5254d69jcuat.tenyu.model.release1.subjectivity;
 import java.util.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
-import glb.*;
 import glb.util.*;
 import jetbrains.exodus.env.*;
 
@@ -13,7 +12,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class CommonKeyExchangeState implements StorableI {
+public class CommonKeyExchangeState implements ValidatableI {
 	private CommonKeyInfo commonKeyInfo = new CommonKeyInfo();
 	/**
 	 * 共通鍵交換の時に設定され、その後の確認処理で利用される。

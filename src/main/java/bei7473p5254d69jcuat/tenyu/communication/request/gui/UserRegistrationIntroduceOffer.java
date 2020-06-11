@@ -69,26 +69,26 @@ public class UserRegistrationIntroduceOffer extends AbstractOffer
 		Util u = Glb.getUtil();
 		String nominal = Keys.getSignKeyNominal();
 		boolean mobileByOff = u.verify(nominal, info.getMobileByOffSign(),
-				info.getMe().getOfflinePublicKey(),
-				info.getMe().getMobilePublicKey());
+				info.getNewUser().getOfflinePublicKey(),
+				info.getNewUser().getMobilePublicKey());
 		if (!mobileByOff) {
 			return false;
 		}
 		boolean offByMobile = u.verify(nominal, info.getOffByMobileSign(),
-				info.getMe().getMobilePublicKey(),
-				info.getMe().getOfflinePublicKey());
+				info.getNewUser().getMobilePublicKey(),
+				info.getNewUser().getOfflinePublicKey());
 		if (!offByMobile) {
 			return false;
 		}
 		boolean offByPc = u.verify(nominal, info.getOffByPcSign(),
-				info.getMe().getPcPublicKey(),
-				info.getMe().getOfflinePublicKey());
+				info.getNewUser().getPcPublicKey(),
+				info.getNewUser().getOfflinePublicKey());
 		if (!offByPc) {
 			return false;
 		}
 		boolean pcByOff = u.verify(nominal, info.getPcByOffSign(),
-				info.getMe().getOfflinePublicKey(),
-				info.getMe().getPcPublicKey());
+				info.getNewUser().getOfflinePublicKey(),
+				info.getNewUser().getPcPublicKey());
 		if (!pcByOff) {
 			return false;
 		}
@@ -99,9 +99,9 @@ public class UserRegistrationIntroduceOffer extends AbstractOffer
 
 		//オブジェクトの内容に不備が無いか
 		ValidationResult vr = new ValidationResult();
-		info.getMe().validateAtOffer(vr);
-		return info.getMe().getId() == null
-				&& info.getMe().getInviter() != null && vr.isNoError();
+		info.getNewUser().validateAtOffer(vr);
+		return info.getNewUser().getId() == null
+				&& info.getNewUser().getInviter() != null && vr.isNoError();
 	}
 
 }

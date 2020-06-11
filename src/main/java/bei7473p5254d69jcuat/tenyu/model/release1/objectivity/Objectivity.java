@@ -13,22 +13,24 @@ import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.item.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.game.statebyuser.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.repository.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.tenyupedia.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.sociality.*;
 import bei7473p5254d69jcuat.tenyu.db.store.satellite.*;
 import bei7473p5254d69jcuat.tenyu.db.store.satellite.HashStore.*;
 import bei7473p5254d69jcuat.tenyu.db.store.single.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.role.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.individuality.role.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.catchup.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.catchup.Integrity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.takeoverserver.usermessagelist.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.vote.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.vote.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.core.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.role.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.vote.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.other.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.role.*;
-import bei7473p5254d69jcuat.tenyu.reference.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.reference.*;
 import glb.*;
 import glb.Glb.*;
 import glb.util.*;
@@ -83,7 +85,7 @@ public class Objectivity implements GlbMemberDynamicState, DBObj {
 	}
 
 	public Environment getEnv() {
-		return Glb.getDb(Glb.getFile().getObjectivityDBPath());
+		return Glb.getDb(Glb.getFile().getObjectivityDBDir());
 	}
 
 	@Override
@@ -93,7 +95,7 @@ public class Objectivity implements GlbMemberDynamicState, DBObj {
 		//ストア初期化のため書き込みトランザクション
 		writeTryW(txn -> {
 			ObjectivityCoreStore s = new ObjectivityCoreStore(txn);
-			if (s.count() == 0) {
+			if (s.get(ModelI.getFirstId()) == null) {
 				ObjectivityCore init = new ObjectivityCore();
 				//ObjectivityCoreはSocialityと対応づけられWalletがある
 				//Walletの検証処理でCoreに依存しているので
@@ -373,6 +375,10 @@ public class Objectivity implements GlbMemberDynamicState, DBObj {
 		return readTryW(txn -> f.apply(new UserStore(txn)));
 	}
 
+	public <T> T getCertification(Function<CertificationStore, T> f) {
+		return readTryW(txn -> f.apply(new CertificationStore(txn)));
+	}
+
 	public <T> T getModelCondition(Function<ModelConditionStore, T> f) {
 		return readTryW(txn -> f.apply(new ModelConditionStore(txn)));
 	}
@@ -457,6 +463,19 @@ public class Objectivity implements GlbMemberDynamicState, DBObj {
 
 	public <T> T getDistributedVote(Function<DistributedVoteStore, T> f) {
 		return readTryW(txn -> f.apply(new DistributedVoteStore(txn)));
+	}
+
+	public <T> T getTenyuRepository(Function<TenyuRepositoryStore, T> f) {
+		return readTryW(txn -> f.apply(new TenyuRepositoryStore(txn)));
+	}
+
+	public <T> T getTenyuArtifact(Function<TenyuArtifactStore, T> f) {
+		return readTryW(txn -> f.apply(new TenyuArtifactStore(txn)));
+	}
+
+	public <T> T getTenyuArtifactByVersion(
+			Function<TenyuArtifactByVersionStore, T> f) {
+		return readTryW(txn -> f.apply(new TenyuArtifactByVersionStore(txn)));
 	}
 
 	/**
@@ -571,7 +590,6 @@ public class Objectivity implements GlbMemberDynamicState, DBObj {
 	public void writeAuthorToDB() {
 		//作者
 		User author = Glb.getConst().getAuthor();
-		//定数として設定されている作者ユーザーの情報が、ID指定型作成処理に入力するのに妥当か
 		ValidationResult vr = new ValidationResult();
 		author.validateAtCreate(vr);
 		if (!vr.isNoError()) {

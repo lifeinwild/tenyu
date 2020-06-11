@@ -10,7 +10,7 @@ import bei7473p5254d69jcuat.tenyu.db.DBUtil.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.reference.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.reference.*;
 import glb.util.*;
 import jetbrains.exodus.*;
 import jetbrains.exodus.env.*;
@@ -23,7 +23,7 @@ import jetbrains.exodus.env.*;
  *
  */
 public class RecycleHidStore extends ObjectStore<Long, Byte>
-		implements SatelliteI {
+		implements SubStoreI {
 	private static final String name = RecycleHidStore.class.getSimpleName();
 	private final String storeName;
 	/**
@@ -52,7 +52,7 @@ public class RecycleHidStore extends ObjectStore<Long, Byte>
 
 	@Override
 	public StoreInfo getMainStoreInfo() {
-		return new StoreInfo(name + "_" + storeName + "_keyToMeaningless");
+		return new StoreInfo(name + "_" + storeName + "_keyToMeaningless", true);
 	}
 
 	public boolean create(Long id) throws IOException {

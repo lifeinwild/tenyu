@@ -27,8 +27,8 @@ public class UserRegistrationIntroduceOfferTableItem
 
 	protected void updateUser() {
 		setUserId(ModelI.getNullId());
-		setName(offer.getInfo().getMe().getName());
-		setExplanation(offer.getInfo().getMe().getExplanation());
+		setName(offer.getInfo().getNewUser().getName());
+		setExplanation(offer.getInfo().getNewUser().getExplanation());
 	}
 
 	public Message getMessage() {

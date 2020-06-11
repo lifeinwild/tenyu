@@ -11,7 +11,6 @@ import org.apache.http.client.utils.*;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.type.*;
 import com.fasterxml.jackson.databind.*;
-import com.github.arteam.simplejsonrpc.server.*;
 import com.sun.net.httpserver.*;
 
 import glb.*;
@@ -23,8 +22,17 @@ import glb.Glb.*;
  */
 public class LocalIpc implements GlbMemberDynamicState {
 	private HttpServer server;
-	private JsonRpcServer rpcServer = new JsonRpcServer();
-	private LocalIpcAPI api = new LocalIpcAPI();
+	//private JsonRpcServer rpcServer = new JsonRpcServer();
+	//private LocalIpcAPI api = new LocalIpcAPI();
+
+	/**
+	 * @return	サーバが使用しているポート。サーバが起動していない場合-1。
+	 */
+	public int getPort() {
+		if (server == null)
+			return -1;
+		return server.getAddress().getPort();
+	}
 
 	public void start() {
 		//int threadCount = 2;
@@ -32,9 +40,7 @@ public class LocalIpc implements GlbMemberDynamicState {
 		//		.newFixedThreadPool(threadCount);
 		if (server == null)
 			try {
-				server = HttpServer.create(
-						new InetSocketAddress(Glb.getConf().getLocalIpcPort()),
-						0);
+				server = HttpServer.create(new InetSocketAddress(0), 0);
 				HttpContext ctx = server.createContext(
 						"/" + Glb.getConst().getAppName(),
 						new LocalIpcHandler());
@@ -53,13 +59,13 @@ public class LocalIpc implements GlbMemberDynamicState {
 	private class LocalIpcHandler implements HttpHandler {
 		public void handle(HttpExchange t) throws IOException {
 			try {
-				//LocalIpc accepts localhost only.
+				//accepts localhost only.
 				if (!t.getRemoteAddress().getAddress().isLoopbackAddress()) {
 					return;
 				}
 
 				String method = t.getRequestMethod();
-				String json = null;
+				String som = null;
 				switch (method) {
 				case "GET":
 					//URL引数から読み取る
@@ -67,8 +73,8 @@ public class LocalIpc implements GlbMemberDynamicState {
 					List<NameValuePair> l = URLEncodedUtils.parse(
 							t.getRequestURI(), Glb.getConst().getCharsetNio());
 					for (NameValuePair e : l) {
-						if (e.getName().equals("json-rpc")) {
-							json = e.getValue();
+						if (e.getName().equals("som")) {
+							som = e.getValue();
 						}
 					}
 					break;
@@ -82,14 +88,26 @@ public class LocalIpc implements GlbMemberDynamicState {
 					while ((line = reader.readLine()) != null) {
 						builder.append(line);
 					}
-					json = builder.toString();
+					som = builder.toString();
 
 					break;
 				default:
 				}
-				Glb.debug(json);
-				String res = rpcServer.handle(json, api);
-				response(res, t);
+				Glb.debug(som);
+				if(som == null || som.length() == 0)
+					throw new IllegalStateException("som is empty.");
+
+				//デシリアライズ
+
+				//検証
+
+				//実行
+				String resRison = "";//TODO
+
+				//String res = rpcServer.handle(rison, api);
+
+				//返信
+				response(resRison, t);
 			} catch (Exception e) {
 				Glb.getLogger().error("", e);
 			} finally {

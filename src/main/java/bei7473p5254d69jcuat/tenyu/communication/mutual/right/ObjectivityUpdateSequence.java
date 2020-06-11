@@ -5,7 +5,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
 
 import bei7473p5254d69jcuat.tenyu.communication.mutual.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.vote.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.vote.*;
 import bei7473p5254d69jcuat.tenyu.timer.*;
 import glb.*;
 
@@ -87,7 +87,7 @@ public class ObjectivityUpdateSequence extends P2PSequence {
 		long start = System.currentTimeMillis();
 		long elapsed = 0;
 		//拡散段階の前半になるかメッセージリストシーケンス1回分の時間が過ぎたら待機終了
-		while (!(counter == 1 && !isElapsedHalf()) || elapsed > 1000L * 120) {
+		while (!(counter == 1 && !isElapsedHalf()) || elapsed > sequenceTime) {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {

@@ -73,8 +73,8 @@ public class Message {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		return this == obj;//同一性比較が必須なので記述しておく
+	public final boolean equals(Object obj) {
+		return this == obj;//このオーバーライドは機能上不要だが、同一性比較が必須という条件を記述しておく
 	}
 
 	/**
@@ -220,7 +220,7 @@ public class Message {
 	 * 最初の梱包はgetEdgeやgetUserIdに影響し、後の多重梱包と少し意味が異なる
 	 */
 	public Message packaging(Package p) {
-		if (!p.binarizeAndSetContent(content, this))
+		if (!p.serializeAndSetContent(content, this))
 			return null;
 		addOuter(p);
 		return this;
@@ -230,7 +230,7 @@ public class Message {
 	 * 多重梱包
 	 */
 	public Message multiplePackaging(Package p) {
-		if (!p.binarizeAndSetContent(getOutermostPack(), this))
+		if (!p.serializeAndSetContent(getOutermostPack(), this))
 			return null;
 		addOuter(p);
 		return this;

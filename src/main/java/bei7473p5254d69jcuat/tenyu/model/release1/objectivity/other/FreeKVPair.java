@@ -6,8 +6,9 @@ import bei7473p5254d69jcuat.tenyu.db.store.administrated.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.other.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
-import bei7473p5254d69jcuat.tenyu.reference.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.reference.*;
 import bei7473p5254d69jcuat.tenyu.ui.other.*;
 import glb.*;
 import glb.util.*;
@@ -214,7 +215,7 @@ public class FreeKVPair extends AdministratedObject implements FreeKVPairI {
 	}
 
 	@Override
-	public FreeKVPairGui getGui(String guiName,
+	public FreeKVPairGui getGuiReferenced(String guiName,
 			String cssIdPrefix) {
 		return new FreeKVPairGui(guiName, cssIdPrefix);
 	}

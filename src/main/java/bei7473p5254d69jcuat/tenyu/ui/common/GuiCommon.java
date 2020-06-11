@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.function.*;
 
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import glb.*;
 import glb.util.*;
@@ -192,6 +193,30 @@ public class GuiCommon {
 	}
 
 	/**
+	 * @return	最大文字列制限用{@link TextFormatter}
+	 */
+	public static TextFormatter<String> getTextFormatterMaxCharacters() {
+		return getTextFormatterMaxCharacters(300 * 100, 0.2);
+	}
+
+	/**
+	 * @param maxCharacters	最大文字数
+	 * @param delete		最大文字数に達した場合最初のdelete％を削除する
+	 * @return	最大文字列制限用{@link TextFormatter}
+	 */
+	public static TextFormatter<String> getTextFormatterMaxCharacters(
+			int maxCharacters, double delete) {
+		return new TextFormatter<String>(change -> {
+			String t = change.getControlNewText();
+			int len = t.length();
+			if (len > maxCharacters) {
+				change.setText(t.substring((int) (len * (1.0 - delete))));
+			}
+			return change;
+		});
+	}
+
+	/**
 	 * 1行かつ横幅最大のテキストを表示。
 	 *
 	 * @param grid
@@ -228,8 +253,9 @@ public class GuiCommon {
 	 * @param built
 	 * @return
 	 */
-	public static int buildAdministratedObject(GuiBuilder builder, GridPane grid,
-			int elapsed, CRUDContext ctx, AdministratedObjectGui built) {
+	public static int buildAdministratedObject(GuiBuilder builder,
+			GridPane grid, int elapsed, CRUDContext ctx,
+			AdministratedObjectGui built) {
 		elapsed = GuiCommon.buildId(builder, grid, elapsed, ctx, built);
 		if (ctx != CRUDContext.CREATE) {
 			boolean editable = CRUDContext.editableBase(ctx);
@@ -465,5 +491,5 @@ public class GuiCommon {
 		return true;
 	}
 
-*/
+	*/
 }

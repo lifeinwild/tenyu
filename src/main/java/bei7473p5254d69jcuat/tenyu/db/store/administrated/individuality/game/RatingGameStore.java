@@ -8,12 +8,11 @@ import java.util.*;
 import javax.management.modelmbean.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
-import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.sociality.*;
-import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.game.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.individuality.game.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.game.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.reference.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.*;
@@ -38,7 +37,7 @@ public class RatingGameStore
 			List<RatingGame> r = getRandom(max);
 			SocialityStore ss = new SocialityStore(util.getTxn());
 			for (RatingGame o : r) {
-				if (ss.isBan(NodeType.RATINGGAME, o.getId()))
+				if (ss.isBan(StoreNameObjectivity.RATING_GAME, o.getId()))
 					r.remove(o);
 			}
 			return r;
@@ -98,14 +97,14 @@ public class RatingGameStore
 	}
 
 	@Override
-	public List<StoreInfo> getStoresIndividualityObjectConcrete() {
+	protected List<StoreInfo> getStoresIndividualityObjectConcrete() {
 		List<StoreInfo> r = new ArrayList<StoreInfo>();
 		return r;
 	}
 
 	@Override
 	public boolean isSupport(Object o) {
-		if (o instanceof bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.game.RatingGameI)
+		if (o instanceof bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.individuality.game.RatingGameI)
 			return true;
 		return false;
 	}

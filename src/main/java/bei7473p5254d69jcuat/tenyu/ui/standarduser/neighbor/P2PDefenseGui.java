@@ -2,6 +2,8 @@ package bei7473p5254d69jcuat.tenyu.ui.standarduser.neighbor;
 
 import bei7473p5254d69jcuat.tenyu.communication.*;
 import bei7473p5254d69jcuat.tenyu.db.store.single.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.*;
 import bei7473p5254d69jcuat.tenyu.ui.common.*;
 import bei7473p5254d69jcuat.tenyu.ui.standarduser.neighbor.P2PDefenseGui.*;
 import glb.*;

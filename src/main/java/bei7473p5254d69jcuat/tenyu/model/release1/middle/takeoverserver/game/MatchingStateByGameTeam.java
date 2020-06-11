@@ -6,7 +6,7 @@ import java.util.Map.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.takeoverserver.game.MatchingStateByGameTeam.TeamCount.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.takeoverserver.game.Team.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.game.*;
 import glb.*;
 import glb.util.*;
 

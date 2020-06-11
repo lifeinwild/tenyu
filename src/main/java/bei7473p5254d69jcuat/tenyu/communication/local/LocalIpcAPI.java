@@ -3,8 +3,9 @@ package bei7473p5254d69jcuat.tenyu.communication.local;
 import com.github.arteam.simplejsonrpc.core.annotation.*;
 
 import bei7473p5254d69jcuat.tenyu.communication.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.sociality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.subjectivity.*;
 import bei7473p5254d69jcuat.tenyu.ui.*;
 import glb.*;
@@ -86,6 +87,6 @@ public class LocalIpcAPI {
 	//DB関係
 	@JsonRpcMethod
 	public User getUser(@JsonRpcParam("id") Long id) {
-		return Glb.getObje().getUser(us->us.get(id));
+		return Glb.getObje().getUser(us -> us.get(id));
 	}
 }

@@ -7,7 +7,7 @@ import bei7473p5254d69jcuat.tenyu.communication.request.gui.right.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.env.*;
@@ -26,7 +26,7 @@ public class UserRegistration extends UserRightRequest {
 
 	@Override
 	public boolean apply(Transaction txn, long historyIndex) throws Exception {
-		return User.createSequence(txn, info.getMe(), false, historyIndex);
+		return User.createSequence(txn, info.getNewUser(), false, historyIndex);
 	}
 
 	@Override
@@ -34,9 +34,9 @@ public class UserRegistration extends UserRightRequest {
 		Long signerUserId = SignedPackage.getSigner(m);
 		if (signerUserId == null)
 			return false;
-		if (info == null || info.getMe() == null)
+		if (info == null || info.getNewUser() == null)
 			return false;
-		User u = info.getMe();
+		User u = info.getNewUser();
 		Long inviterUserId = u.getInviter();
 		if (inviterUserId == null
 				|| ModelI.getNullId().equals(inviterUserId))

@@ -8,11 +8,10 @@ import java.util.*;
 import javax.management.modelmbean.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
-import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
-import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.game.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.individuality.game.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.game.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.*;
@@ -138,7 +137,7 @@ public class StaticGameStore
 	}
 
 	@Override
-	public List<StoreInfo> getStoresIndividualityObjectConcrete() {
+	protected List<StoreInfo> getStoresIndividualityObjectConcrete() {
 		List<StoreInfo> r = new ArrayList<StoreInfo>();
 		r.add(serverToId);
 		return r;
@@ -146,7 +145,7 @@ public class StaticGameStore
 
 	@Override
 	public boolean isSupport(Object o) {
-		if (o instanceof bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.game.StaticGameI)
+		if (o instanceof bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.individuality.game.StaticGameI)
 			return true;
 		return false;
 	}

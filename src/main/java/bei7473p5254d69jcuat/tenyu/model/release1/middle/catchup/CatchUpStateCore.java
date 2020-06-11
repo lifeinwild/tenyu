@@ -8,7 +8,7 @@ import bei7473p5254d69jcuat.tenyu.communication.request.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.catchup.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.catchup.GetCore.*;
 import bei7473p5254d69jcuat.tenyu.db.store.single.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.core.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.subjectivity.*;
 import glb.*;
 
@@ -59,7 +59,7 @@ public class CatchUpStateCore extends AbstractCatchUpProc {
 					res.getCore().hash())) {
 				//多数派客観コアを採用する
 				Glb.getObje().writeTryW(txn -> new ObjectivityCoreStore(txn)
-						.save(res.getCore()));
+						.catchUp(res.getCore()));
 			}
 			coreReq = null;
 		}

@@ -3,6 +3,7 @@ package bei7473p5254d69jcuat.tenyu.communication.request;
 import bei7473p5254d69jcuat.tenyu.communication.*;
 import bei7473p5254d69jcuat.tenyu.communication.mutual.right.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.core.*;
 import glb.*;
 import io.netty.channel.*;
 

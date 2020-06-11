@@ -2,10 +2,8 @@ package bei7473p5254d69jcuat.tenyutalk.model.promise.other;
 
 import java.util.*;
 
-import bei7473p5254d69jcuat.tenyu.db.store.*;
-import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.*;
 import bei7473p5254d69jcuat.tenyutalk.*;
-import bei7473p5254d69jcuat.tenyutalk.model.promise.*;
 
 /**
  * 創作物{@link CreativeObjectI}につけられるコメント
@@ -13,6 +11,21 @@ import bei7473p5254d69jcuat.tenyutalk.model.promise.*;
  * {@link ChatMessageI}との違いは、
  * 他のコメントへの返信として作成できる事と評価（いいね）できる事、
  * カテゴリが無い事。
+ *
+ * {@link Tenyutalk}側のDBに保存される。
+ *
+ * ノード別管理だがメイン系列のモデルを使用している。
+ * {@link AdministratedObjectI}はもともとObjectivityObjectという名前であり
+ * それ以下の全クラスは客観である事が想定された。
+ * 実際このモデルを除けばそれは達成されている。
+ * しかしこのモデルはその規則性を破壊している。
+ * とはいえコード上無理な負担は生じていない。
+ * というのは、メイン系列のモデルやストアクラスをTenyutalk側DBに保存する事は、
+ * 新たなコード上の特殊な対応無くできている。
+ *
+ * 将来的に客観DBの更新性能が十分に高まれば、
+ * コメントを客観上で扱う設計が考えられる。
+ * コンテンツを見る前にそのコメントが分かる、という事。
  *
  * @author exceptiontenyu@gmail.com
  *

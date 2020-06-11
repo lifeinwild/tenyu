@@ -81,7 +81,7 @@ public class UserMessageListHashStore extends
 	@Override
 	protected boolean deleteAdministratedObjectConcrete(UserMessageListHashI h)
 			throws Exception {
-		return util.remove(historyIndexToId, cnvL(h.getHistoryIndex()));
+		return util.delete(historyIndexToId, cnvL(h.getHistoryIndex()));
 	}
 
 	@Override
@@ -136,7 +136,7 @@ public class UserMessageListHashStore extends
 			throws Exception {
 		if (Glb.getUtil().notEqual(updated.getHistoryIndex(),
 				old.getHistoryIndex())) {
-			if (!util.remove(historyIndexToId, cnvL(old.getHistoryIndex())))
+			if (!util.delete(historyIndexToId, cnvL(old.getHistoryIndex())))
 				return false;
 			if (!util.put(historyIndexToId, cnvL(updated.getHistoryIndex()),
 					cnvL(updated.getId())))

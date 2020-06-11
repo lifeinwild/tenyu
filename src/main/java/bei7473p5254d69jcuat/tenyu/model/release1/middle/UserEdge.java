@@ -14,7 +14,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class UserEdge implements StorableI {
+public class UserEdge implements ValidatableI {
 	/**
 	 * 相手ノードを特定する識別子
 	 */

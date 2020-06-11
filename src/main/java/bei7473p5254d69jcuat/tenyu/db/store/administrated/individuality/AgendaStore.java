@@ -9,7 +9,7 @@ import javax.management.modelmbean.*;
 
 import bei7473p5254d69jcuat.tenyu.communication.mutual.right.*;
 import bei7473p5254d69jcuat.tenyu.db.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.agenda.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.agenda.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.*;
@@ -163,7 +163,7 @@ public class AgendaStore extends IndividualityObjectStore<AgendaI, Agenda> {
 	}
 
 	@Override
-	public List<StoreInfo> getStoresIndividualityObjectConcrete() {
+	protected List<StoreInfo> getStoresIndividualityObjectConcrete() {
 		List<StoreInfo> r = new ArrayList<>();
 		r.add(statusToId);
 		return r;

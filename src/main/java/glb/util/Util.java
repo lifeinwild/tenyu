@@ -6,6 +6,7 @@ import java.nio.*;
 import java.nio.charset.*;
 import java.nio.file.*;
 import java.security.*;
+import java.security.interfaces.*;
 import java.security.spec.*;
 import java.time.*;
 import java.time.format.*;
@@ -20,6 +21,7 @@ import java.util.stream.*;
 import javax.crypto.*;
 import javax.crypto.spec.*;
 
+import org.apache.commons.io.*;
 import org.apache.commons.validator.routines.*;
 import org.apache.logging.log4j.*;
 import org.bouncycastle.jce.provider.*;
@@ -32,7 +34,7 @@ import com.ibm.icu.text.*;
 import bei7473p5254d69jcuat.tenyu.*;
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
 import glb.*;
 import jetbrains.exodus.env.*;
 
@@ -45,8 +47,61 @@ public class Util {
 		Security.addProvider(new BouncyCastleProvider());
 	}
 
-	public boolean validateReference(Collection<? extends StorableI> storables,
-			ValidationResult r, Transaction txn) {
+	/**
+	 * 例えばバージョン番号をファイル名に含める場合に使う
+	 * @param filename	ファイルパス
+	 * @param inserted	ファイル名と拡張子の間に挿入される文字列
+	 * @return
+	 */
+	public String insertStrBetweenFilenameAndExtension(String filename,
+			String inserted) {
+		if (filename == null || inserted == null)
+			throw new IllegalArgumentException();
+		String ext = FilenameUtils.getExtension(filename);
+		int extLen = ext.length();
+		if (extLen == 0)
+			return filename + "-" + inserted;
+
+		ext = "." + ext;
+		extLen++;
+
+		filename = filename.substring(0, filename.length() - extLen);
+		return filename + "-" + inserted + ext;
+	}
+
+	/**
+	 * @param keyB		鍵バイナリ表現
+	 * @param rsaKeyLen	鍵長
+	 * @return	正しいRSA鍵か
+	 */
+	public boolean isValidRSAKey(byte[] keyB, int rsaKeyLen) {
+		try {
+			RSAPublicKey mob = (RSAPublicKey) getPub(keyB);
+			return mob.getModulus().bitLength() == rsaKeyLen;
+		} catch (Exception e) {
+			Glb.getLogger().error("", e);
+			return false;
+		}
+	}
+
+	public boolean isValidRSAKey(byte[] keyB, int[] rsaKeyLens) {
+		try {
+			RSAPublicKey mob = (RSAPublicKey) getPub(keyB);
+			for (int len : rsaKeyLens) {
+				if (mob.getModulus().bitLength() == len) {
+					return true;
+				}
+			}
+			return false;
+		} catch (Exception e) {
+			Glb.getLogger().error("", e);
+			return false;
+		}
+	}
+
+	public boolean validateReference(
+			Collection<? extends ValidatableI> storables, ValidationResult r,
+			Transaction txn) {
 		return validateCollection(storables, r, e -> {
 			try {
 				return e.validateReference(r, txn);
@@ -57,13 +112,13 @@ public class Util {
 		});
 	}
 
-	public boolean validateAtDelete(Collection<? extends StorableI> storables,
-			ValidationResult r) {
+	public boolean validateAtDelete(
+			Collection<? extends ValidatableI> storables, ValidationResult r) {
 		return validateCollection(storables, r, e -> e.validateAtDelete(r));
 	}
 
-	public boolean validateAtUpdate(Collection<? extends StorableI> storables,
-			ValidationResult r) {
+	public boolean validateAtUpdate(
+			Collection<? extends ValidatableI> storables, ValidationResult r) {
 		return validateCollection(storables, r, e -> e.validateAtUpdate(r));
 	}
 
@@ -91,7 +146,7 @@ public class Util {
 	}
 
 	/**
-	 * 多くの場合{@link StorableI#validateAtUpdateChange(ValidationResult, Object)}は
+	 * 多くの場合{@link ValidatableI#validateAtUpdateChange(ValidationResult, Object)}は
 	 * 単にサブクラスの実装を呼び出すだけでは済まない。
 	 * ホストクラス側にサブクラスのメンバー変数を意識した検証ロジックを書く必要がある。
 	 * それがvalidate
@@ -111,14 +166,15 @@ public class Util {
 		return true;
 	}
 
-	public boolean validateAtCreate(Collection<? extends StorableI> storables,
-			ValidationResult r) {
+	public boolean validateAtCreate(
+			Collection<? extends ValidatableI> storables, ValidationResult r) {
 		return validateCollection(storables, r, e -> e.validateAtCreate(r));
 	}
 
-	private boolean validateCollection(Collection<? extends StorableI> storables,
-			ValidationResult r, Function<StorableI, Boolean> f) {
-		for (StorableI e : storables) {
+	private boolean validateCollection(
+			Collection<? extends ValidatableI> storables, ValidationResult r,
+			Function<ValidatableI, Boolean> f) {
+		for (ValidatableI e : storables) {
 			if (!f.apply(e)) {
 				return false;
 			}
@@ -135,15 +191,14 @@ public class Util {
 	 * @return	署名及び署名データの書き込みに成功したか
 	 */
 	public boolean sign(Function<NominalSignature, Boolean> set,
-			Supplier<String> getNominal, Supplier<byte[]> getSignTarget) {
+			Supplier<String> getNominal, byte[] signTarget) {
 		try {
+			if (signTarget == null)
+				return false;
 			//作成される電子署名データ
 			NominalSignature sign = new NominalSignature();
 
 			//情報取得
-			byte[] signTarget = getSignTarget.get();
-			if (signTarget == null)
-				return false;
 			String nominal = getNominal.get();
 			if (nominal == null)
 				return false;
@@ -200,6 +255,23 @@ public class Util {
 	}
 
 	/**
+	 * 指定された時間だけ処理をする
+	 * @param procTime	処理時間
+	 * @param loopContent	処理時間内、繰り返し呼び出される処理。falseが返ったら時間内でも終了。
+	 */
+	public void proc(long procTime, Supplier<Boolean> loopContent) {
+		if (procTime <= 0)
+			return;
+		long start = Glb.getUtil().getEpochMilli();
+		long elapsed = 0;
+		while (elapsed < procTime) {
+			if (!loopContent.get())
+				break;
+			elapsed = Glb.getUtil().getEpochMilli() - start;
+		}
+	}
+
+	/**
 	 * 年と月が同じ限り同じ値を返す。UTC
 	 * @return	日以下が無視されたミリ秒
 	 */
@@ -232,7 +304,7 @@ public class Util {
 	}
 
 	/**
-	 * @param expectedSec
+	 * @param expectedSec	この秒で呼び出す想定。ただしノード毎にずれる
 	 * @param tolerance	これを大きくすると全ノードで返値が一致する確率が上がる。
 	 * 言い換えればノード間の時計のずれに強くなる。しかし、
 	 * 返値が変化する周期が長くなるので、例えば１分に１回返値が変化してほしいなら
@@ -242,8 +314,13 @@ public class Util {
 	 */
 	public long getEpochMilliIgnoreSeconds(int expectedSec, int tolerance) {
 		LocalDateTime now = java.time.LocalDateTime.now(Clock.systemUTC());
+		//現在分
 		int min = now.getMinute();
+		//現在秒
 		int sec = now.getSecond();
+
+		//期待秒がトレランス分を減らした時に前の分に達する場合
+		//現在分を１足す
 		int toleranceMin = expectedSec - tolerance;
 		if (toleranceMin < 0) {
 			int threshold = 60 + toleranceMin;
@@ -251,6 +328,8 @@ public class Util {
 				min++;
 			}
 		}
+		//期待秒がトレランス分を足した時に次の分に達する場合
+		//現在分を１減らす
 		int toleranceMax = expectedSec + tolerance;
 		if (toleranceMax > 60) {
 			int threshold = toleranceMax - 60;
@@ -258,6 +337,12 @@ public class Util {
 				min--;
 			}
 		}
+
+		if (min < 0)
+			min = 0;
+		if (min > 59)
+			min = 59;
+
 		long milli = LocalDateTime
 				.of(now.getYear(), now.getMonth(), now.getDayOfMonth(),
 						now.getHour(), min, 0)
@@ -328,10 +413,13 @@ public class Util {
 	 * @throws Exception
 	 */
 	public void benchmark(String s, Runnable r) throws Exception {
-		long start = System.currentTimeMillis();
+		long startNano = System.nanoTime();
+		long startMilli = System.currentTimeMillis();
 		r.run();
-		long end = System.currentTimeMillis();
-		System.out.println(s + " " + (end - start) + "ms");//50ms
+		long endNano = System.nanoTime();
+		long endMilli = System.currentTimeMillis();
+		System.out.println("benchmark "+ s + " " + (endNano - startNano) + "ns" + " "
+				+ (endMilli - startMilli) + "ms");
 	}
 
 	/**
@@ -530,28 +618,18 @@ public class Util {
 	}
 
 	/**
-	 * ファイルのハッシュ値を計算する
-	 * @param p	対象ファイル
-	 * @return	ハッシュ値
-	 * @throws Exception
-	 */
-	/*
-	public byte[] digestFile(Path p) throws Exception {
-		MessageDigest md = Glb.getUtil().getMD();
-		byte[] b = Files.readAllBytes(p);
-		return md.digest(b);
-	}
-	*/
-
-	/**
 	 * 巨大なファイルでもメモリ消費量が限定的
 	 * ファイルのハッシュ値を計算する
 	 * @param p	対象ファイル
 	 * @return	ハッシュ値
 	 */
-	public byte[] digestFile(Path path) {
+	public byte[] hashFile(Path path) {
 		MessageDigest md = getMDSecure();
-		byte[] h = null;
+		hashFileUpdate(path, md);
+		return md.digest();
+	}
+
+	public void hashFileUpdate(Path path, MessageDigest md) {
 		try (InputStream is = new BufferedInputStream(
 				Files.newInputStream(path));
 				DigestInputStream dis = new DigestInputStream(is, md)) {
@@ -559,16 +637,118 @@ public class Util {
 			while (dis.read(buf) != -1) {
 
 			}
-			h = md.digest();
 		} catch (IOException e) {
 			Glb.getLogger().error("", e);
 		}
-		return h;
 	}
 
 	/**
-	 * TODO:スレッドセーフか確認できなかった。恐らくそうだろう
+	 * 対象フォルダ以下を再帰的に探索し、対象フォルダのハッシュ値を作成する。
+	 *
+	 * このメソッドはkryoに依存していない。
+	 *
+	 * @param baseDir	対象となった各ファイルフォルダはこのパス文字列が除外された相対パスへ修正される。
+	 * @param targetDir	対象フォルダ
+	 * @param md	これがupdateされる。このメソッドを呼び出した後{@link MessageDigest#digest()}で対象フォルダのハッシュ値が得られる。
+	 * @return	対象となったファイルまたはフォルダのソート済みリスト
 	 */
+	public List<String> hashFolderRecursiveUpdate(String baseDir,
+			String targetDir, MessageDigest md) {
+		if (!baseDir.endsWith("/"))
+			throw new IllegalArgumentException("not endsWith(\"/\")");
+		try {
+			Path start = Paths.get(baseDir, targetDir);
+
+			//ハッシュ値はパス文字列に依存させないと
+			//対象フォルダ内でのファイル位置の違いでハッシュ値が変わらない。
+
+			//対象ファイルフォルダのパス
+			List<String> paths = getPathStrsWithoutSymlink(start, baseDir);
+
+			//walkがどういう順番でファイルを辿るか分からないのでソートする
+			Collections.sort(paths);
+			Glb.debug("" + paths);
+
+			//パス文字列を順番に依存させる
+			for (String path : paths)
+				md.update(path.getBytes(Glb.getConst().getCharsetNio()));
+
+			//さらにファイルについては内容を依存させる
+			for (String path : paths) {
+				Path p = Paths.get(path);
+				if (p.toFile().isFile()) {
+					hashFileUpdate(p, md);
+				}
+			}
+			return paths;
+		} catch (Exception e) {
+			Glb.getLogger().error("", e);
+			return null;
+		}
+	}
+
+	/**
+	 * フォルダの場合再帰的にファイルサイズを足す。
+	 * シンボリックリンク無視
+	 *
+	 * @param f	ファイルまたはフォルダ
+	 * @return	サイズ
+	 */
+	public long getSize(File f) {
+		if (f.isFile()) {
+			return f.length();
+		} else if (f.isDirectory()) {
+			List<File> files = getFilesWithoutSymlink(f.toPath(),
+					f.getParent());
+			long total = 0;
+			for (File file : files) {
+				if (file.isFile())
+					total += file.length();
+			}
+			return total;
+		}
+		throw new IllegalArgumentException();
+	}
+
+	/**
+	 * @param start		startDir/
+	 * @param baseDir	./example/dir/
+	 * @return	./example/dir/startDir/*
+	 */
+	public List<File> getFilesWithoutSymlink(Path start, String baseDir) {
+		List<String> l = getPathStrsWithoutSymlink(start, baseDir);
+		List<File> r = new ArrayList<>();
+		for (String s : l) {
+			r.add(new File(baseDir + s));
+		}
+		return r;
+	}
+
+	/**
+	 * @param start		ここから探索
+	 * @param baseDir	各パス文字列は接頭辞からこれが省かれる
+	 * @return
+	 */
+	public List<String> getPathStrsWithoutSymlink(Path start, String baseDir) {
+		try {
+			List<String> paths = new ArrayList<>();
+			Files.walk(start).forEach(p -> {
+				String s = p.toString();
+				File f = p.toFile();
+				//隠しファイル無視
+				if (f.isHidden())
+					return;
+				//シンボリックリンク無視
+				if (!Files.isSymbolicLink(p))
+					paths.add(s.substring(baseDir.length()));
+			});
+			return paths;
+		} catch (Exception e) {
+			Glb.getLogger().error("", e);
+			return null;
+		}
+	}
+
 	private UrlValidator urlValidator = new UrlValidator(
 			UrlValidator.ALLOW_LOCAL_URLS);
 
@@ -657,6 +837,9 @@ public class Util {
 	}
 
 	/**
+	 * kryo依存
+	 * byte[]なら{@link #hashSecure(byte[])}を検討
+	 *
 	 * 衝突率が低い
 	 * @param o
 	 * @return		oのハッシュ値
@@ -673,6 +856,9 @@ public class Util {
 	}
 
 	/**
+	 * kryo依存
+	 * byte[]なら{@link #hashFast(byte[])}を検討
+	 *
 	 * 高速
 	 * @param o
 	 * @return
@@ -688,6 +874,16 @@ public class Util {
 		}
 	}
 
+	/**
+	 * kryoに依存してハッシュを作っているのがどうなのかという気はするが、
+	 * それでもオブジェクトのハッシュ値が必要な場合はこうするのが妥当と思った。
+	 *
+	 * しかしファイルのハッシュ値等に間違って使ってはならない。
+	 *
+	 * @param o
+	 * @param md
+	 * @return
+	 */
 	private byte[] hash(Object o, MessageDigest md) {
 		try {
 			byte[] seri = Glb.getUtil().toKryoBytesForPersistence(o);
@@ -707,7 +903,7 @@ public class Util {
 		try {
 			MessageDigest md = MessageDigest
 					.getInstance(Glb.getConst().getDigestAlgorithmFast());
-			return hash(o, md);
+			return md.digest(o);
 		} catch (NoSuchAlgorithmException e) {
 			Glb.getLogger().error("", e);
 			return null;
@@ -723,7 +919,7 @@ public class Util {
 		try {
 			MessageDigest md = MessageDigest
 					.getInstance(Glb.getConst().getDigestAlgorithmSecure());
-			return hash(o, md);
+			return md.digest(o);
 		} catch (NoSuchAlgorithmException e) {
 			Glb.getLogger().error("", e);
 			return null;
@@ -734,18 +930,13 @@ public class Util {
 		try {
 			MessageDigest md = MessageDigest
 					.getInstance(Glb.getConst().getDigestAlgorithmSecure());
-			byte[] r = null;
 			for (byte[] e : o)
-				r = hash(e, md);
-			return r;
+				md.update(e);
+			return md.digest();
 		} catch (NoSuchAlgorithmException e) {
 			Glb.getLogger().error("", e);
 			return null;
 		}
-	}
-
-	private byte[] hash(byte[] o, MessageDigest md) {
-		return md.digest(o);
 	}
 
 	public boolean isZeroFill(byte[] hashArray) {

@@ -7,7 +7,7 @@ import java.util.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.ModelStore.*;
-import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.individuality.*;
 import glb.*;
 import jetbrains.exodus.*;
 import jetbrains.exodus.env.*;
@@ -177,7 +177,7 @@ public abstract class ObjectStore<K, V> {
 	 * @throws IOException
 	 */
 	public boolean deleteDirect(ByteIterable key) throws IOException {
-		return util.remove(getMainStoreInfo(), key);
+		return util.delete(getMainStoreInfo(), key);
 	}
 
 	public Map<K, V> getAll() {
@@ -226,8 +226,12 @@ public abstract class ObjectStore<K, V> {
 		//他のDB系インターフェースはthrows Exceptionにしているがここはtry catchを内部でやる
 		//特に優劣を決定できず、こうした方がコードが減るので
 		try {
-			return chainversionup(util.get(getMainStoreInfo(), key));
+			ByteIterable bi = util.get(getMainStoreInfo(), key);
+			if (bi == null)
+				return null;
+			return chainversionup(bi);
 		} catch (Exception e) {
+			Glb.getLogger().warn("", e);
 			return null;
 		}
 	}

@@ -13,7 +13,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class PaceLimitAmount implements StorableI {
+public class PaceLimitAmount implements ValidatableI {
 	/**
 	 * 現在の量
 	 */
@@ -73,6 +73,9 @@ public class PaceLimitAmount implements StorableI {
 	 * @return		更新されたか。addが0の場合処理されないが更新されたとみなしtrueを返す
 	 */
 	public boolean add(long add, long date) {
+		if (!init)
+			throw new IllegalStateException("not initialized");
+
 		if (add == 0)
 			return true;
 
@@ -145,6 +148,7 @@ public class PaceLimitAmount implements StorableI {
 				+ (int) (lastResetDate ^ (lastResetDate >>> 32));
 		return result;
 	}
+	private transient boolean init = false;
 
 	/**
 	 * transientメンバーを設定する。
@@ -161,6 +165,7 @@ public class PaceLimitAmount implements StorableI {
 		this.resetPeriod = resetPeriod;
 		this.createDate = createDate;
 		this.freePeriod = freePeriod;
+		init = true;
 	}
 
 	public boolean validateAtCommon(ValidationResult r) {

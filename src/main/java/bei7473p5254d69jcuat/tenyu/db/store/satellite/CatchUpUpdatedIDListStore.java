@@ -12,7 +12,7 @@ import javax.management.modelmbean.*;
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.catchup.*;
-import bei7473p5254d69jcuat.tenyu.reference.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.reference.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.*;
@@ -32,7 +32,7 @@ import jetbrains.exodus.env.*;
  *
  */
 public class CatchUpUpdatedIDListStore extends
-		SatelliteStore<Long, CatchUpUpdatedIDList> implements SatelliteI {
+		ByNodeStore<Long, CatchUpUpdatedIDList> implements SubStoreI {
 	/**
 	 * 1ヒストリーインデックスあたりの最大件数
 	 */
@@ -149,7 +149,7 @@ public class CatchUpUpdatedIDListStore extends
 
 	@Override
 	public StoreInfo getMainStoreInfo() {
-		return new StoreInfo(name + "_" + storeName + "_idTo" + name);
+		return new StoreInfo(name + "_" + storeName + "_idTo" + name, true);
 	}
 
 	@Override
@@ -210,7 +210,7 @@ public class CatchUpUpdatedIDListStore extends
 
 			//順次削除
 			for (Long key : r.keySet()) {
-				if (util.remove(getMainStoreInfo(), cnvL(key)))
+				if (util.delete(getMainStoreInfo(), cnvL(key)))
 					count++;
 			}
 		} catch (Exception e) {

@@ -10,10 +10,13 @@ import jetbrains.exodus.env.*;
 /**
  * 任意の{@link ObjectGui}から利用される、ユーザー固有の任意のデータを格納できる。
  *
+ * TODO 廃案にすることも含めて再検討。もともとTenyutalk系モデルから利用するつもりだったが
+ * 現在の設計だと不要
+ *
  * @author exceptiontenyu@gmail.com
  *
  */
-public class Cookie implements StorableI {
+public class Cookie implements ValidatableI {
 	private Map<String, String> data = new LinkedHashMap<>();
 
 	public Map<String, String> getData() {

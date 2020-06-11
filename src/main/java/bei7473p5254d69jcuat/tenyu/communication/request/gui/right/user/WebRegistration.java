@@ -2,7 +2,7 @@ package bei7473p5254d69jcuat.tenyu.communication.request.gui.right.user;
 
 import bei7473p5254d69jcuat.tenyu.communication.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.gui.right.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.env.*;

@@ -1,9 +1,11 @@
 package bei7473p5254d69jcuat.tenyu.ui.standarduser.user;
 
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.sociality.*;
-import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.sociality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.reference.*;
 import bei7473p5254d69jcuat.tenyu.ui.common.*;
 import bei7473p5254d69jcuat.tenyu.ui.standarduser.user.SocialityGui.*;
 import glb.*;
@@ -60,13 +62,12 @@ public class SocialityGui extends
 
 	public GridPane buildSimpleBan(Sociality exist) {
 		sociality = exist;
-		if (sociality.getNodeType() == NodeType.USER) {
+		if (sociality.getNodeType() == StoreNameObjectivity.USER) {
 			UserGui u = new UserGui(name, idPrefix + "IndividualityObjectUser");
 			u.buildRead();
 			add(u);
 
-			u.set(Glb.getObje().getUser(
-					us -> us.get(exist.getIndividualityObjectConcreteId())));
+			u.set((User) exist.getIndividualityObjectConcreteRef().getReferenced());
 		}
 		//TODO 他の個性系オブジェクトのGUI表示
 		set(exist);

@@ -9,9 +9,8 @@ import java.util.*;
 import javax.management.modelmbean.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
-import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
-import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
 import glb.*;
 import glb.Conf.*;
 import glb.util.*;
@@ -219,11 +218,11 @@ public class UserStore extends IndividualityObjectStore<UserI, User> {
 		byte[] offHash = md.digest(u.getOfflinePublicKey());
 		md.reset();
 
-		if (!util.remove(pcToId, cnvBA(pcHash)))
+		if (!util.delete(pcToId, cnvBA(pcHash)))
 			return false;
-		if (!util.remove(mobileToId, cnvBA(mobileHash)))
+		if (!util.delete(mobileToId, cnvBA(mobileHash)))
 			return false;
-		if (!util.remove(offToId, cnvBA(offHash)))
+		if (!util.delete(offToId, cnvBA(offHash)))
 			return false;
 		return true;
 	}
@@ -363,7 +362,7 @@ public class UserStore extends IndividualityObjectStore<UserI, User> {
 	}
 
 	@Override
-	public List<StoreInfo> getStoresIndividualityObjectConcrete() {
+	protected List<StoreInfo> getStoresIndividualityObjectConcrete() {
 		return getUserStoresStatic();
 	}
 
@@ -403,7 +402,7 @@ public class UserStore extends IndividualityObjectStore<UserI, User> {
 			if (old.getPcPublicKey() != null) {
 				byte[] pcHashOld = md.digest(old.getPcPublicKey());
 				md.reset();
-				if (!util.remove(pcToId, cnvBA(pcHashOld)))
+				if (!util.delete(pcToId, cnvBA(pcHashOld)))
 					return false;
 			}
 			byte[] pcHashUpdated = md.digest(updated.getPcPublicKey());
@@ -417,7 +416,7 @@ public class UserStore extends IndividualityObjectStore<UserI, User> {
 			if (old.getMobilePublicKey() != null) {
 				byte[] mobileHashOld = md.digest(old.getMobilePublicKey());
 				md.reset();
-				if (!util.remove(mobileToId, cnvBA(mobileHashOld)))
+				if (!util.delete(mobileToId, cnvBA(mobileHashOld)))
 					return false;
 			}
 			byte[] mobileHashUpdated = md.digest(updated.getMobilePublicKey());
@@ -431,7 +430,7 @@ public class UserStore extends IndividualityObjectStore<UserI, User> {
 			if (old.getOfflinePublicKey() != null) {
 				byte[] offHashOld = md.digest(old.getOfflinePublicKey());
 				md.reset();
-				if (!util.remove(offToId, cnvBA(offHashOld)))
+				if (!util.delete(offToId, cnvBA(offHashOld)))
 					return false;
 			}
 			byte[] offHashUpdated = md.digest(updated.getOfflinePublicKey());

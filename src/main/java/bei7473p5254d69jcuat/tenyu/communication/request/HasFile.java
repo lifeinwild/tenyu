@@ -3,9 +3,8 @@ package bei7473p5254d69jcuat.tenyu.communication.request;
 import java.nio.file.*;
 
 import bei7473p5254d69jcuat.tenyu.communication.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.subjectivity.*;
+import bei7473p5254d69jcuat.tenyutalk.file.*;
 import glb.*;
 import glb.util.*;
 import io.netty.channel.*;
@@ -17,7 +16,7 @@ import io.netty.channel.*;
  *
  */
 public class HasFile extends P2PEdgeCommonKeyRequest {
-	private TenyuFile file;
+	private TenyutalkFileMetadataI file;
 
 	@Override
 	public boolean isValid(Response res) {
@@ -46,7 +45,7 @@ public class HasFile extends P2PEdgeCommonKeyRequest {
 		return Glb.getP2p().response(resM, ctx);
 	}
 
-	public void setFile(TenyuFile file) {
+	public void setFile(TenyutalkFileMetadataI file) {
 		this.file = file;
 	}
 

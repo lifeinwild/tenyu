@@ -2,7 +2,9 @@ package bei7473p5254d69jcuat.tenyu.ui.admin;
 
 import bei7473p5254d69jcuat.tenyu.db.store.single.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.individuality.core.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.core.*;
 import bei7473p5254d69jcuat.tenyu.ui.admin.ObjectivityCoreGui.*;
 import bei7473p5254d69jcuat.tenyu.ui.common.*;
 import glb.*;

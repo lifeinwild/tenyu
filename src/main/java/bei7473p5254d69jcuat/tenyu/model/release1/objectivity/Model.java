@@ -6,8 +6,7 @@ import java.util.function.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.satellite.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
-import bei7473p5254d69jcuat.tenyu.reference.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.ui.common.*;
 import glb.*;
 import glb.util.*;
@@ -231,7 +230,7 @@ public abstract class Model implements ModelI {
 		return createHistoryIndex;
 	}
 
-	abstract public ModelGui<?, ?, ?, ?, ?, ?> getGui(String guiName,
+	abstract public ModelGui<?, ?, ?, ?, ?, ?> getGuiReferenced(String guiName,
 			String cssIdPrefix);
 
 	public Long getHid() {
@@ -240,16 +239,6 @@ public abstract class Model implements ModelI {
 
 	public Long getId() {
 		return id;
-	}
-
-	@Override
-	public TenyuReference<? extends ModelI> getReference() {
-		StoreName storeName = getStoreName();
-		if (!(storeName instanceof StoreNameEnum)) {
-			throw new IllegalArgumentException(
-					"storeName.class = " + storeName.getClass());
-		}
-		return new TenyuReferenceSimple<>(id, (StoreNameEnum) storeName);
 	}
 
 	abstract public ModelStore<? extends ModelI, ? extends ModelI> getStore(
@@ -361,10 +350,10 @@ public abstract class Model implements ModelI {
 	}
 
 	@Override
-	public void setupAtCreate() {
+	public void setupAtCreate(Transaction txn) {
 		//もし独自の日時が設定されていたら上書きしない
 		if (getCreateHistoryIndex() == defaultHistoryIndex)
-			setCreateHistoryIndex(Glb.getObje().getCore().getHistoryIndex());
+			setCreateHistoryIndex(Glb.getObje().getCore(txn).getHistoryIndex());
 		if (getCreateDate() == defaultDate)
 			setCreateDate(Glb.getObje().getGlobalCurrentTime());
 		//作成当初、更新日時は作成日時がセットされる
@@ -375,12 +364,12 @@ public abstract class Model implements ModelI {
 	}
 
 	@Override
-	public void setupAtDelete() {
+	public void setupAtDelete(Transaction txn) {
 	}
 
 	@Override
-	public void setupAtUpdate() {
-		setUpdateHistoryIndex(Glb.getObje().getCore().getHistoryIndex());
+	public void setupAtUpdate(Transaction txn) {
+		setUpdateHistoryIndex(Glb.getObje().getCore(txn).getHistoryIndex());
 		setUpdateDate(Glb.getObje().getGlobalCurrentTime());
 	}
 

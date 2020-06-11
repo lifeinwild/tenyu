@@ -31,6 +31,13 @@ public abstract class MessageContent extends Communicatable {
 	 */
 	protected long createDate = Glb.getUtil().now();
 
+	/**
+	 * @return	メッセージに有効期間があるか
+	 */
+	public boolean hasExpired() {
+		return true;
+	}
+
 	public long getCreateDate() {
 		return createDate;
 	}
@@ -162,8 +169,10 @@ public abstract class MessageContent extends Communicatable {
 	}
 
 	private boolean isValidCreateHistory() {
-		return Glb.getObje().getCore().getHistoryIndex()
-				- createHistoryIndex < expirationHistoryIndex;
+		long current = Glb.getObje().getCore().getHistoryIndex();
+		if (!hasExpired())
+			return true;
+		return current - createHistoryIndex < expirationHistoryIndex;
 	}
 
 	/**
@@ -186,7 +195,7 @@ public abstract class MessageContent extends Communicatable {
 	//各具象クラスはここからパッケージングとP2Pエッジ特定方法を選択する
 	protected Package packagingPlainEdgeIdUnsecure(Message m) {
 		PlainPackage pack = new PlainPackage();
-		pack.binarizeAndSetContent(this, m);
+		pack.serializeAndSetContent(this, m);
 		return pack;
 	}
 
@@ -196,20 +205,20 @@ public abstract class MessageContent extends Communicatable {
 		NoEdgeDetector detector = new NoEdgeDetector();
 		pack.setDetector(detector);
 		*/
-		pack.binarizeAndSetContent(this, m);
+		pack.serializeAndSetContent(this, m);
 		return pack;
 	}
 
 	protected Package packagingUserNoEdge(Message m) {
 		SignedPackage pack = new SignedPackage();
-		pack.binarizeAndSetContent(this, m);
+		pack.serializeAndSetContent(this, m);
 		return pack;
 	}
 
 	//TODO メソッド名からディテクター名を除外する
 	protected Package packagingCommonKeyEdgeId(Message m) {
 		P2PEdgeCommonKeyPackage pack = new P2PEdgeCommonKeyPackage();
-		pack.binarizeAndSetContent(this, m);
+		pack.serializeAndSetContent(this, m);
 		return pack;
 	}
 
@@ -248,7 +257,7 @@ public abstract class MessageContent extends Communicatable {
 		NoEdgeDetectorUnsecure detector = new NoEdgeDetectorUnsecure();
 		pack.setDetector(detector);
 		*/
-		pack.binarizeAndSetContent(this, m);
+		pack.serializeAndSetContent(this, m);
 		return pack;
 	}
 
@@ -260,7 +269,7 @@ public abstract class MessageContent extends Communicatable {
 		detector.setP2pEdgeIdReceiver(to.getFromOther().getEdgeId());
 		pack.setDetector(d);
 		*/
-		pack.binarizeAndSetContent(this, m);
+		pack.serializeAndSetContent(this, m);
 		return pack;
 	}
 

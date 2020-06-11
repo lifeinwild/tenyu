@@ -9,14 +9,14 @@ import com.maxmind.geoip2.model.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.subjectivity.Subjectivity.*;
 import glb.*;
 import glb.util.*;
 import glb.util.Util.*;
 import jetbrains.exodus.env.*;
 
-public class P2PNode implements StorableI {
+public class P2PNode implements ValidatableI {
 	/**
 	 * {@link Subjectivity#getObservation()}が場合によってセットされる
 	 */

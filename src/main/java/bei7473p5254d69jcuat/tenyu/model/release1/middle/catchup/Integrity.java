@@ -6,7 +6,8 @@ import java.util.*;
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.satellite.HashStore.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.reference.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.core.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.reference.*;
 import glb.*;
 import glb.util.Util.*;
 

@@ -10,9 +10,9 @@ import javax.management.modelmbean.*;
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.tenyupedia.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.tenyupedia.*;
-import bei7473p5254d69jcuat.tenyu.reference.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.individuality.tenyupedia.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.reference.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.tenyupedia.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.*;
@@ -37,8 +37,8 @@ public class CertificationStore
 	@Override
 	protected boolean createIndividualityObjectConcrete(CertificationI o)
 			throws Exception {
-		for (TenyuReference<? extends ModelI> sn : o.getRefs()) {
-			if (!util.put(getReftoid(), cnvBA(sn.getStoreKey()),
+		for (TenyuReferenceModelI<? extends ModelI> sn : o.getCertificateds()) {
+			if (!util.put(getReftoid(), cnvBA(sn.getStoreKeyReferenced()),
 					cnvL(o.getId()))) {
 				return false;
 			}
@@ -55,8 +55,8 @@ public class CertificationStore
 	@Override
 	protected boolean deleteIndividualityObjectConcrete(CertificationI o)
 			throws Exception {
-		for (TenyuReference<? extends ModelI> sn : o.getRefs()) {
-			if (!util.deleteDupSingle(getReftoid(), cnvBA(sn.getStoreKey()),
+		for (TenyuReferenceModelI<? extends ModelI> sn : o.getCertificateds()) {
+			if (!util.deleteDupSingle(getReftoid(), cnvBA(sn.getStoreKeyReferenced()),
 					cnvL(o.getId()))) {
 				return false;
 			}
@@ -68,9 +68,9 @@ public class CertificationStore
 	protected boolean existIndividualityObjectConcrete(CertificationI o,
 			ValidationResult vr) throws Exception {
 		boolean b = true;
-		for (TenyuReference<? extends ModelI> e : o.getRefs()) {
+		for (TenyuReferenceModelI<? extends ModelI> e : o.getCertificateds()) {
 			if (!existByRef(e, o.getId())) {
-				vr.add(Lang.CERTIFICATION, Lang.REFS, Lang.ERROR_DB_NOTFOUND,
+				vr.add(Lang.CERTIFICATION, Lang.CERTIFICATEDS, Lang.ERROR_DB_NOTFOUND,
 						"ref=" + e);
 				b = false;
 				break;
@@ -79,15 +79,15 @@ public class CertificationStore
 		return b;
 	}
 
-	public boolean existByRef(TenyuReference<? extends ModelI> ref, Long id) {
+	public boolean existByRef(TenyuReferenceModelI<? extends ModelI> ref, Long id) {
 		if (ref == null || id == null)
 			return false;
-		return util.getDupSingle(getReftoid(), cnvBA(ref.getStoreKey()),
+		return util.getDupSingle(getReftoid(), cnvBA(ref.getStoreKeyReferenced()),
 				cnvL(id), bi -> cnvL(bi)) != null;
 	}
 
 	@Override
-	public List<StoreInfo> getStoresIndividualityObjectConcrete() {
+	protected List<StoreInfo> getStoresIndividualityObjectConcrete() {
 		List<StoreInfo> r = new ArrayList<>();
 		r.add(refToId);
 		return r;
@@ -98,9 +98,9 @@ public class CertificationStore
 			ValidationResult vr) throws Exception {
 		boolean b = true;
 
-		for (TenyuReference<? extends ModelI> e : o.getRefs()) {
+		for (TenyuReferenceModelI<? extends ModelI> e : o.getCertificateds()) {
 			if (existByRef(e, o.getId())) {
-				vr.add(Lang.CERTIFICATION, Lang.REFS, Lang.ERROR_DB_EXIST,
+				vr.add(Lang.CERTIFICATION, Lang.CERTIFICATEDS, Lang.ERROR_DB_EXIST,
 						"ref=" + e);
 				b = false;
 				break;
@@ -114,8 +114,8 @@ public class CertificationStore
 	protected boolean updateIndividualityObjectConcrete(CertificationI updated,
 			CertificationI old) throws Exception {
 		if (!updateCollectionSubIndex(getReftoid(), old.getId(),
-				updated.getId(), () -> updated.getRefs(), () -> old.getRefs(),
-				k -> cnvBA(k.getStoreKey())))
+				updated.getId(), () -> updated.getCertificateds(), () -> old.getCertificateds(),
+				k -> cnvBA(k.getStoreKeyReferenced())))
 			return false;
 
 		return true;

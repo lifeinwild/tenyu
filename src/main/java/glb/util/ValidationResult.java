@@ -19,7 +19,7 @@ import glb.*;
  */
 public class ValidationResult {
 	public static class ValidationResultElement {
-		private Lang obj;
+		private Lang clazz;
 		/**
 		 * メンバー変数
 		 */
@@ -54,12 +54,12 @@ public class ValidationResult {
 			this.option = option;
 		}
 
-		public ValidationResultElement(Lang obj, Lang member, Lang message) {
-			this(obj, member, message, null);
+		public ValidationResultElement(Lang clazz, Lang member, Lang message) {
+			this(clazz, member, message, null);
 		}
-		public ValidationResultElement(Lang obj, Lang member, Lang message,
+		public ValidationResultElement(Lang clazz, Lang member, Lang message,
 				String option) {
-			this.obj = obj;
+			this.clazz = clazz;
 			this.member = member;
 			this.message = message;
 			this.option = option;
@@ -81,13 +81,13 @@ public class ValidationResult {
 			return option;
 		}
 
-		public Lang getObj() {
-			return obj;
+		public Lang getClazz() {
+			return clazz;
 		}
 
 		@Override
 		public String toString() {
-			return "ValidationResultError " + getObj() + "   " + getName()
+			return "ValidationResultError " + getClazz() + "   " + getName()
 					+ "   " + getMessage() + "   " + option;
 		}
 
@@ -133,12 +133,12 @@ public class ValidationResult {
 	 */
 	private String modelClassSimpleName;
 
-	public void add(Lang obj, Lang member, Lang message) {
-		errors.add(new ValidationResultElement(obj, member, message));
+	public void add(Lang clazz, Lang member, Lang message) {
+		errors.add(new ValidationResultElement(clazz, member, message));
 	}
 
-	public void add(Lang obj, Lang member, Lang message, String option) {
-		errors.add(new ValidationResultElement(obj, member, message, option));
+	public void add(Lang clazz, Lang member, Lang message, String option) {
+		errors.add(new ValidationResultElement(clazz, member, message, option));
 	}
 
 	public void add(Lang name, Lang message) {

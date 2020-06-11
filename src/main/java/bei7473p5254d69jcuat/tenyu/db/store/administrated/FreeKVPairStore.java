@@ -72,7 +72,7 @@ public class FreeKVPairStore
 	@Override
 	protected boolean deleteAdministratedObjectConcrete(FreeKVPairI u)
 			throws Exception {
-		return util.remove(keyToId, cnvS(u.getKey()));
+		return util.delete(keyToId, cnvS(u.getKey()));
 	}
 
 	@Override
@@ -126,7 +126,7 @@ public class FreeKVPairStore
 			FreeKVPairI old) throws Exception {
 		if (Glb.getUtil().notEqual(updated.getKey(), old.getKey())) {
 			if (old.getKey() != null) {
-				if (!util.remove(keyToId, cnvS(old.getKey())))
+				if (!util.delete(keyToId, cnvS(old.getKey())))
 					return false;
 			}
 			if (!util.put(keyToId, cnvS(updated.getKey()),

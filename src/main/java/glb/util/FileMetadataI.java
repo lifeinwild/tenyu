@@ -1,12 +1,22 @@
 package glb.util;
 
+import java.nio.file.*;
+
 public interface FileMetadataI {
 	/**
-	 * @return	アプリケーションフォルダからの相対パス
+	 * @return	アプリケーションフォルダ（プログラム実行時のカレントディレクトリ）からの相対パス
 	 */
-	public String getRelativePathStr();
+	String getRelativePathStr();
 
-	public byte[] getFileHash();
+	default Path getRelativePath() {
+		String p = getRelativePathStr();
+		if (p == null)
+			return null;
+		return Paths.get(p);
+	}
 
-	public long getFileSize();
+	byte[] getFileHash();
+
+	long getFileSize();
+
 }

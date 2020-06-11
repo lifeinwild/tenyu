@@ -10,6 +10,10 @@ public class StoreInfo {
 	 * そのサブインデックスのペア数が一致しない場合true。
 	 */
 	private boolean freeSizeFromMainStore = false;
+	/**
+	 * 衛星ストアか
+	 */
+	private boolean satellite = false;
 
 	public StoreInfo(String storeName) {
 		this.storeName = storeName;
@@ -19,12 +23,18 @@ public class StoreInfo {
 		this.type = StoreConfig.WITHOUT_DUPLICATES;
 	}
 
+	public StoreInfo(String storeName, boolean satellite) {
+		this(storeName);
+		this.satellite = satellite;
+	}
+
 	public StoreInfo(String storeName, StoreConfig type) {
 		this.storeName = storeName;
 		this.type = type;
 	}
 
-	public StoreInfo(String storeName, StoreConfig type, boolean freeSizeFromMainStore) {
+	public StoreInfo(String storeName, StoreConfig type,
+			boolean freeSizeFromMainStore) {
 		this(storeName, type);
 		this.freeSizeFromMainStore = freeSizeFromMainStore;
 	}
@@ -39,7 +49,9 @@ public class StoreInfo {
 
 	@Override
 	public String toString() {
-		return storeName;
+		return "StoreInfo [storeName=" + storeName + ", type=" + type
+				+ ", freeSizeFromMainStore=" + freeSizeFromMainStore
+				+ ", satellite=" + satellite + "]";
 	}
 
 	public boolean isFreeSizeFromMainStore() {
@@ -51,6 +63,7 @@ public class StoreInfo {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (freeSizeFromMainStore ? 1231 : 1237);
+		result = prime * result + (satellite ? 1231 : 1237);
 		result = prime * result
 				+ ((storeName == null) ? 0 : storeName.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
@@ -68,6 +81,8 @@ public class StoreInfo {
 		StoreInfo other = (StoreInfo) obj;
 		if (freeSizeFromMainStore != other.freeSizeFromMainStore)
 			return false;
+		if (satellite != other.satellite)
+			return false;
 		if (storeName == null) {
 			if (other.storeName != null)
 				return false;
@@ -76,6 +91,10 @@ public class StoreInfo {
 		if (type != other.type)
 			return false;
 		return true;
+	}
+
+	public boolean isSatellite() {
+		return satellite;
 	}
 
 }

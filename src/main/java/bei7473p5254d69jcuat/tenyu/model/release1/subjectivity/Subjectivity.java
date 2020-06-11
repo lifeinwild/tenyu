@@ -11,8 +11,8 @@ import bei7473p5254d69jcuat.tenyu.model.promise.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.Middle.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.reference.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.subjectivity.P2PNode.*;
-import bei7473p5254d69jcuat.tenyu.reference.*;
 import bei7473p5254d69jcuat.tenyu.ui.common.*;
 import bei7473p5254d69jcuat.tenyu.ui.standarduser.neighbor.*;
 import glb.*;
@@ -53,11 +53,16 @@ public class Subjectivity extends Model
 
 	public static final String modelName = Subjectivity.class.getSimpleName();
 
+	@Override
+	public TenyuReferenceModelSingle<Subjectivity> getReference() {
+		return new TenyuReferenceModelSingle<>(StoreNameSingle.SUBJECTIVITY);
+	}
+
 	/**
 	 * DBから既存の主観を読み込むか新規作成して返す
 	 */
 	public static Subjectivity loadOrCreate() {
-		return Glb.getDb(Glb.getFile().getSubjectivityDBPath())
+		return Glb.getDb(Glb.getFile().getSubjectivityDBDir())
 				.computeInTransaction((txn) -> {
 					Subjectivity r = null;
 					try {
@@ -176,8 +181,8 @@ public class Subjectivity extends Model
 	public ObjectivityCircumstance getCurrentCircumstance() {
 		int count = 0;
 		double totalDamage = 0;
-		for(P2PEdge e : neighborList.getNeighborsUnsafe()) {
-			if(e.getNode().getObservation() == null) {
+		for (P2PEdge e : neighborList.getNeighborsUnsafe()) {
+			if (e.getNode().getObservation() == null) {
 				continue;
 			}
 			totalDamage += observation.getTotalDamage();
@@ -340,14 +345,9 @@ public class Subjectivity extends Model
 	 * スケジューラ、P2P、ローカルIPC等を停止してから呼ぶ。
 	 */
 	public boolean save() {
-		return Glb.getDb(Glb.getFile().getSubjectivityDBPath())
+		return Glb.getDb(Glb.getFile().getSubjectivityDBDir())
 				.computeInTransaction(
 						txn -> new SubjectivityStore(txn).save(this));
-	}
-
-	public void setCommonKeyExchangeIntervalAfter(
-			long commonKeyExchangeIntervalAfter) {
-		this.commonKeyExchangeInterval = commonKeyExchangeIntervalAfter;
 	}
 
 	public void setGetAddressesInterval(long getAddressesInterval) {
@@ -533,8 +533,7 @@ public class Subjectivity extends Model
 	}
 
 	@Override
-	protected final boolean validateAtCreateModelConcrete(
-			ValidationResult r) {
+	protected final boolean validateAtCreateModelConcrete(ValidationResult r) {
 		//TODO 検証処理を書くべきか迷った。falseになるとセーブされなくなる
 		//そもそも検証処理の必要性が弱い
 		return true;
@@ -547,8 +546,7 @@ public class Subjectivity extends Model
 	}
 
 	@Override
-	protected final boolean validateAtUpdateModelConcrete(
-			ValidationResult r) {
+	protected final boolean validateAtUpdateModelConcrete(ValidationResult r) {
 		return true;
 	}
 
@@ -559,7 +557,7 @@ public class Subjectivity extends Model
 	}
 
 	@Override
-	public ModelGui<?, ?, ?, ?, ?, ?> getGui(String guiName,
+	public ModelGui<?, ?, ?, ?, ?, ?> getGuiReferenced(String guiName,
 			String cssIdPrefix) {
 		return new SubjectivityGui(guiName, cssIdPrefix);
 	}

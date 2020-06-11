@@ -6,7 +6,7 @@ import bei7473p5254d69jcuat.tenyu.communication.*;
 import bei7473p5254d69jcuat.tenyu.communication.P2P.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.takeoverserver.usermessagelist.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.role.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.role.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.subjectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.subjectivity.Subjectivity.*;
 import glb.*;

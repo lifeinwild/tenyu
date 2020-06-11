@@ -31,7 +31,7 @@ public class PlainPackage extends Package {
 	}
 
 	@Override
-	protected boolean binarizeAndSetContentConcrete(Communicatable content,
+	protected boolean serializeAndSetContentConcrete(Communicatable content,
 			Message m) {
 		try {
 			contentBinary = Glb.getUtil().toKryoBytesForCommunication(content);

@@ -9,9 +9,8 @@ import javax.management.modelmbean.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
-import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
-import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.*;
@@ -84,13 +83,13 @@ public class WebStore extends IndividualityObjectStore<WebI, Web> {
 		return modelName;
 	}
 
-	public List<StoreInfo> getStoresIndividualityObjectConcrete() {
+	protected List<StoreInfo> getStoresIndividualityObjectConcrete() {
 		return getWebStoresStatic();
 	}
 
 	@Override
 	public boolean isSupport(Object o) {
-		if (o instanceof bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.WebI)
+		if (o instanceof bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.individuality.WebI)
 			return true;
 		return false;
 	}

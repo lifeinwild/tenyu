@@ -39,15 +39,18 @@ public class CommonKeyExchangeConfirmation extends Request
 	public boolean received(ChannelHandlerContext con, Received validated) {
 		P2PEdge n = validated.getEdgeByInnermostPackage();
 		if (n == null) {
-			Glb.getLogger().warn("p2pEdge is null", new IllegalStateException());
+			Glb.getLogger().warn("p2pEdge is null",
+					new IllegalStateException());
 			return false;
 		}
 
 		CommonKeyExchangeState info = n.getCommonKeyExchangeState();
 		CommonKeyExchangeState infoOther = n.getFromOther()
 				.getCommonKeyExchangeState();
-		if (!Arrays.equals(confirmation, info.getConfirmation()))
+		if (!Arrays.equals(confirmation, info.getConfirmation())) {
+			Glb.getLogger().error("confirmation is not equal", new Exception());
 			return false;
+		}
 		info.setSucceed(true);
 		info.setUpdateEnd();
 		infoOther.setSucceed(true);
@@ -101,15 +104,18 @@ public class CommonKeyExchangeConfirmation extends Request
 		public boolean received(ChannelHandlerContext ctx, Received validated) {
 			P2PEdge n = validated.getEdgeByInnermostPackage();
 			if (n == null) {
-				Glb.getLogger().warn("p2pedge is null", new IllegalStateException());
+				Glb.getLogger().warn("p2pedge is null",
+						new IllegalStateException());
 				return false;
 			}
+
 			CommonKeyExchangeState info = n.getCommonKeyExchangeState();
 			CommonKeyExchangeState infoOther = n.getFromOther()
 					.getCommonKeyExchangeState();
 
 			if (!Arrays.equals(confirmation, info.getConfirmation())) {
-				Glb.getLogger().warn("confirmation is invalid", new IllegalStateException());
+				Glb.getLogger().warn("confirmation is invalid",
+						new IllegalStateException());
 				return false;
 			}
 			info.setSucceed(true);

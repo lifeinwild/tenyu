@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.Map.*;
 import java.util.concurrent.*;
 
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.game.*;
 import glb.*;
 import glb.util.*;
 

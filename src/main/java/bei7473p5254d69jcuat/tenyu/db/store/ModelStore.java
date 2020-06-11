@@ -10,9 +10,9 @@ import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.DBUtil.*;
 import bei7473p5254d69jcuat.tenyu.db.store.satellite.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.tenyupedia.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.tenyupedia.*;
 import bei7473p5254d69jcuat.tenyutalk.*;
 import glb.*;
 import glb.util.*;
@@ -163,7 +163,7 @@ public abstract class ModelStore<T1 extends ModelI, T2 extends T1>
 	}
 
 	public static final StoreInfo getUpdateDateStoreStatic(String modelName) {
-		//第三引数をtrueにする設計も考慮したが論理的一貫性が崩れ
+		//第三引数をtrueにする設計(updateDateが初期値ならインデックスしない)も考慮したが論理的一貫性が崩れ
 		//バグが出やすいと判断した
 		return new StoreInfo(modelName + "_updateDateToIds_Dup",
 				StoreConfig.WITH_DUPLICATES);
@@ -243,8 +243,10 @@ public abstract class ModelStore<T1 extends ModelI, T2 extends T1>
 
 		ValidationResult r = new ValidationResult();
 		if (!o.validateAtCatchUp()) {
-			Glb.getLogger().error("", r.toString());
-			return false;
+			Glb.getLogger().warn(o.toString() + r.toString(),
+					new IllegalStateException());
+			if (!o.isWarningValidation())
+				return false;
 		}
 		T1 old = get(o.getId());
 		if (old == null) {
@@ -283,23 +285,32 @@ public abstract class ModelStore<T1 extends ModelI, T2 extends T1>
 	 * @throws Exception
 	 */
 	public final Long create(T1 created) throws Exception {
+		created.setupAtCreate(util.getTxn());
+		return createInternal(created);
+	}
+
+	private final Long createInternal(T1 created) throws Exception {
 		if (created == null)
 			return null;
 
 		//モデル側ロジックとしての検証前設定
-		created.setupAtCreate();
+		created.setupAtCreate(util.getTxn());
 
 		ValidationResult vr = new ValidationResult();
 		created.validateAtCreate(vr);
 		if (!vr.isNoError()) {
-			Glb.debug(vr.toString());
-			return null;
+			Glb.getLogger().warn(created.toString() + vr.toString(),
+					new IllegalStateException());
+			if (!created.isWarningValidation())
+				return null;
 		}
 
 		created.validateReference(vr, util.getTxn());
 		if (!vr.isNoError()) {
-			Glb.debug(vr.toString());
-			return null;
+			Glb.getLogger().warn(created.toString() + vr.toString(),
+					new IllegalStateException());
+			if (!created.isWarningValidation())
+				return null;
 		}
 
 		procBeforeCreate(created);
@@ -310,8 +321,10 @@ public abstract class ModelStore<T1 extends ModelI, T2 extends T1>
 
 		//重複確認
 		if (!noExist(created, vr)) {
-			Glb.debug("Failed to noExist. " + vr);
-			return null;
+			Glb.getLogger().warn(created.toString() + vr.toString(),
+					new IllegalStateException());
+			if (!created.isWarningValidation())
+				return null;
 		}
 
 		ByteIterable createdBi = cnvO(created);
@@ -363,7 +376,7 @@ public abstract class ModelStore<T1 extends ModelI, T2 extends T1>
 	private final Long createCatchUp(T1 created) throws Exception {
 		created.setCatchUp(true);
 		created.setSpecifiedId(true);
-		return create(created);
+		return createInternal(created);
 	}
 
 	protected abstract boolean createModelConcrete(T1 o) throws Exception;
@@ -376,7 +389,8 @@ public abstract class ModelStore<T1 extends ModelI, T2 extends T1>
 	 */
 	public final Long createSpecifiedId(T1 created) throws Exception {
 		created.setSpecifiedId(true);
-		return create(created);
+		created.setupAtCreate(util.getTxn());
+		return createInternal(created);
 	}
 
 	/**
@@ -458,14 +472,18 @@ public abstract class ModelStore<T1 extends ModelI, T2 extends T1>
 			return false;
 		ValidationResult vr = new ValidationResult();
 		deleted.validateAtDelete(vr);
-		if (deleted == null || !vr.isNoError()) {
-			Glb.debug(vr.toString());
-			return false;
+		if (!vr.isNoError()) {
+			Glb.getLogger().warn(deleted.toString() + vr.toString(),
+					new IllegalStateException());
+			if (!deleted.isWarningValidation())
+				return false;
 		}
 
 		if (!exist(deleted, vr)) {
-			Glb.debug(vr.toString());
-			return false;
+			Glb.getLogger().warn(deleted.toString() + vr.toString(),
+					new IllegalStateException());
+			if (!deleted.isWarningValidation())
+				return false;
 		}
 
 		procBeforeDelete(deleted);
@@ -498,7 +516,7 @@ public abstract class ModelStore<T1 extends ModelI, T2 extends T1>
 			}
 
 			//Modelのサブインデックスの削除
-			if (!util.remove(getHidStore(), cnvL(deleted.getHid()))) {
+			if (!util.delete(getHidStore(), cnvL(deleted.getHid()))) {
 				throw new IOException(
 						"Failed to remove in HidStore. deleted=" + deleted);
 			}
@@ -739,10 +757,10 @@ public abstract class ModelStore<T1 extends ModelI, T2 extends T1>
 	 * @throws IOException
 	 */
 	public List<T2> getRandom(int max) throws Exception {
-		List<T2> r = new ArrayList<>();
+		HashSet<T2> tmp = new HashSet<>();
 
 		long c = count();
-		for (int i = 0; i < max; i++) {
+		for (int i = 0; i < max && i < c; i++) {
 			Long id = ThreadLocalRandom.current().nextLong(c);
 			T2 o = get(id);
 			if (o == null)
@@ -754,10 +772,10 @@ public abstract class ModelStore<T1 extends ModelI, T2 extends T1>
 					continue;
 				}
 			}
-			r.add(o);
+			tmp.add(o);
 		}
 
-		return r;
+		return new ArrayList<>(tmp);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -801,6 +819,10 @@ public abstract class ModelStore<T1 extends ModelI, T2 extends T1>
 		List<StoreInfo> r = new ArrayList<>();
 		if (needCatchUp())
 			r.add(getHidStore());
+		if (hStore != null)
+			r.addAll(hStore.getStores());
+		if (uStore != null)
+			r.addAll(uStore.getStores());
 		r.add(getCreateDateToIds());
 		r.add(getUpdateDateToIds());
 		r.addAll(getStoresModelConcrete());
@@ -921,6 +943,19 @@ public abstract class ModelStore<T1 extends ModelI, T2 extends T1>
 			if (!hStore.removeRecycleHid(created.getHid()))
 				throw new IOException("Failed to removeRecycleHid()");
 		}
+		notification(created);
+	}
+
+	/**
+	 * 通知システムに登録
+	 * @param obj
+	 */
+	private void notification(T1 obj) {
+		try {
+			Glb.getMiddle().getTenyupedia().addCandidate(obj);
+		} catch (Exception e) {
+			Glb.getLogger().error("", e);
+		}
 	}
 
 	/**
@@ -934,6 +969,7 @@ public abstract class ModelStore<T1 extends ModelI, T2 extends T1>
 	 */
 	protected void procAfterUpdate(ByteIterable updatedBi, T1 updated, T1 old)
 			throws Exception {
+		notification(updated);
 	}
 
 	/**
@@ -988,7 +1024,7 @@ public abstract class ModelStore<T1 extends ModelI, T2 extends T1>
 		if (needCatchUp()) {
 			//これは失敗が致命的ではない
 			if (!uStore.writeUpdated(updated.getId()))
-				Glb.getLogger().warn("", new Exception());
+				Glb.getLogger().warn("", new IOException());
 		}
 	}
 
@@ -1029,6 +1065,11 @@ public abstract class ModelStore<T1 extends ModelI, T2 extends T1>
 	 * @throws Exception
 	 */
 	public final boolean update(T1 updated) throws Exception {
+		updated.setupAtUpdate(util.getTxn());
+		return updateInternal(updated);
+	}
+
+	private final boolean updateInternal(T1 updated) throws Exception {
 		if (updated == null) {
 			Glb.debug("updated is null ");
 			return false;
@@ -1040,19 +1081,25 @@ public abstract class ModelStore<T1 extends ModelI, T2 extends T1>
 			return false;
 		updated.validateAtUpdate(vr);
 		if (!vr.isNoError()) {
-			Glb.debug(vr.toString());
-			return false;
+			Glb.getLogger().warn(updated.toString() + vr.toString(),
+					new IllegalStateException());
+			if (!updated.isWarningValidation())
+				return false;
 		}
 
 		if (!validateAtUpdateChange(updated, vr)) {
-			Glb.debug(vr.toString());
-			return false;
+			Glb.getLogger().warn(updated.toString() + vr.toString(),
+					new IllegalStateException());
+			if (!updated.isWarningValidation())
+				return false;
 		}
 
 		updated.validateReference(vr, util.getTxn());
 		if (!vr.isNoError()) {
-			Glb.debug(vr.toString());
-			return false;
+			Glb.getLogger().warn(updated.toString() + vr.toString(),
+					new IllegalStateException());
+			if (!updated.isWarningValidation())
+				return false;
 		}
 
 		return updateAfterValidate(key, updated, old);
@@ -1094,7 +1141,7 @@ public abstract class ModelStore<T1 extends ModelI, T2 extends T1>
 			//Modelのサブインデックス更新
 			if (Glb.getUtil().notEqual(updated.getHid(), old.getHid())) {
 				if (old.getHid() != null) {
-					if (!util.remove(getHidStore(), cnvL(old.getHid())))
+					if (!util.delete(getHidStore(), cnvL(old.getHid())))
 						throw new IOException(
 								"Failed to remove in HidStore. updated="
 										+ updated);
@@ -1160,11 +1207,17 @@ public abstract class ModelStore<T1 extends ModelI, T2 extends T1>
 		}
 
 		if (!updated.validateAtUpdateChange(r, old)) {
-			return false;
+			Glb.getLogger().warn(updated.toString() + r.toString(),
+					new IllegalStateException());
+			if (!updated.isWarningValidation())
+				return false;
 		}
 
 		if (!dbValidateAtUpdate(updated, old, r)) {
-			return false;
+			Glb.getLogger().warn(updated.toString() + r.toString(),
+					new IllegalStateException());
+			if (!updated.isWarningValidation())
+				return false;
 		}
 
 		return r.isNoError();

@@ -6,7 +6,7 @@ import glb.*;
 import glb.util.*;
 import jetbrains.exodus.env.*;
 
-public class P2PEdgeBase implements StorableI {
+public class P2PEdgeBase implements ValidatableI {
 
 	/**
 	 * 共通鍵交換または共通鍵梱包使用時のロックオブジェクトでもある

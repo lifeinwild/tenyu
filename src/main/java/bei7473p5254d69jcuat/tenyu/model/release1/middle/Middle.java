@@ -4,7 +4,6 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import bei7473p5254d69jcuat.tenyu.communication.mutual.right.*;
-import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.db.store.single.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.*;
@@ -15,8 +14,8 @@ import bei7473p5254d69jcuat.tenyu.model.release1.middle.takeoverserver.urlprovem
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.takeoverserver.usermessagelist.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.vote.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
-import bei7473p5254d69jcuat.tenyu.reference.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.reference.*;
 import bei7473p5254d69jcuat.tenyu.ui.common.*;
 import bei7473p5254d69jcuat.tenyu.ui.standarduser.other.*;
 import glb.*;
@@ -35,10 +34,9 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class Middle extends Model
-		implements GlbMemberDynamicState, MiddleI {
+public class Middle extends Model implements GlbMemberDynamicState, MiddleI {
 	public static Middle loadOrCreate() {
-		return Glb.getDb(Glb.getFile().getMiddleDBPath())
+		return Glb.getDb(Glb.getFile().getMiddleDBDir())
 				.computeInTransaction((txn) -> {
 					Middle r = null;
 					try {
@@ -55,7 +53,17 @@ public class Middle extends Model
 	}
 
 	private DistributedVoteManager distributedVoteManager = new DistributedVoteManager();
+
 	private EventManager eventManager = new EventManager();
+
+	private TenyuGuiHistory guiHistory = new TenyuGuiHistory();
+
+	/**
+	 * 自分のノード識別子のキャッシュ
+	 * ノード識別子は内部にDBアクセスがありUserのキャッシュがあるので
+	 * 使いまわすとDBアクセスが少し減る
+	 */
+	private transient NodeIdentifierUser myNodeIdentifier;
 
 	/**
 	 * 自分のuserIdをオンメモリにしておく
@@ -65,9 +73,21 @@ public class Middle extends Model
 	private transient ObjectivityCatchUp objeCatchUp;
 
 	/**
+	 * ユーザーメッセージリストの拡散反映を行うP2Pシーケンス
+	 */
+	private transient ObjectivityUpdateSequence objectivityUpdateSequence;
+
+	/**
 	 * メインサーバのオンライン状態を定期的に確認し必要に応じてメインサーバを起動する
 	 */
 	private transient OnlineChecker onlineChecker = new OnlineChecker();
+
+	/**
+	 * 主な客観更新手段としてUserMessageListがあり、
+	 * ここに登録されるのはそれ以外の例外的な客観更新処理。
+	 * 他のモジュールがここに処理を登録し、定期的に処理される。
+	 */
+	private ObjectivityUpdateElementList procFromOtherModules = new ObjectivityUpdateElementList();
 
 	private transient RatingGameMatchingServer ratingGameMatchingServer = new RatingGameMatchingServer();
 
@@ -77,6 +97,7 @@ public class Middle extends Model
 	private Map<String,
 			NodeIdentifierUser> serverCache = new ConcurrentHashMap<>();
 
+	private Tenyupedia tenyupedia = new Tenyupedia();
 	private transient URLProvementServer urlProvementServer = new URLProvementServer();
 
 	/**
@@ -87,48 +108,15 @@ public class Middle extends Model
 	private UserEdgeList userEdgeList;
 
 	/**
-	 * ユーザーメッセージリストの拡散反映を行うP2Pシーケンス
-	 */
-	private transient ObjectivityUpdateSequence objectivityUpdateSequence;
-	/**
-	 * 主な客観更新手段としてUserMessageListがあり、
-	 * ここに登録されるのはそれ以外の例外的な客観更新処理。
-	 * 他のモジュールがここに処理を登録し、定期的に処理される。
-	 */
-	private ObjectivityUpdateElementList procFromOtherModules = new ObjectivityUpdateElementList();
-
-	public void resetProcFromOtherModules() {
-	}
-
-	/**
 	 * ユーザーメッセージを受け付けるメインサーバ
 	 */
 	private transient UserMessageListServer userMessageListServer;
 
 	private UserRegistrationOfferList userRegistrationIntroduceOfferList;
 
-	public ObjectivityUpdateElementList getProcFromOtherModules() {
-		return procFromOtherModules;
-	}
-
 	private Middle() {
 		setId(SingleObjectStoreI.getDefaultIdStatic());
 		setHid(SingleObjectStoreI.getDefaultHidStatic());
-	}
-
-	/**
-	 * 自分のノード識別子のキャッシュ
-	 * ノード識別子は内部にDBアクセスがありUserのキャッシュがあるので
-	 * 使いまわすとDBアクセスが少し減る
-	 */
-	private transient NodeIdentifierUser myNodeIdentifier;
-
-	public NodeIdentifierUser getMyNodeIdentifierUser() {
-		if (myNodeIdentifier == null) {
-			myNodeIdentifier = new NodeIdentifierUser(getMyUserId(),
-					Glb.getConf().getNodeNumber());
-		}
-		return myNodeIdentifier;
 	}
 
 	/**
@@ -147,9 +135,27 @@ public class Middle extends Model
 		return eventManager;
 	}
 
+	@Override
+	public ModelGui<?, ?, ?, ?, ?, ?> getGuiReferenced(String guiName,
+			String cssIdPrefix) {
+		return new MiddleGui(guiName, cssIdPrefix);
+	}
+
+	public TenyuGuiHistory getGuiHistory() {
+		return guiHistory;
+	}
+
 	public User getMe() {
 		//userIdと異なりUser情報は変更される可能性があるのでキャッシュ不可
 		return Glb.getObje().getUser(us -> us.get(getMyUserId()));
+	}
+
+	public NodeIdentifierUser getMyNodeIdentifierUser() {
+		if (myNodeIdentifier == null) {
+			myNodeIdentifier = new NodeIdentifierUser(getMyUserId(),
+					Glb.getConf().getNodeNumber());
+		}
+		return myNodeIdentifier;
 	}
 
 	public Long getMyUserId() {
@@ -158,20 +164,47 @@ public class Middle extends Model
 		return myUserId;
 	}
 
-	public void setMyUserId(Long myUserId) {
-		this.myUserId = myUserId;
+	public Long getMyUserId(Transaction txn) {
+		return new UserStore(txn).getMyId();
 	}
 
 	public ObjectivityCatchUp getObjeCatchUp() {
 		return objeCatchUp;
 	}
 
+	public ObjectivityUpdateSequence getObjectivityUpdateSequence() {
+		return objectivityUpdateSequence;
+	}
+
 	public OnlineChecker getOnlineChecker() {
 		return onlineChecker;
 	}
 
+	public ObjectivityUpdateElementList getProcFromOtherModules() {
+		return procFromOtherModules;
+	}
+
 	public RatingGameMatchingServer getRatingGameMatchingServer() {
 		return ratingGameMatchingServer;
+	}
+
+	@Override
+	public TenyuReferenceModelSingle<Middle> getReference() {
+		return new TenyuReferenceModelSingle<>(StoreNameSingle.MIDDLE);
+	}
+
+	@Override
+	public MiddleStore getStore(Transaction txn) {
+		return new MiddleStore(txn);
+	}
+
+	@Override
+	public StoreNameEnum getStoreName() {
+		return StoreNameSingle.MIDDLE;
+	}
+
+	public Tenyupedia getTenyupedia() {
+		return tenyupedia;
 	}
 
 	public URLProvementServer getUrlProvementServer() {
@@ -184,10 +217,6 @@ public class Middle extends Model
 
 	public UserEdgeList getUserEdgeList() {
 		return userEdgeList;
-	}
-
-	public ObjectivityUpdateSequence getObjectivityUpdateSequence() {
-		return objectivityUpdateSequence;
 	}
 
 	public UserMessageListServer getUserMessageListServer() {
@@ -220,8 +249,11 @@ public class Middle extends Model
 		return serverCache.remove(roleName, server);
 	}
 
+	public void resetProcFromOtherModules() {
+	}
+
 	public boolean save() {
-		return Glb.getDb(Glb.getFile().getMiddleDBPath())
+		return Glb.getDb(Glb.getFile().getMiddleDBDir())
 				.computeInTransaction((txn) -> new MiddleStore(txn).save(this));
 	}
 
@@ -234,8 +266,21 @@ public class Middle extends Model
 		this.eventManager = eventManager;
 	}
 
+	public void setGuiHistory(TenyuGuiHistory guiHistory) {
+		this.guiHistory = guiHistory;
+	}
+
+	public void setMyUserId(Long myUserId) {
+		this.myUserId = myUserId;
+	}
+
 	public void setObjeCatchUp(ObjectivityCatchUp objeCatchUp) {
 		this.objeCatchUp = objeCatchUp;
+	}
+
+	public void setObjectivityUpdateSequence(
+			ObjectivityUpdateSequence objectivityUpdateSequence) {
+		this.objectivityUpdateSequence = objectivityUpdateSequence;
 	}
 
 	public void setOnlineChecker(OnlineChecker onlineChecker) {
@@ -245,6 +290,10 @@ public class Middle extends Model
 	public void setRatingGameMatchingServer(
 			RatingGameMatchingServer ratingGameMatchingServer) {
 		this.ratingGameMatchingServer = ratingGameMatchingServer;
+	}
+
+	public void setTenyupedia(Tenyupedia tenyupedia) {
+		this.tenyupedia = tenyupedia;
 	}
 
 	public void setUrlProvementServer(URLProvementServer urlProvementServer) {
@@ -257,11 +306,6 @@ public class Middle extends Model
 
 	public void setUserEdgeList(UserEdgeList userEdgeList) {
 		this.userEdgeList = userEdgeList;
-	}
-
-	public void setObjectivityUpdateSequence(
-			ObjectivityUpdateSequence objectivityUpdateSequence) {
-		this.objectivityUpdateSequence = objectivityUpdateSequence;
 	}
 
 	public void setUserMessageListServer(
@@ -279,6 +323,8 @@ public class Middle extends Model
 			userEdgeList.start();
 		if (objeCatchUp != null)
 			objeCatchUp.start();
+		if (guiHistory != null)
+			guiHistory.start();
 		startRoleServers();
 	}
 
@@ -326,9 +372,13 @@ public class Middle extends Model
 		save();
 	}
 
+	private final boolean validateCommon(ValidationResult r) {
+		boolean b = true;
+		return b;
+	}
+
 	@Override
-	protected final boolean validateAtCreateModelConcrete(
-			ValidationResult r) {
+	protected final boolean validateAtCreateModelConcrete(ValidationResult r) {
 		return true;
 	}
 
@@ -339,8 +389,7 @@ public class Middle extends Model
 	}
 
 	@Override
-	protected final boolean validateAtUpdateModelConcrete(
-			ValidationResult r) {
+	protected final boolean validateAtUpdateModelConcrete(ValidationResult r) {
 		return true;
 	}
 
@@ -373,21 +422,5 @@ public class Middle extends Model
 		 * 客観更新が可能であり、メッセージリストを拡散、反映する。
 		 */
 		UNITY,
-	}
-
-	@Override
-	public ModelGui<?, ?, ?, ?, ?, ?> getGui(String guiName,
-			String cssIdPrefix) {
-		return new MiddleGui(guiName, cssIdPrefix);
-	}
-
-	@Override
-	public MiddleStore getStore(Transaction txn) {
-		return new MiddleStore(txn);
-	}
-
-	@Override
-	public StoreNameEnum getStoreName() {
-		return StoreNameSingle.MIDDLE;
 	}
 }

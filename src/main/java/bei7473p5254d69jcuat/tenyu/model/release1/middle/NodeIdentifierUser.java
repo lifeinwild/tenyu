@@ -4,10 +4,10 @@ import java.net.*;
 import java.nio.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
-import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.db.store.middle.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.env.*;
@@ -15,14 +15,20 @@ import jetbrains.exodus.env.*;
 /**
  * ユーザーベースのノード識別子
  *
+ * {@link UserEdgeStore}のキーで使われているのでメンバー変数に注意する必要がある
+ *
  * @author exceptiontenyu@gmail.com
  *
  */
-public class NodeIdentifierUser implements NodeIdentifier, StorableI {
+public class NodeIdentifierUser
+		implements NodeIdentifier, ValidatableI {
 	private Long userId;
 	private int nodeNumber;
 	private transient byte[] identifier = null;
 	private transient User user;
+
+	private static final String userIdKey = "userId";
+	private static final String nodeNumberKey = "nodeNumber";
 
 	/**
 	 * Userはtransientフィールドにキャッシュされる。
@@ -88,7 +94,7 @@ public class NodeIdentifierUser implements NodeIdentifier, StorableI {
 
 	public User getUser() {
 		if (user == null) {
-			user = Glb.getObje().getUser(us->us.get(userId));
+			user = Glb.getObje().getUser(us -> us.get(userId));
 		}
 		return user;
 	}

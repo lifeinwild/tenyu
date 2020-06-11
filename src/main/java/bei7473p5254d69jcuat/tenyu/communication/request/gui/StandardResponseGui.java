@@ -38,7 +38,7 @@ public class StandardResponseGui extends AbstractStandardResponse
 
 		switch (code) {
 		case SUCCESS:
-			Glb.getGui().alert(AlertType.INFORMATION, reqName, code.getLang());
+			Glb.getGui().appendLogForUser(reqName, code.getLang());
 			break;
 		default:
 			Glb.getGui().alert(AlertType.ERROR, reqName, code.toString());

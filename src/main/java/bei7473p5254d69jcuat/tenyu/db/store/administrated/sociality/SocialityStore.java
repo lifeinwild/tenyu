@@ -9,11 +9,12 @@ import java.util.function.*;
 import javax.management.modelmbean.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
-import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.*;
-import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.sociality.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.reference.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.reference.*;
 import glb.*;
 import glb.Conf.*;
 import glb.util.*;
@@ -29,28 +30,54 @@ public class SocialityStore
 	private static final StoreInfo individualityObjectIdToId = new StoreInfo(
 			modelName + "_individualityObjectIdToId");
 
-	public static Sociality getByIndividualityObjectIdSimple(byte[] individualityObjectId) {
-		return simple((s) -> s.get(getIdByIndividualityObjectIdSimple(individualityObjectId)));
+	public static Sociality getByIndividualityObjectStatic(
+			StoreNameObjectivity type, Long individualityObjectConcreteId)
+			throws Exception {
+		return simple((s) -> s.getByIndividualityObject(
+				new TenyuReferenceModelSimple<>(individualityObjectConcreteId,
+						type)));
 	}
 
-	public static Sociality getByIndividualityObjectIdSimple(NodeType type,
-			Long individualityObjectConcreteId) throws Exception {
-		return simple((s) -> s.getByIndividualityObjectId(type, individualityObjectConcreteId));
+	public static Sociality getByIndividualityObjectStatic(StoreNameSingle type)
+			throws Exception {
+		return simple((s) -> s.getByIndividualityObject(
+				new TenyuReferenceModelSingle<>(type)));
 	}
 
-	public static Sociality getByUserIdSimple(Long individualityObjectConcreteId) {
-		return getByIndividualityObjectIdSimple(Sociality
-				.createIndividualityObjectId(NodeType.USER, individualityObjectConcreteId));
+	public static Sociality getByIndividualityObjectStatic(
+			byte[] individualityObjectStoreKey) {
+		return simple((s) -> s.get(
+				getIdByIndividualityObjectStatic(individualityObjectStoreKey)));
 	}
 
-	public static Long getIdByIndividualityObjectIdSimple(byte[] individualityObjectId) {
-		return simple((s) -> s.getIdByIndividualityObject(individualityObjectId));
-	}
-
-	public static Long getIdByIndividualityObjectIdSimple(NodeType type,
+	public static Sociality getByUserIdStatic(
 			Long individualityObjectConcreteId) {
-		return getIdByIndividualityObjectIdSimple(
-				Sociality.createIndividualityObjectId(type, individualityObjectConcreteId));
+		return getByIndividualityObjectStatic(
+				new TenyuReferenceModelSimple<>(individualityObjectConcreteId,
+						StoreNameObjectivity.USER).getStoreKeyReferenced());
+	}
+
+	public static Long getIdByIndividualityObjectStatic(
+			StoreNameObjectivity type, Long individualityObjectConcreteId) {
+		return getIdByIndividualityObjectStatic(new TenyuReferenceModelSimple<>(
+				individualityObjectConcreteId, type));
+	}
+
+	public static Long getIdByIndividualityObjectStatic(
+			TenyuReferenceModelI<? extends IndividualityObjectI> ref) {
+		return simple((s) -> s.getIdByIndividualityObject(ref.getStoreKeyReferenced()));
+	}
+
+	public static Long getIdByIndividualityObjectRefSingleStatic(
+			StoreNameSingle type) {
+		return getIdByIndividualityObjectStatic(
+				new TenyuReferenceModelSingle<>(type));
+	}
+
+	public static Long getIdByIndividualityObjectStatic(
+			byte[] individualityObjectStoreKey) {
+		return simple(
+				s -> s.getIdByIndividualityObject(individualityObjectStoreKey));
 	}
 
 	public static StoreInfo getMainStoreInfoStatic() {
@@ -61,11 +88,12 @@ public class SocialityStore
 		return simple((s) -> s.get(id));
 	}
 
-	public static boolean isBanStatic(NodeType type,
+	public static boolean isBanStatic(StoreNameObjectivity type,
 			Long individualityObjectConcreteId) {
 		return simple(s -> {
 			try {
-				return s.isBan(type, individualityObjectConcreteId);
+				return s.isBan(new TenyuReferenceModelSimple<>(
+						individualityObjectConcreteId, type));
 			} catch (Exception e) {
 				Glb.getLogger().warn("", e);
 				return false;
@@ -73,7 +101,20 @@ public class SocialityStore
 		});
 	}
 
-	public static boolean isBlockStatic(NodeType type,
+	public static boolean isBanStatic(StoreNameSingle type) {
+		if (type != StoreNameSingle.OBJECTIVITY_CORE)
+			throw new IllegalArgumentException();
+		return simple(s -> {
+			try {
+				return s.isBan(new TenyuReferenceModelSingle<>(type));
+			} catch (Exception e) {
+				Glb.getLogger().warn("", e);
+				return false;
+			}
+		});
+	}
+
+	public static boolean isBlockStatic(StoreNameObjectivity type,
 			Long individualityObjectConcreteId, Long userId) {
 		return simple((s) -> {
 			try {
@@ -120,8 +161,8 @@ public class SocialityStore
 	@Override
 	protected boolean createAdministratedObjectConcrete(SocialityI o)
 			throws Exception {
-		if (!util.put(individualityObjectIdToId, cnvBA(o.getIndividualityObjectId()),
-				cnvL(o.getId())))
+		if (!util.put(individualityObjectIdToId,
+				cnvBA(o.getIndividualityObjectStoreKey()), cnvL(o.getId())))
 			return false;
 		return true;
 	}
@@ -130,11 +171,13 @@ public class SocialityStore
 	protected boolean dbValidateAtUpdateAdministratedObjectConcrete(
 			SocialityI updated, SocialityI old, ValidationResult r) {
 		boolean b = true;
-		if (Glb.getUtil().notEqual(updated.getIndividualityObjectId(),
-				old.getIndividualityObjectId())) {
-			if (getIdByIndividualityObject(updated.getIndividualityObjectId()) != null) {
-				r.add(Lang.SOCIALITY_INDIVIDUALITY_OBJECT_CONCRETE_ID,
-						Lang.ERROR_DB_EXIST);
+		if (Glb.getUtil().notEqual(updated.getIndividualityObjectStoreKey(),
+				old.getIndividualityObjectStoreKey())) {
+			if (getIdByIndividualityObject(
+					updated.getIndividualityObjectStoreKey()) != null) {
+				r.add(Lang.SOCIALITY_INDIVIDUALITY_OBJECT_CONCRETE_REF,
+						Lang.ERROR_DB_EXIST, "individualityObjectConcreteRef="
+								+ updated.getIndividualityObjectConcreteRef());
 				b = false;
 			}
 		}
@@ -147,16 +190,17 @@ public class SocialityStore
 			throws Exception {
 		if (Glb.getConf().getRunlevel() == RunLevel.RELEASE) {
 			//作者は削除不可
-			if (o.getNodeType() == NodeType.USER
-					&& o.getIndividualityObjectConcreteId() == Glb.getConst()
-							.getAuthor().getId())
+			if (o.getNodeType() == StoreNameObjectivity.USER
+					&& o.getIndividualityObjectConcreteRef().getId() == Glb
+							.getConst().getAuthor().getId())
 				return false;
 
 			//共同主体は削除不可
-			if (o.getNodeType() == NodeType.COOPERATIVE_ACCOUNT)
+			if (o.getNodeType() == StoreNameSingle.OBJECTIVITY_CORE)
 				return false;
 		}
-		if (!util.remove(individualityObjectIdToId, cnvBA(o.getIndividualityObjectId())))
+		if (!util.delete(individualityObjectIdToId,
+				cnvBA(o.getIndividualityObjectStoreKey())))
 			return false;
 
 		return true;
@@ -166,31 +210,45 @@ public class SocialityStore
 	public boolean existAdministratedObjectConcrete(SocialityI o,
 			ValidationResult vr) throws Exception {
 		boolean b = true;
-		if (getIdByIndividualityObject(o.getIndividualityObjectId()) == null) {
-			vr.add(Lang.SOCIALITY_INDIVIDUALITY_OBJECT_CONCRETE_ID,
+		if (getIdByIndividualityObject(
+				o.getIndividualityObjectStoreKey()) == null) {
+			vr.add(Lang.SOCIALITY_INDIVIDUALITY_OBJECT_CONCRETE_REF,
 					Lang.ERROR_DB_NOTFOUND);
 			b = false;
 		}
 		return b;
 	}
 
-	public Sociality getByIndividuality(NodeType type, Long individualityObjectConcreteId) {
-		return get(getIdByIndividualityObject(type, individualityObjectConcreteId));
+	public Sociality getByIndividualityObject(
+			byte[] individualityObjectStoreKey) {
+		return get(getId(individualityObjectIdToId,
+				cnvBA(individualityObjectStoreKey)));
 	}
 
-	public Sociality getByIndividualityObjectId(NodeType type,
-			Long individualityObjectConcreteId) {
-		return get(getIdByIndividualityObject(
-				Sociality.createIndividualityObjectId(type, individualityObjectConcreteId)));
+	public Sociality getByIndividualityObject(StoreNameObjectivity type,
+			Long individualityObjectId) {
+		return get(getIdByIndividualityObject(type, individualityObjectId));
 	}
 
-	public Long getIdByIndividualityObject(byte[] individualityObjectId) {
-		return getId(individualityObjectIdToId, cnvBA(individualityObjectId));
+	public Sociality getByIndividualityObject(
+			TenyuReferenceModelI<? extends IndividualityObjectI> ref) {
+		return get(getIdByIndividualityObject(ref.getStoreKeyReferenced()));
 	}
 
-	public Long getIdByIndividualityObject(NodeType type, Long individualityObjectConcreteId) {
-		return getIdByIndividualityObject(
-				Sociality.createIndividualityObjectId(type, individualityObjectConcreteId));
+	public Long getIdByIndividualityObject(byte[] individualityObjectStoreKey) {
+		return getId(individualityObjectIdToId,
+				cnvBA(individualityObjectStoreKey));
+	}
+
+	public Long getIdByIndividualityObject(StoreNameObjectivity type,
+			Long individualityObjectId) {
+		return getIdByIndividualityObjectId(
+				new TenyuReferenceModelSimple<>(individualityObjectId, type));
+	}
+
+	public Long getIdByIndividualityObjectId(
+			TenyuReferenceModelI<? extends IndividualityObjectI> ref) {
+		return getIdByIndividualityObject(ref.getStoreKeyReferenced());
 	}
 
 	@Override
@@ -206,15 +264,12 @@ public class SocialityStore
 	}
 
 	/**
-	 * Tenyu上で何らかの意味ある行動をする場合にBANされていないかチェックする。
-	 * 型が分からない場合でも使用できる。
-	 *
-	 * @param o
+	 * @param o	客観のモデル
 	 * @return	行動可能なオブジェクトか
 	 */
-	public boolean isBan(Model o) {
+	public boolean isBan(IndividualityObjectI o) {
 		try {
-			return !isBan(NodeType.getNodeType(o), o.getId());
+			return !isBan(o.getReference());
 		} catch (Exception e) {
 			Glb.getLogger().warn("", e);
 			return false;
@@ -222,14 +277,21 @@ public class SocialityStore
 	}
 
 	/**
-	 * @param type
+	 * @param type	客観のモデル
 	 * @param individualityObjectConcreteId
 	 * @return	BANされているか何らかのエラーが発生した場合true
 	 * @throws Exception
 	 */
-	public boolean isBan(NodeType type, Long individualityObjectConcreteId)
+	public boolean isBan(StoreNameObjectivity type,
+			Long individualityObjectConcreteId) throws Exception {
+		return isBan(new TenyuReferenceModelSimple<>(
+				individualityObjectConcreteId, type));
+	}
+
+	public boolean isBan(
+			TenyuReferenceModelI<? extends IndividualityObjectI> ref)
 			throws Exception {
-		Sociality s = getByIndividualityObjectId(type, individualityObjectConcreteId);
+		Sociality s = getByIndividualityObject(ref);
 		//社会性が見つからない異常ユーザであっても、「BANされている」という明確な状態が見つからない限り
 		//このメソッドはfalseを返す。存在しないユーザ等のチェックは他の部分でやるべき。
 		if (s == null)
@@ -237,6 +299,12 @@ public class SocialityStore
 		if (s.isBanned())
 			return true;
 		return false;
+	}
+
+	public boolean isBlock(StoreNameObjectivity type,
+			Long individualityObjectConcreteId, Long userId) throws Exception {
+		return isBlock(new TenyuReferenceModelSimple<>(
+				individualityObjectConcreteId, type), userId);
 	}
 
 	/**
@@ -247,9 +315,10 @@ public class SocialityStore
 	 * @return	ブロックされているか何らかのエラーが発生したらtrue
 	 * @throws Exception
 	 */
-	public boolean isBlock(NodeType type, Long individualityObjectConcreteId,
+	public boolean isBlock(
+			TenyuReferenceModelI<? extends IndividualityObjectI> ref,
 			Long userId) throws Exception {
-		Sociality s = get(getIdByIndividualityObject(type, individualityObjectConcreteId));
+		Sociality s = getByIndividualityObject(ref);
 		if (s == null) {
 			Glb.getLogger().warn("", new IllegalStateException());
 			return true;
@@ -270,8 +339,11 @@ public class SocialityStore
 	public boolean noExistAdministratedObjectConcrete(SocialityI o,
 			ValidationResult vr) throws Exception {
 		boolean b = true;
-		if (getIdByIndividualityObject(o.getIndividualityObjectId()) != null) {
-			vr.add(Lang.SOCIALITY_INDIVIDUALITY_OBJECT_CONCRETE_ID, Lang.ERROR_DB_EXIST);
+		if (getIdByIndividualityObject(
+				o.getIndividualityObjectStoreKey()) != null) {
+			vr.add(Lang.SOCIALITY_INDIVIDUALITY_OBJECT_CONCRETE_REF,
+					Lang.ERROR_DB_EXIST, "individualityObjectConcreteRef="
+							+ o.getIndividualityObjectConcreteRef());
 			b = false;
 		}
 		return b;
@@ -280,14 +352,15 @@ public class SocialityStore
 	@Override
 	protected boolean updateAdministratedObjectConcrete(SocialityI updated,
 			SocialityI old) throws Exception {
-		if (Glb.getUtil().notEqual(updated.getIndividualityObjectId(),
-				old.getIndividualityObjectId())) {
-			if (old.getIndividualityObjectId() != null) {
-				if (!util.remove(individualityObjectIdToId,
-						cnvBA(old.getIndividualityObjectId())))
+		if (Glb.getUtil().notEqual(updated.getIndividualityObjectStoreKey(),
+				old.getIndividualityObjectStoreKey())) {
+			if (old.getIndividualityObjectStoreKey() != null) {
+				if (!util.delete(individualityObjectIdToId,
+						cnvBA(old.getIndividualityObjectStoreKey())))
 					return false;
 			}
-			if (!util.put(individualityObjectIdToId, cnvBA(updated.getIndividualityObjectId()),
+			if (!util.put(individualityObjectIdToId,
+					cnvBA(updated.getIndividualityObjectStoreKey()),
 					cnvL(updated.getId())))
 				return false;
 		}

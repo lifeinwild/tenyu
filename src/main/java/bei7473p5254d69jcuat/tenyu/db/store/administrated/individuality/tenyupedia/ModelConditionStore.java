@@ -4,19 +4,18 @@ import static bei7473p5254d69jcuat.tenyu.db.DBUtil.*;
 
 import java.io.*;
 import java.util.*;
-import java.util.Map.*;
-import java.util.function.*;
 
 import javax.management.modelmbean.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.*;
-import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.tenyupedia.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.tenyupedia.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.tenyupedia.ModelCondition.How.*;
-import bei7473p5254d69jcuat.tenyu.reference.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.individuality.tenyupedia.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.reference.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.tenyupedia.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.tenyupedia.ModelCondition.How.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.reference.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.*;
@@ -25,39 +24,118 @@ import jetbrains.exodus.env.*;
 public class ModelConditionStore
 		extends IndividualityObjectStore<ModelConditionI, ModelCondition> {
 	public static final String modelName = ModelCondition.class.getSimpleName();
+	private static final StoreInfo localeConditionToId = new StoreInfo(
+			modelName + "_localeToId_Dup", StoreConfig.WITH_DUPLICATES, true);
 
-	private static final StoreInfo otherModelCoditionIdToId = new StoreInfo(
-			modelName + "_otherCoditionIdToId_Dup", StoreConfig.WITH_DUPLICATES,
-			true);
+	private static final StoreInfo manualToId = new StoreInfo(
+			modelName + "_manualToId_Dup", StoreConfig.WITH_DUPLICATES, true);
 	private static final StoreInfo modelNameToId = new StoreInfo(
 			modelName + "_modelNameToId_Dup", StoreConfig.WITH_DUPLICATES,
 			true);
-	private static final StoreInfo manualToId = new StoreInfo(
-			modelName + "_manualToId_Dup", StoreConfig.WITH_DUPLICATES, true);
-	private static final StoreInfo localeToId = new StoreInfo(
-			modelName + "_localeToId_Dup", StoreConfig.WITH_DUPLICATES, true);
-	private static final StoreInfo userIdToId = new StoreInfo(
-			modelName + "_userIdToId_Dup", StoreConfig.WITH_DUPLICATES, true);
+	private static final StoreInfo otherModelCoditionIdToId = new StoreInfo(
+			modelName + "_otherModelCoditionIdToId_Dup",
+			StoreConfig.WITH_DUPLICATES, true);
 	private static final StoreInfo startSocialityIdToId = new StoreInfo(
 			modelName + "_startSocialityIdToId_Dup",
 			StoreConfig.WITH_DUPLICATES);
+	private static final StoreInfo registererUserIdToId = new StoreInfo(
+			modelName + "_registererUserIdToId_Dup",
+			StoreConfig.WITH_DUPLICATES, true);
+
+	public static StoreInfo getLocaleConditiontoid() {
+		return localeConditionToId;
+	}
 
 	public static StoreInfo getMainStoreInfoStatic() {
 		return getMainStoreInfoStatic(modelName);
+	}
+
+	public static StoreInfo getManualtoid() {
+		return manualToId;
+	}
+
+	public static String getModelname() {
+		return modelName;
+	}
+
+	public static StoreInfo getModelnametoid() {
+		return modelNameToId;
+	}
+
+	public static StoreInfo getOtherModelCoditionidtoid() {
+		return otherModelCoditionIdToId;
+	}
+
+	public static StoreInfo getStartsocialityidtoid() {
+		return startSocialityIdToId;
+	}
+
+	public static StoreInfo getRegistererUseridtoid() {
+		return registererUserIdToId;
 	}
 
 	public ModelConditionStore(Transaction txn) {
 		super(txn);
 	}
 
+	public List<Long> getIdsByLocale(Locale loc) {
+		return util.getDup(getLocaleConditiontoid(),
+				cnvS(IndividualityObjectI.getLocaleStrStatic(loc)),
+				v -> cnvL(v));
+	}
+
+	public List<Long> getIdsByManual(
+			TenyuReferenceModelI<? extends ModelI> man) {
+		return util.getDup(getManualtoid(), cnvBA(man.getStoreKeyReferenced()),
+				v -> cnvL(v));
+	}
+
+	public List<Long> getIdsByModelName(String modelName) {
+		return util.getDup(getModelnametoid(), cnvS(modelName), v -> cnvL(v));
+	}
+
+	public List<Long> getIdsByOtherModelCondition(Logic l,
+			Long otherModelConditionId) {
+		return util.getDup(
+				getOtherModelCoditionidtoid(), cnvBA(ModelConditionI
+						.getModelConditionStoreKey(l, otherModelConditionId)),
+				v -> cnvL(v));
+	}
+
+	public List<Long> getIdsByStartSocialityId(Long startSocialityId) {
+		return util.getDup(getLocaleConditiontoid(), cnvL(startSocialityId),
+				v -> cnvL(v));
+	}
+
+	public List<Long> getIdsByRegistererUserIdAsCondition(Long registererUserId) {
+		return util.getDup(getRegistererUseridtoid(), cnvL(registererUserId),
+				v -> cnvL(v));
+	}
+
+	@Override
+	protected ModelCondition chainversionup(ByteIterable bi) {
+		try {
+			if (bi == null)
+				return null;
+			Object o = cnvO(bi);
+			if (o instanceof ModelCondition)
+				return (ModelCondition) o;
+			throw new InvalidTargetObjectTypeException(
+					"not ModelCondition object in ModelConditionStore");
+		} catch (IOException | InvalidTargetObjectTypeException e) {
+			Glb.getLogger().error("", e);
+			return null;
+		}
+	}
+
 	@Override
 	protected boolean createIndividualityObjectConcrete(ModelConditionI o)
 			throws Exception {
-		for (Entry<Logic, Long> e : o.getOtherModelConditionIds().entrySet()) {
-			Logic logic = e.getKey();
-			Long otherModelConditionId = e.getValue();
+		for (OtherModelCondition e : o.getOtherModelConditions()) {
+			Logic logic = e.getLogic();
+			Long otherModelConditionId = e.getOtherModelConditionId();
 			if (!util
-					.put(getOthercoditionidtoid(),
+					.put(getOtherModelCoditionidtoid(),
 							cnvBA(ModelConditionI.getModelConditionStoreKey(
 									logic, otherModelConditionId)),
 							cnvL(o.getId()))) {
@@ -70,21 +148,22 @@ public class ModelConditionStore
 				return false;
 			}
 		}
-		for (TenyuReference<? extends ModelI> e : o.getManual()) {
-			if (!util.put(getManualtoid(), cnvBA(e.getStoreKey()),
+		for (TenyuReferenceModelI<? extends ModelI> e : o.getManual()) {
+			if (!util.put(getManualtoid(), cnvBA(e.getStoreKeyReferenced()),
 					cnvL(o.getId()))) {
 				return false;
 			}
 		}
-		for (Locale l : o.getLocales()) {
-			if (!util.put(getLocaletoid(),
+		for (Locale l : o.getLocaleConditions()) {
+			if (!util.put(getLocaleConditiontoid(),
 					cnvS(IndividualityObjectI.getLocaleStrStatic(l)),
 					cnvL(o.getId()))) {
 				return false;
 			}
 		}
 		for (Long userId : o.getUserIds()) {
-			if (!util.put(getUseridtoid(), cnvL(userId), cnvL(o.getId()))) {
+			if (!util.put(getRegistererUseridtoid(), cnvL(userId),
+					cnvL(o.getId()))) {
 				return false;
 			}
 		}
@@ -106,11 +185,11 @@ public class ModelConditionStore
 	@Override
 	protected boolean deleteIndividualityObjectConcrete(ModelConditionI o)
 			throws Exception {
-		for (Entry<Logic, Long> e : o.getOtherModelConditionIds().entrySet()) {
-			Logic logic = e.getKey();
-			Long otherConditionId = e.getValue();
+		for (OtherModelCondition e : o.getOtherModelConditions()) {
+			Logic logic = e.getLogic();
+			Long otherConditionId = e.getOtherModelConditionId();
 			if (!util
-					.deleteDupSingle(getOthercoditionidtoid(),
+					.deleteDupSingle(getOtherModelCoditionidtoid(),
 							cnvBA(ModelConditionI.getModelConditionStoreKey(
 									logic, otherConditionId)),
 							cnvL(o.getId()))) {
@@ -123,21 +202,21 @@ public class ModelConditionStore
 				return false;
 			}
 		}
-		for (TenyuReference<? extends ModelI> e : o.getManual()) {
-			if (!util.deleteDupSingle(getManualtoid(), cnvBA(e.getStoreKey()),
+		for (TenyuReferenceModelI<? extends ModelI> e : o.getManual()) {
+			if (!util.deleteDupSingle(getManualtoid(), cnvBA(e.getStoreKeyReferenced()),
 					cnvL(o.getId()))) {
 				return false;
 			}
 		}
-		for (Locale l : o.getLocales()) {
-			if (!util.deleteDupSingle(getLocaletoid(),
+		for (Locale l : o.getLocaleConditions()) {
+			if (!util.deleteDupSingle(getLocaleConditiontoid(),
 					cnvS(IndividualityObjectI.getLocaleStrStatic(l)),
 					cnvL(o.getId()))) {
 				return false;
 			}
 		}
 		for (Long userId : o.getUserIds()) {
-			if (!util.deleteDupSingle(getUseridtoid(), cnvL(userId),
+			if (!util.deleteDupSingle(getRegistererUseridtoid(), cnvL(userId),
 					cnvL(o.getId()))) {
 				return false;
 			}
@@ -149,20 +228,11 @@ public class ModelConditionStore
 		return true;
 	}
 
-	public boolean existByOtherConditionId(byte[] otherConditionStoreKey,
-			Long id) {
-		if (otherConditionStoreKey == null || id == null)
+	public boolean existByLocale(String locale, Long id) {
+		if (locale == null || id == null)
 			return false;
-		return util.getDupSingle(getOthercoditionidtoid(),
-				cnvBA(otherConditionStoreKey), cnvL(id),
-				bi -> cnvL(bi)) != null;
-	}
-
-	public boolean existByModelName(String modelName, Long id) {
-		if (modelName == null || id == null)
-			return false;
-		return util.getDupSingle(getModelnametoid(), cnvS(modelName), cnvL(id),
-				bi -> cnvL(bi)) != null;
+		return util.getDupSingle(getLocaleConditiontoid(), cnvS(locale),
+				cnvL(id), bi -> cnvL(bi)) != null;
 	}
 
 	public boolean existByManual(byte[] manualStoreKey, Long id) {
@@ -172,6 +242,22 @@ public class ModelConditionStore
 				cnvL(id), bi -> cnvL(bi)) != null;
 	}
 
+	public boolean existByModelName(String modelName, Long id) {
+		if (modelName == null || id == null)
+			return false;
+		return util.getDupSingle(getModelnametoid(), cnvS(modelName), cnvL(id),
+				bi -> cnvL(bi)) != null;
+	}
+
+	public boolean existByOtherConditionId(byte[] otherConditionStoreKey,
+			Long id) {
+		if (otherConditionStoreKey == null || id == null)
+			return false;
+		return util.getDupSingle(getOtherModelCoditionidtoid(),
+				cnvBA(otherConditionStoreKey), cnvL(id),
+				bi -> cnvL(bi)) != null;
+	}
+
 	public boolean existByStartSocialityId(Long startSocialityId, Long id) {
 		if (startSocialityId == null || id == null)
 			return false;
@@ -179,31 +265,26 @@ public class ModelConditionStore
 				cnvL(startSocialityId), cnvL(id), bi -> cnvL(bi)) != null;
 	}
 
-	public boolean existByLocale(String locale, Long id) {
-		if (locale == null || id == null)
-			return false;
-		return util.getDupSingle(getLocaletoid(), cnvS(locale), cnvL(id),
-				bi -> cnvL(bi)) != null;
-	}
-
 	public boolean existByUserId(Long userId, Long id) {
 		if (userId == null || id == null)
 			return false;
-		return util.getDupSingle(getUseridtoid(), cnvL(userId), cnvL(id),
-				bi -> cnvL(bi)) != null;
+		return util.getDupSingle(getRegistererUseridtoid(), cnvL(userId),
+				cnvL(id), bi -> cnvL(bi)) != null;
 	}
 
 	@Override
 	protected boolean existIndividualityObjectConcrete(ModelConditionI o,
 			ValidationResult vr) throws Exception {
 		boolean b = true;
-		for (Entry<Logic, Long> e : o.getOtherModelConditionIds().entrySet()) {
-			if (!existByOtherConditionId(ModelConditionI
-					.getModelConditionStoreKey(e.getKey(), e.getValue()),
+		for (OtherModelCondition e : o.getOtherModelConditions()) {
+			Logic l = e.getLogic();
+			Long id = e.getOtherModelConditionId();
+			if (!existByOtherConditionId(
+					ModelConditionI.getModelConditionStoreKey(l, id),
 					o.getId())) {
-				vr.add(Lang.MODEL_CONDITION, Lang.OTHER_MODEL_CONDITION_IDS,
-						Lang.ERROR_DB_NOTFOUND, "logic=" + e.getKey()
-								+ " otherModelConditionId=" + e.getValue());
+				vr.add(Lang.MODEL_CONDITION, Lang.OTHER_MODEL_CONDITION_ID,
+						Lang.ERROR_DB_NOTFOUND,
+						"logic=" + l + " otherModelConditionId=" + id);
 				b = false;
 				break;
 			}
@@ -219,8 +300,8 @@ public class ModelConditionStore
 			}
 		}
 
-		for (TenyuReference<? extends ModelI> e : o.getManual()) {
-			if (!existByManual(e.getStoreKey(), o.getId())) {
+		for (TenyuReferenceModelI<? extends ModelI> e : o.getManual()) {
+			if (!existByManual(e.getStoreKeyReferenced(), o.getId())) {
 				vr.add(Lang.MODEL_CONDITION, Lang.MODEL_CONDITION_MANUAL,
 						Lang.ERROR_DB_NOTFOUND, "manual=" + e);
 				b = false;
@@ -228,7 +309,7 @@ public class ModelConditionStore
 			}
 		}
 
-		for (Locale l : o.getLocales()) {
+		for (Locale l : o.getLocaleConditions()) {
 			if (!existByLocale(IndividualityObjectI.getLocaleStrStatic(l),
 					o.getId())) {
 				vr.add(Lang.MODEL_CONDITION, Lang.LOCALES,
@@ -258,15 +339,27 @@ public class ModelConditionStore
 	}
 
 	@Override
-	public List<StoreInfo> getStoresIndividualityObjectConcrete() {
+	public String getName() {
+		return modelName;
+	}
+
+	@Override
+	protected List<StoreInfo> getStoresIndividualityObjectConcrete() {
 		List<StoreInfo> r = new ArrayList<>();
 		r.add(otherModelCoditionIdToId);
 		r.add(modelNameToId);
 		r.add(manualToId);
 		r.add(startSocialityIdToId);
-		r.add(localeToId);
-		r.add(userIdToId);
+		r.add(localeConditionToId);
+		r.add(registererUserIdToId);
 		return r;
+	}
+
+	@Override
+	public boolean isSupport(Object o) {
+		if (o instanceof ModelConditionI)
+			return true;
+		return false;
 	}
 
 	@Override
@@ -274,13 +367,15 @@ public class ModelConditionStore
 			ValidationResult vr) throws Exception {
 		boolean b = true;
 
-		for (Entry<Logic, Long> e : o.getOtherModelConditionIds().entrySet()) {
-			if (existByOtherConditionId(ModelConditionI
-					.getModelConditionStoreKey(e.getKey(), e.getValue()),
+		for (OtherModelCondition e : o.getOtherModelConditions()) {
+			Logic l = e.getLogic();
+			Long id = e.getOtherModelConditionId();
+			if (existByOtherConditionId(
+					ModelConditionI.getModelConditionStoreKey(l, id),
 					o.getId())) {
-				vr.add(Lang.MODEL_CONDITION, Lang.OTHER_MODEL_CONDITION_IDS,
-						Lang.ERROR_DB_EXIST, "logic=" + e.getKey()
-								+ " otherModelConditionId=" + e.getValue());
+				vr.add(Lang.MODEL_CONDITION, Lang.OTHER_MODEL_CONDITION_ID,
+						Lang.ERROR_DB_EXIST,
+						"logic=" + l + " otherModelConditionId=" + id);
 				b = false;
 				break;
 			}
@@ -296,8 +391,8 @@ public class ModelConditionStore
 			}
 		}
 
-		for (TenyuReference<? extends ModelI> e : o.getManual()) {
-			if (existByManual(e.getStoreKey(), o.getId())) {
+		for (TenyuReferenceModelI<? extends ModelI> e : o.getManual()) {
+			if (existByManual(e.getStoreKeyReferenced(), o.getId())) {
 				vr.add(Lang.MODEL_CONDITION, Lang.MODEL_CONDITION_MANUAL,
 						Lang.ERROR_DB_EXIST, "manual=" + e);
 				b = false;
@@ -305,7 +400,7 @@ public class ModelConditionStore
 			}
 		}
 
-		for (Locale l : o.getLocales()) {
+		for (Locale l : o.getLocaleConditions()) {
 			if (existByLocale(IndividualityObjectI.getLocaleStrStatic(l),
 					o.getId())) {
 				vr.add(Lang.MODEL_CONDITION, Lang.LOCALES, Lang.ERROR_DB_EXIST,
@@ -341,25 +436,29 @@ public class ModelConditionStore
 				updated.getId(), () -> updated.getStoreNames(),
 				() -> old.getStoreNames(), (k) -> cnvS(k.getModelName())))
 			return false;
-		if (!updateCollectionSubIndex(getModelnametoid(), old.getId(),
-				updated.getId(), () -> updated.getStoreNames(),
-				() -> old.getStoreNames(), (k) -> cnvS(k.getModelName())))
+
+		if (!updateCollectionSubIndex(getOtherModelCoditionidtoid(),
+				old.getId(), updated.getId(),
+				() -> updated.getOtherModelConditions(),
+				() -> old.getOtherModelConditions(),
+				(k) -> cnvBA(ModelConditionI.getModelConditionStoreKey(
+						k.getLogic(), k.getOtherModelConditionId()))))
 			return false;
-		if (!updateCollectionSubIndex(getModelnametoid(), old.getId(),
-				updated.getId(), () -> updated.getStoreNames(),
-				() -> old.getStoreNames(), (k) -> cnvS(k.getModelName())))
+
+		if (!updateCollectionSubIndex(getManualtoid(), old.getId(),
+				updated.getId(), () -> updated.getManual(),
+				() -> old.getManual(), (k) -> cnvBA(k.getStoreKeyReferenced())))
 			return false;
-		if (!updateCollectionSubIndex(getModelnametoid(), old.getId(),
-				updated.getId(), () -> updated.getStoreNames(),
-				() -> old.getStoreNames(), (k) -> cnvS(k.getModelName())))
+
+		if (!updateCollectionSubIndex(getLocaleConditiontoid(), old.getId(),
+				updated.getId(), () -> updated.getLocaleConditions(),
+				() -> old.getLocaleConditions(),
+				(k) -> cnvS(IndividualityObjectI.getLocaleStrStatic(k))))
 			return false;
-		if (!updateCollectionSubIndex(getModelnametoid(), old.getId(),
-				updated.getId(), () -> updated.getStoreNames(),
-				() -> old.getStoreNames(), (k) -> cnvS(k.getModelName())))
-			return false;
-		if (!updateCollectionSubIndex(getModelnametoid(), old.getId(),
-				updated.getId(), () -> updated.getStoreNames(),
-				() -> old.getStoreNames(), (k) -> cnvS(k.getModelName())))
+
+		if (!updateCollectionSubIndex(getRegistererUseridtoid(), old.getId(),
+				updated.getId(), () -> updated.getUserIds(),
+				() -> old.getUserIds(), (k) -> cnvL(k)))
 			return false;
 
 		Long updatedStartSocialityId = updated.getStartSocialityId();
@@ -378,61 +477,5 @@ public class ModelConditionStore
 		}
 
 		return true;
-	}
-
-	@Override
-	public boolean isSupport(Object o) {
-		if (o instanceof ModelConditionI)
-			return true;
-		return false;
-	}
-
-	@Override
-	protected ModelCondition chainversionup(ByteIterable bi) {
-		try {
-			if (bi == null)
-				return null;
-			Object o = cnvO(bi);
-			if (o instanceof ModelCondition)
-				return (ModelCondition) o;
-			throw new InvalidTargetObjectTypeException(
-					"not User object in ModelConditionStore");
-		} catch (IOException | InvalidTargetObjectTypeException e) {
-			Glb.getLogger().error("", e);
-			return null;
-		}
-	}
-
-	@Override
-	public String getName() {
-		return modelName;
-	}
-
-	public static String getModelname() {
-		return modelName;
-	}
-
-	public static StoreInfo getOthercoditionidtoid() {
-		return otherModelCoditionIdToId;
-	}
-
-	public static StoreInfo getModelnametoid() {
-		return modelNameToId;
-	}
-
-	public static StoreInfo getManualtoid() {
-		return manualToId;
-	}
-
-	public static StoreInfo getStartsocialityidtoid() {
-		return startSocialityIdToId;
-	}
-
-	public static StoreInfo getLocaletoid() {
-		return localeToId;
-	}
-
-	public static StoreInfo getUseridtoid() {
-		return userIdToId;
 	}
 }

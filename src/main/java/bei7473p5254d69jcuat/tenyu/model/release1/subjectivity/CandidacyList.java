@@ -5,7 +5,8 @@ import java.util.*;
 import bei7473p5254d69jcuat.tenyu.communication.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.subjectivity.*;
 import bei7473p5254d69jcuat.tenyu.db.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.reference.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.env.*;
@@ -19,7 +20,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class CandidacyList implements StorableI {
+public class CandidacyList implements ValidatableI {
 	/**
 	 * 立候補者の増加ペースは制限される
 	 * 没案。最大件数の制限と信用に基づく優先で十分と判断した。
@@ -121,8 +122,8 @@ public class CandidacyList implements StorableI {
 		Long userId = m.getUserId();
 		if (userId == null)
 			return 0;
-		Sociality s = Glb.getObje().getSociality(
-				ss -> ss.getByIndividuality(NodeType.USER, userId));
+		Sociality s = Glb.getObje().getSociality(ss -> ss
+				.getByIndividualityObject(StoreNameObjectivity.USER, userId));
 		if (s == null)
 			return 0;
 		r += s.credit();

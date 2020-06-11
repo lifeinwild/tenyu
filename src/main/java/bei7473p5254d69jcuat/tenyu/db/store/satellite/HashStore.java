@@ -14,7 +14,7 @@ import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.db.store.satellite.HashStore.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.reference.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.reference.*;
 import glb.*;
 import jetbrains.exodus.*;
 import jetbrains.exodus.env.*;
@@ -45,7 +45,7 @@ import jetbrains.exodus.env.*;
  *
  */
 public class HashStore extends ObjectStore<byte[], HashStoreValue>
-		implements SatelliteI {
+		implements SubStoreI {
 	/**
 	 * ハッシュ値のサイズ
 	 */
@@ -615,7 +615,7 @@ public class HashStore extends ObjectStore<byte[], HashStoreValue>
 			//削除
 			for (long hid = hereLevelLastIdBefore; hid > hereLevelLastIdAfter; hid--) {
 				//配列ごと削除
-				util.remove(getMainStoreInfo(),
+				util.delete(getMainStoreInfo(),
 						new HashStoreKey(level, hid).getBi());
 			}
 
@@ -629,7 +629,7 @@ public class HashStore extends ObjectStore<byte[], HashStoreValue>
 			if (level > topLevelAfter) {
 				//トップなら削除
 				if (isTop(level)) {
-					util.remove(getMainStoreInfo(),
+					util.delete(getMainStoreInfo(),
 							new HashStoreKey(level, getFirstHid()).getBi());
 					//一度ここに来たらそれ以降境界配列は全て削除される
 					continue;
@@ -758,7 +758,7 @@ public class HashStore extends ObjectStore<byte[], HashStoreValue>
 	 * 最後のIDを取得できるストア
 	 */
 	private StoreInfo getLastIdStoreInfo() {
-		return new StoreInfo(name + "_" + storeName + "_lastId");
+		return new StoreInfo(name + "_" + storeName + "_lastId", true);
 	}
 
 	/**
@@ -766,7 +766,7 @@ public class HashStore extends ObjectStore<byte[], HashStoreValue>
 	 */
 	@Override
 	public StoreInfo getMainStoreInfo() {
-		return new StoreInfo(name + "_" + storeName + "_pathToHash");
+		return new StoreInfo(name + "_" + storeName + "_pathToHash", true);
 	}
 
 	@Override
@@ -893,7 +893,7 @@ public class HashStore extends ObjectStore<byte[], HashStoreValue>
 			if (ByteIterable.EMPTY.equals(e.getKey()))
 				continue;
 			System.out.println("keyToHash key:" + cnvBA(e.getKey()));
-			System.out.println(Arrays.toString(cnvBA(e.getValue())));
+			System.out.println("val:"+Arrays.toString(cnvBA(e.getValue())));
 			if (util.get(getMainStoreInfo(), e.getKey()) == null) {
 				System.out.println("exception");
 			}
@@ -909,7 +909,7 @@ public class HashStore extends ObjectStore<byte[], HashStoreValue>
 
 	private boolean putLastId(Long hid) throws Exception {
 		if (hid == null) {
-			if (!util.remove(getLastIdStoreInfo(), meaningLessKey))
+			if (!util.delete(getLastIdStoreInfo(), meaningLessKey))
 				throw new Exception("Failed to remove");
 		} else {
 			if (!util.put(getLastIdStoreInfo(), meaningLessKey, cnvL(hid)))

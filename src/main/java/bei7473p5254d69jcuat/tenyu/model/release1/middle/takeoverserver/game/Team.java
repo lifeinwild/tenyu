@@ -4,15 +4,15 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
-import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.statebyuser.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.game.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.game.statebyuser.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.reference.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.env.*;
@@ -24,8 +24,9 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class Team implements StorableI {
-	public static final int nameMax = IndividualityObject.nameMax + 50;
+public class Team implements ValidatableI {
+	public static final int nameMax = IndividualityObjectI.getNameMaxStatic()
+			+ 50;
 
 	public static final int passwordMax = 50;
 
@@ -140,10 +141,10 @@ public class Team implements StorableI {
 
 				//ゲームからブロックされているユーザーを拒否する
 				SocialityStore sos = new SocialityStore(txn);
-				if (sos.isBlock(NodeType.RATINGGAME, game.getId(),
+				if (sos.isBlock(StoreNameObjectivity.RATING_GAME, game.getId(),
 						node.getUserId()))
 					return false;
-				if (sos.isBan(NodeType.USER, node.getUserId())) {
+				if (sos.isBan(StoreNameObjectivity.USER, node.getUserId())) {
 					return false;
 				}
 			} catch (Exception e) {
@@ -399,8 +400,7 @@ public class Team implements StorableI {
 						Lang.ERROR_TOO_MANY);
 				b = false;
 			} else {
-				if (!Model
-						.validateIdStandardNotSpecialId(getMemberUserIds())) {
+				if (!Model.validateIdStandardNotSpecialId(getMemberUserIds())) {
 					vr.add(Lang.GAMEPLAY_MATCHING_TEAM_MEMBERS,
 							Lang.ERROR_INVALID);
 					b = false;

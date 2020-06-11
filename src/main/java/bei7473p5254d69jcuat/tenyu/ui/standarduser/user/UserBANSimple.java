@@ -2,7 +2,7 @@ package bei7473p5254d69jcuat.tenyu.ui.standarduser.user;
 
 import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.sociality.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.sociality.*;
 import bei7473p5254d69jcuat.tenyu.ui.common.*;
 import glb.*;
 import javafx.scene.*;

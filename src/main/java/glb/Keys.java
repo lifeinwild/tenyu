@@ -7,7 +7,7 @@ import java.security.spec.*;
 import java.text.*;
 import java.util.*;
 
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
 import glb.util.*;
 
 /**
@@ -17,24 +17,108 @@ import glb.util.*;
  *
  */
 public class Keys {
+	public String getSignNominal(String... suffixes) {
+		String s = "";
+		if (suffixes != null && suffixes.length > 0) {
+			String delimiter = "_";
+			for (String suffix : suffixes) {
+				s += delimiter + suffix;
+			}
+		}
+		return Glb.getConst().getAppName() + s;
+	}
+
+	/**
+	 * 署名の名目にメソッド名を使用する。
+	 * 署名の名目というアイデアは、
+	 * 様々な場面で署名が行われた場合にどのような意味で署名されたのか混同する可能性が生じるので、
+	 * 名目文字列を加えて署名している。
+	 *
+	 * @return	signKey()で使用する署名の名目
+	 */
+	public static String getSignKeyNominal() {
+		//リファクタリングでConfからKeysクラスが派生してインターフェースが移動したが
+		//署名名目はConfがそのまま使われている。
+		//変更した場合の影響が面倒なのと、今でもKeysはConf系という位置づけ（Conf以外でメンバー変数にならない）
+		//なので問題ない。Keysはほぼ常にConf#getKeys()を通じて利用される。
+
+		//完全修飾名だとパッケージ名を変えれないのでsimpleで
+		return Conf.class.getSimpleName() + "#signKey";
+	}
+
+	public static boolean verifyKeys(byte[] pcPub, byte[] mobPub, byte[] offPub,
+			byte[] signPcB, byte[] signMobileB, byte[] signOffByPcB,
+			byte[] signOffByMobileB) {
+		Util u = Glb.getUtil();
+		try {
+			return verifyKeys(u.getPub(pcPub), u.getPub(mobPub),
+					u.getPub(offPub), signPcB, signMobileB, signOffByPcB,
+					signOffByMobileB);
+		} catch (Exception e) {
+			Glb.getLogger().error("", e);
+			return false;
+		}
+	}
+
+	public static boolean verifyKeys(PublicKey pcPub, PublicKey mobPub,
+			PublicKey offPub, byte[] signPcB, byte[] signMobileB,
+			byte[] signOffByPcB, byte[] signOffByMobileB) {
+		Util u = Glb.getUtil();
+		boolean pubPcByOff = u.verify(getSignKeyNominal(), signPcB, offPub,
+				pcPub.getEncoded());
+		if (!pubPcByOff) {
+			Glb.getLogger().error(Lang.CONF_PC_SIGN + " " + Lang.ERROR_INVALID);
+		}
+
+		boolean pubMobileByOff = u.verify(getSignKeyNominal(), signMobileB,
+				offPub, mobPub.getEncoded());
+		if (!pubMobileByOff) {
+			Glb.getLogger()
+					.error(Lang.CONF_MOBILE_SIGN + " " + Lang.ERROR_INVALID);
+		}
+
+		//オフ公開鍵をpc秘密鍵で署名
+		boolean offByPc = u.verify(getSignKeyNominal(), signOffByPcB, pcPub,
+				offPub.getEncoded());
+		if (!offByPc) {
+			Glb.getLogger()
+					.error(Lang.CONF_OFF_SIGN_BY_PC + " " + Lang.ERROR_INVALID);
+		}
+
+		//オフ公開鍵をmobile秘密鍵で署名
+		boolean offByMobile = u.verify(getSignKeyNominal(), signOffByMobileB,
+				mobPub, offPub.getEncoded());
+		if (!offByMobile) {
+			Glb.getLogger().error(
+					Lang.CONF_OFF_SIGN_BY_MOB + " " + Lang.ERROR_INVALID);
+		}
+
+		//全ての検証を通過したか
+		return pubPcByOff && pubMobileByOff;
+	}
+
 	/**
 	 * Confとの相互参照
 	 */
 	private Conf cf;
+	protected byte[] myMobileKeySignByOffB;
+	protected PrivateKey myMobilePrivateKey;
 
-	public Keys(Conf cf) {
-		this.cf = cf;
-	}
+	private PublicKey myMobilePublicKey;
 
-	/**
-	 * セキュアユーザーか
-	 * {@link User}に詳細
-	 */
-	private boolean secureUser = false;
+	protected byte[] myOffKeySignByMobB;
+	protected byte[] myOffKeySignByPcB;
+	protected PrivateKey myOfflinePrivateKey;//nullable
 
 	private PublicKey myOfflinePublicKey;
+	protected byte[] myPcKeySignByOffB;
+	//秘密鍵はgetter禁止。ここで署名機能を提供するだけ。
+	//秘密鍵情報はKeys及びConfから出ない。
+	//署名機能は本来Confではないかもしれないが、セキュリティのためここに書く。
+	//同じ理由で、getter等のインターフェースはKeyPairではなく
+	//PublicKeyやPrivateKeyといったレベルで作成される。
+	protected PrivateKey myPcPrivateKey;
 	private PublicKey myPcPublicKey;
-	private PublicKey myMobilePublicKey;
 
 	/**
 	 * この設定を変えると通信メッセージにおいて使用される鍵が変わる。
@@ -42,47 +126,217 @@ public class Keys {
 	 */
 	private KeyType myStandardKeyType = KeyType.PC;
 
-	//秘密鍵はgetter禁止。ここで署名機能を提供するだけ。
-	//秘密鍵情報はKeys及びConfから出ない。
-	//署名機能は本来Confではないかもしれないが、セキュリティのためここに書く。
-	//同じ理由で、getter等のインターフェースはKeyPairではなく
-	//PublicKeyやPrivateKeyといったレベルで作成される。
-	protected PrivateKey myPcPrivateKey;
-	protected PrivateKey myMobilePrivateKey;
-	protected PrivateKey myOfflinePrivateKey;//nullable
+	/**
+	 * セキュアユーザーか
+	 * {@link User}に詳細
+	 */
+	private boolean secureUser = false;
 
-	protected byte[] myPcKeySignByOffB;
-	protected byte[] myMobileKeySignByOffB;
-	protected byte[] myOffKeySignByPcB;
-	protected byte[] myOffKeySignByMobB;
+	public Keys(Conf cf) {
+		this.cf = cf;
+	}
 
-	public byte[] sign(String nominal, byte[] b) throws IOException,
-			InvalidKeySpecException, NoSuchAlgorithmException {
-		return sign(nominal, getMyStandardKeyType(), b);
+	public boolean changeSecretKeyPassword(byte[] newPassword) {
+		if (!isLoadedKeys()) {
+			Glb.getLogger().error("Not loaded keys", new Exception());
+			return false;
+		}
+		String date = getDate();
+
+		writeToFile(cf.getFile().getPrivateKeyPath(KeyType.PC),
+				cf.getFile().getPrivateKeyPath(KeyType.PC, date),
+				myPcPrivateKey.getEncoded(), newPassword);
+		writeToFile(cf.getFile().getPrivateKeyPath(KeyType.MOBILE),
+				cf.getFile().getPrivateKeyPath(KeyType.MOBILE, date),
+				myMobilePrivateKey.getEncoded(), newPassword);
+		writeToFile(cf.getFile().getPrivateKeyPath(KeyType.OFFLINE),
+				cf.getFile().getPrivateKeyPath(KeyType.OFFLINE, date),
+				myOfflinePrivateKey.getEncoded(), newPassword);
+
+		return true;
+	}
+
+	public boolean changeSecretKeyPassword(String newPassword) {
+		return changeSecretKeyPassword(toBytes(newPassword));
+	}
+
+	public byte[] decryptByMyStandardPrivateKey(byte[] encrypted) {
+		return Glb.getUtil().decrypt(getMyStandardPrivateKey(), encrypted);
+	}
+
+	public byte[] decryptByPrivateKey(KeyType type, byte[] encrypted) {
+		return Glb.getUtil().decrypt(getMyPrivateKey(type), encrypted);
+	}
+
+	public KeyPair generateKey(boolean secureUser) {
+		try {
+			KeyPairGenerator keyPairGen = KeyPairGenerator
+					.getInstance(Glb.getConst().getKeyPairGeneratorAlgorithm());
+
+			keyPairGen.initialize(User.getRsaKeySizeBitBySecure(secureUser));
+			return keyPairGen.genKeyPair();
+		} catch (Exception e) {
+			Glb.getLogger().error("", e);
+			System.exit(1);
+		}
+		return null;
 	}
 
 	/**
-	 * @return	各種鍵の作成済みフラグがあるか
+	 * RSA鍵をファイルシステムから読み込む。
+	 * 無ければ作成し、ファイルに書き込む。
+	 * その時、中途半端に一部の鍵や署名ファイルがあればそれをバックアップする。
+	 *	generatedが無いなら鍵があってもリネームして再作成。
+	 * このメソッドが呼ばれた時点でgeneratedは判定されているべき。
+	 * @param type
+	 * @param backupPrefix
+	 * @return
 	 */
-	public boolean isKeyGenerated() {
-		File generated = new File(cf.getFile().getKeyGenerated());
-		return generated.exists();
+	private KeyPair generateKeyAndWriteToFile(KeyType type, String backupPrefix,
+			byte[] password) {
+		KeyPair pair = null;
+		try {
+			Glb.getLogger().info(Lang.START_GENERATE_KEY + ":" + type);
+			pair = generateKey(secureUser);
+
+			writeToFile(cf.getFile().getPublicKeyPath(type),
+					cf.getFile().getPublicKeyPath(type, backupPrefix),
+					pair.getPublic().getEncoded());
+			writeToFile(cf.getFile().getPrivateKeyPath(type),
+					cf.getFile().getPrivateKeyPath(type, backupPrefix),
+					pair.getPrivate().getEncoded(), password);
+		} catch (Exception e) {
+			Glb.getLogger().error("", e);
+			System.exit(1);
+		}
+		return pair;
 	}
 
 	private String getDate() {
 		return new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
 	}
 
+	/*
+		private Locale loadLoc() {
+			return Locale.forLanguageTag(System.getProperty("user.language"));
+		}
+		*/
+
+	public byte[] getMyMobileKeySignByOffB() {
+		return myMobileKeySignByOffB;
+	}
+
+	public PublicKey getMyMobilePublicKey() {
+		return myMobilePublicKey;
+	}
+
+	public byte[] getMyOffKeySignByMobB() {
+		return myOffKeySignByMobB;
+	}
+
+	public byte[] getMyOffKeySignByPcB() {
+		return myOffKeySignByPcB;
+	}
+
+	/**
+	 * 電子署名の名目
+	 */
+	/*
+	private static final String signKeyNominal = Conf.class.getTypeName()
+			+ "#signKey()";
+	*/
+
+	public PublicKey getMyOfflinePublicKey() {
+		return myOfflinePublicKey;
+	}
+
+	public byte[] getMyPcKeySignByOffB() {
+		return myPcKeySignByOffB;
+	}
+
+	public PublicKey getMyPcPublicKey() {
+		return myPcPublicKey;
+	}
+
+	private PrivateKey getMyPrivateKey(KeyType type) {
+		switch (type) {
+		case MOBILE:
+			return myMobilePrivateKey;
+		case PC:
+			return myPcPrivateKey;
+		case OFFLINE:
+			return myOfflinePrivateKey;
+		default:
+			return null;
+		}
+	}
+
+	public PublicKey getMyPublicKey(KeyType type) {
+		switch (type) {
+		case MOBILE:
+			return myMobilePublicKey;
+		case PC:
+			return myPcPublicKey;
+		case OFFLINE:
+			return myOfflinePublicKey;
+		default:
+		}
+		return null;
+	}
+
 	public KeyType getMyStandardKeyType() {
 		return myStandardKeyType;
+	}
+
+	private PrivateKey getMyStandardPrivateKey() {
+		return getMyPrivateKey(myStandardKeyType);
 	}
 
 	public PublicKey getMyStandardPublicKey() {
 		return getMyPublicKey(myStandardKeyType);
 	}
 
-	public void init2(String password) {
-		init2(toBytes(password));
+	/**
+	 * @param prefix			鍵タイプ
+	 * @return				各鍵への署名データ
+	 * @throws IOException
+	 */
+	public String getSignBase64(KeyType targetKey, KeyType by)
+			throws IOException {
+		return Glb.getUtil()
+				.readAll(cf.getFile().getSignKeyPath(targetKey, by));
+	}
+
+	/**
+	 * 鍵がロードされた後に呼ぶ。
+	 * 鍵のロードに成功する事は正しい秘密鍵が伴っている事を意味し、
+	 * 作者の公開鍵が定数として記録されているので、
+	 * この鍵オブジェクトが作者のものかを判定できる。
+	 *
+	 * @return　自分は作者か
+	 */
+	public boolean imAuthor() {
+		/*
+		User author = Glb.getConst().getAuthor();
+		//オフライン秘密鍵はオフラインにしておくので、PC鍵とモバイル鍵だけで作者認定
+		boolean r1 = Arrays.equals(myPcPublicKey.getEncoded(),
+				author.getPcPublicKey())
+				&& Arrays.equals(myMobilePublicKey.getEncoded(),
+						author.getMobilePublicKey());
+								//PC鍵とモバイル鍵は更新する場合があるので、オフライン鍵だけが正しい場合も作者
+		boolean r2 = Arrays.equals(myOfflinePublicKey.getEncoded(),
+				author.getOfflinePublicKey());
+		//いずれかを満たせばtrue
+		return r1 || r2;
+
+						*/
+		for (String authorPubBase64 : Glb.getConst().getAuthorPublicKeys()) {
+			byte[] authorPub = Base64.getDecoder().decode(authorPubBase64);
+			if (Arrays.equals(authorPub, myOfflinePublicKey.getEncoded())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -105,69 +359,25 @@ public class Keys {
 		Glb.getLogger().info("imAuthor=" + imAuthor);
 	}
 
+	public void init2(String password) {
+		init2(toBytes(password));
+	}
+
 	/**
-	 * PC、MOBILE、OFFの全鍵ペアが存在する状態にする。
-	 * 無ければ作成し、あれば作成しない。
-	 * @param password
+	 * @return	各種鍵の作成済みフラグがあるか
 	 */
-	public void setupKeys(byte[] password) {
-		try {
-			//鍵が未作成なら
-			if (!isKeyGenerated()) {
-				String date = getDate();
+	public boolean isKeyGenerated() {
+		File generated = new File(cf.getFile().getKeyGenerated());
+		return generated.exists();
+	}
 
-				//作成済みの鍵があればそれを使う
-				//PC鍵やモバイル鍵が流出した場合、オフライン鍵を残して
-				//他を削除して再実行することで再作成される。
+	public boolean isLoadedKeys() {
+		return myPcPrivateKey != null && myMobilePrivateKey != null
+				&& myOfflinePrivateKey != null;
+	}
 
-				//存在しない場合だけ作成するという条件分岐があることで
-				//generateKeyAndWriteToFileのリネーム機能は無意味になっている。
-
-				KeyPair pc = load(KeyType.PC, password);
-				if (pc == null)
-					pc = generateKeyAndWriteToFile(KeyType.PC, date, password);
-				KeyPair mobile = load(KeyType.MOBILE, password);
-				if (mobile == null)
-					mobile = generateKeyAndWriteToFile(KeyType.MOBILE, date,
-							password);
-				KeyPair off = load(KeyType.OFFLINE, password);
-				if (off == null)
-					off = generateKeyAndWriteToFile(KeyType.OFFLINE, date,
-							password);
-
-				Glb.getLogger().info(Lang.START_SIGN_KEY);
-				signKey(KeyType.PC, KeyType.OFFLINE,
-						pc.getPublic().getEncoded(), off.getPrivate(), date);
-				signKey(KeyType.MOBILE, KeyType.OFFLINE,
-						mobile.getPublic().getEncoded(), off.getPrivate(),
-						date);
-				signKey(KeyType.OFFLINE, KeyType.PC,
-						off.getPublic().getEncoded(), pc.getPrivate(), date);
-				signKey(KeyType.OFFLINE, KeyType.MOBILE,
-						off.getPublic().getEncoded(), mobile.getPrivate(),
-						date);
-
-				//作成済みフラグを作成
-				File generated = Glb.getFile()
-						.get((cf.getFile().getKeyGenerated()));
-				if (!cf.getFile().create(
-						Paths.get(cf.getFile().getKeyGenerated()), null,
-						true)) {
-					Glb.getLogger().error(
-							"Failed to create generated flag file",
-							new Exception());
-				}
-				//リリース番号を書き込む
-				//もしkeyフォルダの仕様が変わってもこの情報を頼りに修正できる可能性がある
-				try (FileWriter writer = new FileWriter(generated)) {
-					writer.write(Glb.getConst().getRelease() + "");
-				}
-			}
-		} catch (Exception e) {
-			Glb.getLogger().error("", e);
-			Glb.getApp().stop();
-		}
-
+	public boolean isSecureUser() {
+		return secureUser;
 	}
 
 	/**
@@ -287,61 +497,179 @@ public class Keys {
 		}
 	}
 
-	/*
-		private Locale loadLoc() {
-			return Locale.forLanguageTag(System.getProperty("user.language"));
-		}
-		*/
-
-	public static boolean verifyKeys(byte[] pcPub, byte[] mobPub, byte[] offPub,
-			byte[] signPcB, byte[] signMobileB, byte[] signOffByPcB,
-			byte[] signOffByMobileB) {
-		Util u = Glb.getUtil();
-		try {
-			return verifyKeys(u.getPub(pcPub), u.getPub(mobPub),
-					u.getPub(offPub), signPcB, signMobileB, signOffByPcB,
-					signOffByMobileB);
-		} catch (Exception e) {
-			Glb.getLogger().error("", e);
-			return false;
-		}
+	private byte[] loadPri(KeyType type, byte[] password) throws Exception {
+		String base64 = Glb.getUtil()
+				.readAll(cf.getFile().getPrivateKeyPath(type));
+		byte[] encrypted = Base64.getDecoder().decode(base64);
+		return Glb.getUtil().crypt(false, password, encrypted);
 	}
 
-	public static boolean verifyKeys(PublicKey pcPub, PublicKey mobPub,
-			PublicKey offPub, byte[] signPcB, byte[] signMobileB,
-			byte[] signOffByPcB, byte[] signOffByMobileB) {
+	private byte[] loadPub(KeyType type) throws IOException {
+		String base64 = Glb.getUtil()
+				.readAll(cf.getFile().getPublicKeyPath(type));
+		return Base64.getDecoder().decode(base64);
+	}
+
+	private byte[] loadSign(KeyType targetKey, KeyType by) throws IOException {
+		return Base64.getDecoder().decode(getSignBase64(targetKey, by));
+	}
+
+	public void reset() {
+		myOfflinePublicKey = null;
+		myPcPublicKey = null;
+		myMobilePublicKey = null;
+	}
+
+	public void setMyMobileKeySignByOffB(byte[] myMobileKeySignByOffB) {
+		this.myMobileKeySignByOffB = myMobileKeySignByOffB;
+	}
+
+	private void setMyMobilePrivateKey(PrivateKey myMobilePrivateKey) {
+		this.myMobilePrivateKey = myMobilePrivateKey;
+	}
+
+	public void setMyMobilePublicKey(PublicKey myMobilePublicKey) {
+		this.myMobilePublicKey = myMobilePublicKey;
+	}
+
+	public void setMyOffKeySignByMobB(byte[] myOffKeySignByMobB) {
+		this.myOffKeySignByMobB = myOffKeySignByMobB;
+	}
+
+	public void setMyOffKeySignByPcB(byte[] myOffKeySignByPcB) {
+		this.myOffKeySignByPcB = myOffKeySignByPcB;
+	}
+
+	private void setMyOfflinePrivateKey(PrivateKey myOfflinePrivateKey) {
+		this.myOfflinePrivateKey = myOfflinePrivateKey;
+	}
+
+	public void setMyOfflinePublicKey(PublicKey myOfflinePublicKey) {
+		this.myOfflinePublicKey = myOfflinePublicKey;
+	}
+
+	public void setMyPcKeySignByOffB(byte[] myPcKeySignByOffB) {
+		this.myPcKeySignByOffB = myPcKeySignByOffB;
+	}
+
+	private void setMyPcPrivateKey(PrivateKey myPcPrivateKey) {
+		this.myPcPrivateKey = myPcPrivateKey;
+	}
+
+	public void setMyPcPublicKey(PublicKey myPcPublicKey) {
+		this.myPcPublicKey = myPcPublicKey;
+	}
+
+	public void setMyStandardKeyType(KeyType myStandardKeyType) {
+		this.myStandardKeyType = myStandardKeyType;
+	}
+
+	public void setSecureUser(boolean secureUser) {
+		this.secureUser = secureUser;
+	}
+
+	/**
+	 * PC、MOBILE、OFFの全鍵ペアが存在する状態にする。
+	 * 無ければ作成し、あれば作成しない。
+	 * @param password
+	 */
+	public void setupKeys(byte[] password) {
+		try {
+			//鍵が未作成なら
+			if (!isKeyGenerated()) {
+				String date = getDate();
+
+				//作成済みの鍵があればそれを使う
+				//PC鍵やモバイル鍵が流出した場合、オフライン鍵を残して
+				//他を削除して再実行することで再作成される。
+
+				//存在しない場合だけ作成するという条件分岐があることで
+				//generateKeyAndWriteToFileのリネーム機能は無意味になっている。
+
+				KeyPair pc = load(KeyType.PC, password);
+				if (pc == null)
+					pc = generateKeyAndWriteToFile(KeyType.PC, date, password);
+				KeyPair mobile = load(KeyType.MOBILE, password);
+				if (mobile == null)
+					mobile = generateKeyAndWriteToFile(KeyType.MOBILE, date,
+							password);
+				KeyPair off = load(KeyType.OFFLINE, password);
+				if (off == null)
+					off = generateKeyAndWriteToFile(KeyType.OFFLINE, date,
+							password);
+
+				Glb.getLogger().info(Lang.START_SIGN_KEY);
+				signKey(KeyType.PC, KeyType.OFFLINE,
+						pc.getPublic().getEncoded(), off.getPrivate(), date);
+				signKey(KeyType.MOBILE, KeyType.OFFLINE,
+						mobile.getPublic().getEncoded(), off.getPrivate(),
+						date);
+				signKey(KeyType.OFFLINE, KeyType.PC,
+						off.getPublic().getEncoded(), pc.getPrivate(), date);
+				signKey(KeyType.OFFLINE, KeyType.MOBILE,
+						off.getPublic().getEncoded(), mobile.getPrivate(),
+						date);
+
+				//作成済みフラグを作成
+				File generated = Glb.getFile()
+						.get((cf.getFile().getKeyGenerated()));
+				if (!cf.getFile().create(
+						Paths.get(cf.getFile().getKeyGenerated()), null,
+						true)) {
+					Glb.getLogger().error(
+							"Failed to create generated flag file",
+							new Exception());
+				}
+				//リリース番号を書き込む
+				//もしkeyフォルダの仕様が変わってもこの情報を頼りに修正できる可能性がある
+				try (FileWriter writer = new FileWriter(generated)) {
+					writer.write(Glb.getConst().getRelease() + "");
+				}
+			}
+		} catch (Exception e) {
+			Glb.getLogger().error("", e);
+			Glb.getApp().stop();
+		}
+
+	}
+
+	public byte[] sign(String nominal, byte[] b) throws IOException,
+			InvalidKeySpecException, NoSuchAlgorithmException {
+		return sign(nominal, getMyStandardKeyType(), b);
+	}
+
+	/**
+	 * {@link Conf}は署名メソッドを実装する一方で検証メソッドを実装しない。
+	 * 署名は署名者本人しか呼び出さないので{@link Conf}に依存しても問題ないが、
+	 * 検証は他者がやるので{@link Conf}依存させる事はできない。
+	 *
+	 * さらに、秘密鍵をできるだけここに留めたいという考えから、
+	 * 署名メソッドはここに書かれていた方が良いと判断した。
+	 *
+	 * @param nominal	署名対象データのアプリ固有の型、または名目
+	 * @param keyType	署名に使う鍵の種類
+	 * @param b			署名対象データ
+	 * @return			署名
+	 * @throws IOException
+	 * @throws InvalidKeySpecException
+	 * @throws NoSuchAlgorithmException
+	 */
+	public byte[] sign(String nominal, KeyType keyType, byte[] b)
+			throws IOException, InvalidKeySpecException,
+			NoSuchAlgorithmException {
+		if (b == null)
+			return null;
 		Util u = Glb.getUtil();
-		boolean pubPcByOff = u.verify(getSignKeyNominal(), signPcB, offPub,
-				pcPub.getEncoded());
-		if (!pubPcByOff) {
-			Glb.getLogger().error(Lang.CONF_PC_SIGN + " " + Lang.ERROR_INVALID);
+		switch (keyType) {
+		case MOBILE:
+			return u.sign(nominal, b, myMobilePrivateKey);
+		case PC:
+			return u.sign(nominal, b, myPcPrivateKey);
+		case OFFLINE:
+			return u.sign(nominal, b, myOfflinePrivateKey);
+		default:
+			return null;
 		}
-
-		boolean pubMobileByOff = u.verify(getSignKeyNominal(), signMobileB,
-				offPub, mobPub.getEncoded());
-		if (!pubMobileByOff) {
-			Glb.getLogger()
-					.error(Lang.CONF_MOBILE_SIGN + " " + Lang.ERROR_INVALID);
-		}
-
-		//オフ公開鍵をpc秘密鍵で署名
-		boolean offByPc = u.verify(getSignKeyNominal(), signOffByPcB, pcPub,
-				offPub.getEncoded());
-		if (!offByPc) {
-			Glb.getLogger()
-					.error(Lang.CONF_OFF_SIGN_BY_PC + " " + Lang.ERROR_INVALID);
-		}
-
-		//オフ公開鍵をmobile秘密鍵で署名
-		boolean offByMobile = u.verify(getSignKeyNominal(), signOffByMobileB,
-				mobPub, offPub.getEncoded());
-		if (!offByMobile) {
-			Glb.getLogger().error(
-					Lang.CONF_OFF_SIGN_BY_MOB + " " + Lang.ERROR_INVALID);
-		}
-
-		//全ての検証を通過したか
-		return pubPcByOff && pubMobileByOff;
 	}
 
 	/**
@@ -373,6 +701,15 @@ public class Keys {
 		}
 	}
 
+	private byte[] toBytes(String s) {
+		try {
+			return s.getBytes(Glb.getConst().getCharsetPassword());
+		} catch (UnsupportedEncodingException e) {
+			Glb.getLogger().error("", e);
+			return null;
+		}
+	}
+
 	private boolean validatePubPri(KeyPair pair) {
 		byte[] test = new byte[64];
 		new Random().nextBytes(test);
@@ -393,108 +730,14 @@ public class Keys {
 		}
 	}
 
-	/**
-	 * 電子署名の名目
-	 */
-	/*
-	private static final String signKeyNominal = Conf.class.getTypeName()
-			+ "#signKey()";
-	*/
-
-	/**
-	 * 署名の名目にメソッド名を使用する。
-	 * 署名の名目というアイデアは、
-	 * 様々な場面で署名が行われた場合にどのような意味で署名されたのか混同する可能性が生じるので、
-	 * 名目文字列を加えて署名している。
-	 *
-	 * @return	signKey()で使用する署名の名目
-	 */
-	public static String getSignKeyNominal() {
-		//リファクタリングでConfからKeysクラスが派生してインターフェースが移動したが
-		//署名名目はConfがそのまま使われている。
-		//変更した場合の影響が面倒なのと、今でもKeysはConf系という位置づけ（Conf以外でメンバー変数にならない）
-		//なので問題ない。Keysはほぼ常にConf#getKeys()を通じて利用される。
-
-		//完全修飾名だとパッケージ名を変えれないのでsimpleで
-		return Conf.class.getSimpleName() + "#signKey";
-	}
-
-	private byte[] loadPri(KeyType type, byte[] password) throws Exception {
-		String base64 = Glb.getUtil()
-				.readAll(cf.getFile().getPrivateKeyPath(type));
-		byte[] encrypted = Base64.getDecoder().decode(base64);
-		return Glb.getUtil().crypt(false, password, encrypted);
-	}
-
-	private byte[] loadPub(KeyType type) throws IOException {
-		String base64 = Glb.getUtil()
-				.readAll(cf.getFile().getPublicKeyPath(type));
-		return Base64.getDecoder().decode(base64);
-	}
-
-	private byte[] loadSign(KeyType targetKey, KeyType by) throws IOException {
-		return Base64.getDecoder().decode(getSignBase64(targetKey, by));
-	}
-
-	/**
-	 * @param prefix			鍵タイプ
-	 * @return				各鍵への署名データ
-	 * @throws IOException
-	 */
-	public String getSignBase64(KeyType targetKey, KeyType by)
-			throws IOException {
-		return Glb.getUtil()
-				.readAll(cf.getFile().getSignKeyPath(targetKey, by));
-	}
-
-	/**
-	 * @param nominal	署名対象データのアプリ固有の型、または名目
-	 * @param keyType	署名に使う鍵の種類
-	 * @param b			署名対象データ
-	 * @return			署名
-	 * @throws IOException
-	 * @throws InvalidKeySpecException
-	 * @throws NoSuchAlgorithmException
-	 */
-	public byte[] sign(String nominal, KeyType keyType, byte[] b)
-			throws IOException, InvalidKeySpecException,
-			NoSuchAlgorithmException {
-		if (b == null)
-			return null;
-		Util u = Glb.getUtil();
-		switch (keyType) {
-		case MOBILE:
-			return u.sign(nominal, b, myMobilePrivateKey);
-		case PC:
-			return u.sign(nominal, b, myPcPrivateKey);
-		case OFFLINE:
-			return u.sign(nominal, b, myOfflinePrivateKey);
-		default:
-			return null;
+	private boolean writeToFile(String str, File f) throws Exception {
+		try (FileWriter fw = new FileWriter(f);
+				BufferedWriter bw = new BufferedWriter(fw);
+				PrintWriter pw = new PrintWriter(bw);) {
+			pw.print(str);
+			pw.flush();
 		}
-	}
-
-	private byte[] toBytes(String s) {
-		try {
-			return s.getBytes(Glb.getConst().getCharsetPassword());
-		} catch (UnsupportedEncodingException e) {
-			Glb.getLogger().error("", e);
-			return null;
-		}
-	}
-
-	public KeyPair generateKey(boolean secureUser) {
-		try {
-			KeyPairGenerator keyPairGen = KeyPairGenerator
-					.getInstance(Glb.getConst().getKeyPairGeneratorAlgorithm());
-
-			keyPairGen.initialize(User.getRsaKeySizeBitBySecure(secureUser));
-			return keyPairGen.genKeyPair();
-		} catch (Exception e) {
-			Glb.getLogger().error("", e);
-			System.exit(1);
-		}
-		return null;
+		return true;
 	}
 
 	/**
@@ -532,230 +775,5 @@ public class Keys {
 			Glb.getLogger().error("", e);
 			return false;
 		}
-	}
-
-	/**
-	 * RSA鍵をファイルシステムから読み込む。
-	 * 無ければ作成し、ファイルに書き込む。
-	 * その時、中途半端に一部の鍵や署名ファイルがあればそれをバックアップする。
-	 *	generatedが無いなら鍵があってもリネームして再作成。
-	 * このメソッドが呼ばれた時点でgeneratedは判定されているべき。
-	 * @param type
-	 * @param backupPrefix
-	 * @return
-	 */
-	private KeyPair generateKeyAndWriteToFile(KeyType type, String backupPrefix,
-			byte[] password) {
-		KeyPair pair = null;
-		try {
-			Glb.getLogger().info(Lang.START_GENERATE_KEY + ":" + type);
-			pair = generateKey(secureUser);
-
-			writeToFile(cf.getFile().getPublicKeyPath(type),
-					cf.getFile().getPublicKeyPath(type, backupPrefix),
-					pair.getPublic().getEncoded());
-			writeToFile(cf.getFile().getPrivateKeyPath(type),
-					cf.getFile().getPrivateKeyPath(type, backupPrefix),
-					pair.getPrivate().getEncoded(), password);
-		} catch (Exception e) {
-			Glb.getLogger().error("", e);
-			System.exit(1);
-		}
-		return pair;
-	}
-
-	private boolean writeToFile(String str, File f) throws Exception {
-		try (FileWriter fw = new FileWriter(f);
-				BufferedWriter bw = new BufferedWriter(fw);
-				PrintWriter pw = new PrintWriter(bw);) {
-			pw.print(str);
-			pw.flush();
-		}
-		return true;
-	}
-
-	public byte[] decryptByMyStandardPrivateKey(byte[] encrypted) {
-		return Glb.getUtil().decrypt(getMyStandardPrivateKey(), encrypted);
-	}
-
-	public byte[] decryptByPrivateKey(KeyType type, byte[] encrypted) {
-		return Glb.getUtil().decrypt(getMyPrivateKey(type), encrypted);
-	}
-
-	private PrivateKey getMyStandardPrivateKey() {
-		return getMyPrivateKey(myStandardKeyType);
-	}
-
-	public boolean changeSecretKeyPassword(String newPassword) {
-		return changeSecretKeyPassword(toBytes(newPassword));
-	}
-
-	public boolean changeSecretKeyPassword(byte[] newPassword) {
-		if (!isLoadedKeys()) {
-			Glb.getLogger().error("Not loaded keys", new Exception());
-			return false;
-		}
-		String date = getDate();
-
-		writeToFile(cf.getFile().getPrivateKeyPath(KeyType.PC),
-				cf.getFile().getPrivateKeyPath(KeyType.PC, date),
-				myPcPrivateKey.getEncoded(), newPassword);
-		writeToFile(cf.getFile().getPrivateKeyPath(KeyType.MOBILE),
-				cf.getFile().getPrivateKeyPath(KeyType.MOBILE, date),
-				myMobilePrivateKey.getEncoded(), newPassword);
-		writeToFile(cf.getFile().getPrivateKeyPath(KeyType.OFFLINE),
-				cf.getFile().getPrivateKeyPath(KeyType.OFFLINE, date),
-				myOfflinePrivateKey.getEncoded(), newPassword);
-
-		return true;
-	}
-
-	public boolean isLoadedKeys() {
-		return myPcPrivateKey != null && myMobilePrivateKey != null
-				&& myOfflinePrivateKey != null;
-	}
-
-	private PrivateKey getMyPrivateKey(KeyType type) {
-		switch (type) {
-		case MOBILE:
-			return myMobilePrivateKey;
-		case PC:
-			return myPcPrivateKey;
-		case OFFLINE:
-			return myOfflinePrivateKey;
-		default:
-			return null;
-		}
-	}
-
-	public PublicKey getMyPublicKey(KeyType type) {
-		switch (type) {
-		case MOBILE:
-			return myMobilePublicKey;
-		case PC:
-			return myPcPublicKey;
-		case OFFLINE:
-			return myOfflinePublicKey;
-		default:
-		}
-		return null;
-	}
-
-	/**
-	 * 鍵がロードされた後に呼ぶ。
-	 * 鍵のロードに成功する事は正しい秘密鍵が伴っている事を意味し、
-	 * 作者の公開鍵が定数として記録されているので、
-	 * この鍵オブジェクトが作者のものかを判定できる。
-	 *
-	 * @return　自分は作者か
-	 */
-	public boolean imAuthor() {
-		/*
-		User author = Glb.getConst().getAuthor();
-		//オフライン秘密鍵はオフラインにしておくので、PC鍵とモバイル鍵だけで作者認定
-		boolean r1 = Arrays.equals(myPcPublicKey.getEncoded(),
-				author.getPcPublicKey())
-				&& Arrays.equals(myMobilePublicKey.getEncoded(),
-						author.getMobilePublicKey());
-								//PC鍵とモバイル鍵は更新する場合があるので、オフライン鍵だけが正しい場合も作者
-		boolean r2 = Arrays.equals(myOfflinePublicKey.getEncoded(),
-				author.getOfflinePublicKey());
-		//いずれかを満たせばtrue
-		return r1 || r2;
-
-						*/
-		for (String authorPubBase64 : Glb.getConst().getAuthorPublicKeys()) {
-			byte[] authorPub = Base64.getDecoder().decode(authorPubBase64);
-			if (Arrays.equals(authorPub, myOfflinePublicKey.getEncoded())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public void reset() {
-		myOfflinePublicKey = null;
-		myPcPublicKey = null;
-		myMobilePublicKey = null;
-	}
-
-	public PublicKey getMyOfflinePublicKey() {
-		return myOfflinePublicKey;
-	}
-
-	public void setMyOfflinePublicKey(PublicKey myOfflinePublicKey) {
-		this.myOfflinePublicKey = myOfflinePublicKey;
-	}
-
-	public PublicKey getMyPcPublicKey() {
-		return myPcPublicKey;
-	}
-
-	public void setMyPcPublicKey(PublicKey myPcPublicKey) {
-		this.myPcPublicKey = myPcPublicKey;
-	}
-
-	public PublicKey getMyMobilePublicKey() {
-		return myMobilePublicKey;
-	}
-
-	public void setMyMobilePublicKey(PublicKey myMobilePublicKey) {
-		this.myMobilePublicKey = myMobilePublicKey;
-	}
-
-	public byte[] getMyPcKeySignByOffB() {
-		return myPcKeySignByOffB;
-	}
-
-	public void setMyPcKeySignByOffB(byte[] myPcKeySignByOffB) {
-		this.myPcKeySignByOffB = myPcKeySignByOffB;
-	}
-
-	public byte[] getMyMobileKeySignByOffB() {
-		return myMobileKeySignByOffB;
-	}
-
-	public void setMyMobileKeySignByOffB(byte[] myMobileKeySignByOffB) {
-		this.myMobileKeySignByOffB = myMobileKeySignByOffB;
-	}
-
-	public byte[] getMyOffKeySignByPcB() {
-		return myOffKeySignByPcB;
-	}
-
-	public void setMyOffKeySignByPcB(byte[] myOffKeySignByPcB) {
-		this.myOffKeySignByPcB = myOffKeySignByPcB;
-	}
-
-	public byte[] getMyOffKeySignByMobB() {
-		return myOffKeySignByMobB;
-	}
-
-	public void setMyOffKeySignByMobB(byte[] myOffKeySignByMobB) {
-		this.myOffKeySignByMobB = myOffKeySignByMobB;
-	}
-
-	public void setMyStandardKeyType(KeyType myStandardKeyType) {
-		this.myStandardKeyType = myStandardKeyType;
-	}
-
-	private void setMyPcPrivateKey(PrivateKey myPcPrivateKey) {
-		this.myPcPrivateKey = myPcPrivateKey;
-	}
-
-	private void setMyMobilePrivateKey(PrivateKey myMobilePrivateKey) {
-		this.myMobilePrivateKey = myMobilePrivateKey;
-	}
-
-	private void setMyOfflinePrivateKey(PrivateKey myOfflinePrivateKey) {
-		this.myOfflinePrivateKey = myOfflinePrivateKey;
-	}
-
-	public boolean isSecureUser() {
-		return secureUser;
-	}
-
-	public void setSecureUser(boolean secureUser) {
-		this.secureUser = secureUser;
 	}
 }

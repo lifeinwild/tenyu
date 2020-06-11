@@ -7,12 +7,10 @@ import java.util.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.DBUtil.*;
-import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.*;
-import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.tenyupedia.*;
-import bei7473p5254d69jcuat.tenyutalk.model.promise.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.tenyupedia.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.env.*;
@@ -36,11 +34,6 @@ public abstract class IndividualityObjectStore<T1 extends IndividualityObjectI,
 			return new StoreInfo(storeName + "_nameToId_Dup",
 					StoreConfig.WITH_DUPLICATES);
 		}
-	}
-
-	public static final StoreInfo getTagStoreStatic(String storeName) {
-		return new StoreInfo(storeName + "_tagToIds_Dup",
-				StoreConfig.WITH_DUPLICATES, true);
 	}
 
 	public static final StoreInfo getTagIdStoreStatic(String storeName) {
@@ -77,12 +70,9 @@ public abstract class IndividualityObjectStore<T1 extends IndividualityObjectI,
 
 	private final StoreInfo nameToId;
 
-	private final StoreInfo tagToIds;
-
 	protected IndividualityObjectStore(Transaction txn) {
 		super(txn);
 		this.nameToId = getNameStoreStatic(getName(), isUniqueName());
-		tagToIds = getTagStoreStatic(getName());
 		tagIdToId = getTagIdStoreStatic(getName());
 	}
 
@@ -95,15 +85,6 @@ public abstract class IndividualityObjectStore<T1 extends IndividualityObjectI,
 			throws Exception {
 		if (!util.put(getNameStore(), cnvS(o.getName()), cnvL(o.getId()))) {
 			throw new IOException("Failed to put");
-		}
-
-		HashSet<String> tags = o.getTags();
-		if (tags != null) {
-			for (String tag : o.getTags()) {
-				if (!util.put(getTagStore(), cnvS(tag), cnvL(o.getId()))) {
-					throw new IOException("Failed to put");
-				}
-			}
 		}
 
 		for (Long tagId : o.getTagIds()) {
@@ -170,23 +151,13 @@ public abstract class IndividualityObjectStore<T1 extends IndividualityObjectI,
 	protected final boolean deleteAdministratedObjectConcrete(T1 o)
 			throws Exception {
 		if (isUniqueName()) {
-			if (!util.remove(getNameStore(), cnvS(o.getName()))) {
+			if (!util.delete(getNameStore(), cnvS(o.getName()))) {
 				throw new IOException("Failed to remove");
 			}
 		} else {
 			if (!util.deleteDupSingle(getNameStore(), cnvS(o.getName()),
 					cnvL(o.getId()))) {
 				throw new IOException("Failed to remove");
-			}
-		}
-
-		HashSet<String> tags = o.getTags();
-		if (tags != null) {
-			for (String tag : tags) {
-				if (!util.deleteDupSingle(getTagStore(), cnvS(tag),
-						cnvL(o.getId()))) {
-					throw new IOException("Failed to remove");
-				}
 			}
 		}
 
@@ -211,17 +182,6 @@ public abstract class IndividualityObjectStore<T1 extends IndividualityObjectI,
 		if (!existByName(o.getName(), o.getId())) {
 			vr.add(Lang.INDIVIDUALITY_OBJECT_NAME, Lang.ERROR_DB_NOTFOUND);
 			b = false;
-		}
-		HashSet<String> tags = o.getTags();
-		if (tags != null) {
-			for (String tag : tags) {
-				if (!existByTag(tag, o.getId())) {
-					vr.add(Lang.INDIVIDUALITY_OBJECT_TAGS,
-							Lang.ERROR_DB_NOTFOUND, "tag=" + tag);
-					b = false;
-					break;
-				}
-			}
 		}
 		for (Long tagId : o.getTagIds()) {
 			if (!existByTagId(tagId, o.getId())) {
@@ -270,10 +230,6 @@ public abstract class IndividualityObjectStore<T1 extends IndividualityObjectI,
 		return util.getDup(getNameStore(), cnvS(name), bi -> cnvL(bi));
 	}
 
-	public List<Long> getIdsByTag(String tag) {
-		return util.getDup(getTagStore(), cnvS(tag), bi -> cnvL(bi));
-	}
-
 	public boolean existByName(String name, Long id) {
 		if (isUniqueName()) {
 			return getIdByName(name) != null;
@@ -283,37 +239,20 @@ public abstract class IndividualityObjectStore<T1 extends IndividualityObjectI,
 		}
 	}
 
-	/**
-	 * @param tag
-	 * @param id
-	 * @return	このタグとIDが関連付けられているか
-	 */
-	public boolean existByTag(String tag, Long id) {
-		if (tag == null || id == null)
-			return false;
-		return util.getDupSingle(getTagStore(), cnvS(tag), cnvL(id),
-				bi -> cnvL(bi)) != null;
-	}
-
 	public final StoreInfo getNameStore() {
 		return nameToId;
 	}
 
-	public StoreInfo getTagStore() {
-		return tagToIds;
-	}
-
 	@Override
-	public List<StoreInfo> getStoresAdministratedObjectConcrete() {
+	protected List<StoreInfo> getStoresAdministratedObjectConcrete() {
 		List<StoreInfo> r = new ArrayList<StoreInfo>();
 		r.add(getNameStore());
-		r.add(getTagStore());
 		r.add(getTagIdToId());
 		r.addAll(getStoresIndividualityObjectConcrete());
 		return r;
 	}
 
-	abstract public List<StoreInfo> getStoresIndividualityObjectConcrete();
+	abstract protected List<StoreInfo> getStoresIndividualityObjectConcrete();
 
 	@Override
 	protected final boolean noExistAdministratedObjectConcrete(T1 o,
@@ -322,17 +261,6 @@ public abstract class IndividualityObjectStore<T1 extends IndividualityObjectI,
 		if (existByName(o.getName(), o.getId())) {
 			vr.add(Lang.INDIVIDUALITY_OBJECT_NAME, Lang.ERROR_DB_EXIST);
 			b = false;
-		}
-		HashSet<String> tags = o.getTags();
-		if (tags != null) {
-			for (String tag : tags) {
-				if (existByTag(tag, o.getId())) {
-					vr.add(Lang.INDIVIDUALITY_OBJECT_TAGS, Lang.ERROR_DB_EXIST,
-							"tag=" + tag);
-					b = false;
-					break;
-				}
-			}
 		}
 		for (Long tagId : o.getTagIds()) {
 			if (existByTagId(tagId, o.getId())) {
@@ -369,6 +297,7 @@ public abstract class IndividualityObjectStore<T1 extends IndividualityObjectI,
 		return util.search(ctx);
 	}
 
+	/*
 	public Map<String, Long> prefixSearchByTagRough(String prefix, int max) {
 		SearchContext<String, Long> ctx = new SearchContext<>(getTagStore(),
 				cnvSRemoveSuffix(prefix), bi -> cnvS(bi), bi -> cnvL(bi), true,
@@ -377,6 +306,7 @@ public abstract class IndividualityObjectStore<T1 extends IndividualityObjectI,
 				});
 		return util.search(ctx);
 	}
+	*/
 
 	@Override
 	protected final boolean updateAdministratedObjectConcrete(T1 updated,
@@ -384,7 +314,7 @@ public abstract class IndividualityObjectStore<T1 extends IndividualityObjectI,
 		if (Glb.getUtil().notEqual(updated.getName(), old.getName())) {
 			if (old.getName() != null) {
 				if (isUniqueName()) {
-					if (!util.remove(getNameStore(), cnvS(old.getName()))) {
+					if (!util.delete(getNameStore(), cnvS(old.getName()))) {
 						throw new IOException("Failed to remove");
 					}
 				} else {
@@ -397,25 +327,6 @@ public abstract class IndividualityObjectStore<T1 extends IndividualityObjectI,
 			if (!util.put(getNameStore(), cnvS(updated.getName()),
 					cnvL(updated.getId())))
 				throw new IOException("Failed to put");
-		}
-
-		Collection<String> newTags = Glb.getUtil().getExtra(updated.getTags(),
-				old.getTags());
-		if (newTags != null) {
-			for (String tag : newTags) {
-				if (!util.put(getTagStore(), cnvS(tag), cnvL(updated.getId())))
-					throw new IOException("Failed to put");
-			}
-		}
-
-		Collection<String> removedTags = Glb.getUtil().getExtra(old.getTags(),
-				updated.getTags());
-		if (removedTags != null) {
-			for (String tag : removedTags) {
-				if (!util.deleteDupSingle(getTagStore(), cnvS(tag),
-						cnvL(updated.getId())))
-					throw new IOException("Failed to put");
-			}
 		}
 
 		if (Glb.getUtil().notEqual(updated.getTagIds(), old.getTagIds())) {

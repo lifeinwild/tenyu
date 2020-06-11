@@ -22,7 +22,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class Chat implements StorableI {
+public class Chat implements ValidatableI {
 	private static final int windowMax = 20;
 
 	private static final int messageMax = 1000 * 1000 * 20;

@@ -13,7 +13,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class ChatMessage implements StorableI {
+public class ChatMessage implements ValidatableI {
 	public static final int categoryMax = 50;
 	public static final String defaultCategory = "default";
 

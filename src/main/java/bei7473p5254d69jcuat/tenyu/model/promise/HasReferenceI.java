@@ -1,6 +1,6 @@
 package bei7473p5254d69jcuat.tenyu.model.promise;
 
-import bei7473p5254d69jcuat.tenyu.reference.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.reference.*;
 
 /**
  * ユーザーレベルで参照されうるもの

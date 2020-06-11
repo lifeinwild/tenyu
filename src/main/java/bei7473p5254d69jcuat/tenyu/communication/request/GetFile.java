@@ -4,8 +4,7 @@ import java.nio.file.*;
 
 import bei7473p5254d69jcuat.tenyu.communication.*;
 import bei7473p5254d69jcuat.tenyu.communication.netty.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.*;
+import bei7473p5254d69jcuat.tenyutalk.file.*;
 import glb.*;
 import glb.util.*;
 import io.netty.channel.*;
@@ -19,7 +18,7 @@ import io.netty.channel.*;
 public class GetFile extends P2PEdgeCommonKeyRequest {
 	private long position;
 	private long size;
-	private TenyuFile file;
+	private TenyutalkFileMetadataI file;
 
 	@Override
 	protected boolean validateP2PEdgeCommonKeyConcrete(Message m) {
@@ -65,42 +64,6 @@ public class GetFile extends P2PEdgeCommonKeyRequest {
 		return "file=" + file + " position=" + position + " size=" + size;
 	}
 
-	/**
-	 * ファイルが返信された時、そのパスを通知する
-	 * このオブジェクトは受信側で作成される。返信側は作成しない。
-	 *
-	 * @author exceptiontenyu@gmail.com
-	 *
-	 */
-	/*	没案
-	public static class ResopnseFile extends P2PEdgeCommonKeyResponse {
-		private Path responsedFile;
-
-		@Override
-		protected boolean validateP2PEdgeCommonKeyResponseConcrete(Message m) {
-			return responsedFile != null;
-		}
-
-		@Override
-		public boolean isValid(Request req) {
-			return req instanceof GetFile;
-		}
-
-		@Override
-		public boolean received(ChannelHandlerContext ctx, Received validated) {
-			return true;
-		}
-
-		public Path getResponsedFile() {
-			return responsedFile;
-		}
-
-		public void setResponsedFile(Path responsedFile) {
-			this.responsedFile = responsedFile;
-		}
-
-	}
-	*/
 	public long getPosition() {
 		return position;
 	}
@@ -117,11 +80,11 @@ public class GetFile extends P2PEdgeCommonKeyRequest {
 		this.size = size;
 	}
 
-	public TenyuFile getFile() {
+	public TenyutalkFileMetadataI getFile() {
 		return file;
 	}
 
-	public void setFile(TenyuFile file) {
+	public void setFile(TenyutalkFileMetadataI file) {
 		this.file = file;
 	}
 

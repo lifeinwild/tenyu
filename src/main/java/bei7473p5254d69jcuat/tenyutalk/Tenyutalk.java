@@ -1,12 +1,15 @@
 package bei7473p5254d69jcuat.tenyutalk;
 
+import java.util.*;
 import java.util.function.*;
 
+import bei7473p5254d69jcuat.tenyu.communication.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
-import bei7473p5254d69jcuat.tenyutalk.db.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyutalk.db.other.*;
-import bei7473p5254d69jcuat.tenyutalk.model.promise.*;
+import bei7473p5254d69jcuat.tenyutalk.model.release1.*;
 import glb.*;
+import glb.Glb.*;
 import glb.util.*;
 import jetbrains.exodus.env.*;
 
@@ -17,75 +20,54 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class Tenyutalk implements DBObj {
-	/**
-	 * tenyutalkのDBはノード毎に存在し、
-	 * 同じストア名で異なる内容のストアがノード毎にあるのでノードを指定する必要がある。
-	 */
-	private NodeIdentifierUser node;
-
-	private OnmemoryManagementMultiplayer multiplayer;
+public class Tenyutalk implements DBObj, GlbMemberDynamicState {
 
 	/**
-	 * @return	{@link MultiplayerObjectI}のオンメモリ管理
+	 * このユーザーが個人的にブロックしている{@link User}の情報
+	 * この情報がどのように用いられるかはアプレット任せ。
+	 * ミラーノードの存在を考えるとブロックしたからといって情報を見られないという事はない。
+	 * 一部アプレットでは適宜この情報を使うべき。
 	 */
-	public OnmemoryManagementMultiplayer getMultiplayerOnMemory() {
-		return multiplayer;
-	}
+	private UserGroup blockedUsers = new UserGroup();
 
 	/**
-	 * @param f	ストアを使った処理
-	 * @return	{@link MultiplayerObjectI}のストア
+	 * このユーザーがDL済みのリポジトリのIDリスト
 	 */
-	public <T, LI extends CreativeObjectI, L extends LI> T getMultiplayer(
-			Function<MultiplayerObjectStore<LI, L>, T> f) {
-		return readTryW(txn -> f.apply(new MultiplayerObjectStore<LI, L>(txn)));
-	}
-
-	public Tenyutalk(NodeIdentifierUser node) {
-		this.node = node;
-	}
-
-	@SuppressWarnings("unused")
-	private Tenyutalk() {
-	}
+	private List<Long> downloadedRepositoryIds = new ArrayList<>();
 
 	/**
-	 * {@link Tenyutalk}のインスタンスが{@link Tenyutalk}のインスタンスを作る。
-	 * この特殊な設計は、システム全体でTenyutalkクラスの
-	 * テストバージョンクラスを使用できるようにするために行っている。
-	 *
-	 * テストバージョンクラスはこのメソッドをオーバーライドする事で
-	 * システム内の全Tenyutalkインスタンスをテスト用に変えれる。
-	 *
-	 * Tenyutalkインスタンスは{@link Glb#getTenyutalk(NodeIdentifierUser)}
-	 * を通じて利用されるので、Glbの大本のインスタンスがテストバージョンクラスに変われば
-	 * システム全体で変わる。
-	 *
-	 * @param node
-	 * @return	実際に使用するインスタンス
+	 * 起動中のサービス型（常駐型）アプレット
 	 */
-	public Tenyutalk construct(NodeIdentifierUser node) {
-		return new Tenyutalk(node);
+	private List<Long> launchedServiceAppletIds = new ArrayList<>();
+
+	/**
+	 * 起動中のタスク型（非常駐型）アプレット
+	 */
+	private List<Long> launchedTaskAppletIds = new ArrayList<>();
+
+	/**
+	 * 全てのTenyutalk系メッセージは受信時このメソッドに渡される。
+	 * @param mes	Tenyutalk系メッセージ
+	 * @return	処理に成功したか
+	 */
+	public boolean receive(Received mes) {
+		return false;//TODO
 	}
 
-	public Environment getEnv() {
+	public Environment getEnv(NodeIdentifierUser node) {
 		return Glb.getDb(Glb.getFile()
-				.getTenyutalkDBPath(node.getUser().getName()
+				.getTenyutalkDBDir(node.getUser().getName()
 						+ Glb.getConst().getFileSeparator()
 						+ node.getNodeNumber()));
 	}
 
-	public <T> T getFolder(Function<TenyutalkFolderStore, T> f) {
-		return readTryW(txn -> f.apply(new TenyutalkFolderStore(txn)));
-	}
-
-	public <T> T getFile(Function<TenyutalkFileStore, T> f) {
-		return readTryW(txn -> f.apply(new TenyutalkFileStore(txn)));
-	}
-
 	public <T> T getComment(Function<CommentStore, T> f) {
 		return readTryW(txn -> f.apply(new CommentStore(txn)));
+	}
+
+	@Override
+	public Environment getEnv() {
+		return getEnv(new NodeIdentifierUser(Glb.getMiddle().getMyUserId()));
 	}
 
 }

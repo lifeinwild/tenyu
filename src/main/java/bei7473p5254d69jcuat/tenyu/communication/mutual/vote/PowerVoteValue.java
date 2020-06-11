@@ -6,7 +6,7 @@ import java.util.Map.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.vote.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.vote.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.subjectivity.*;
 import glb.*;
 import glb.util.*;

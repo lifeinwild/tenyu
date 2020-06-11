@@ -4,6 +4,7 @@ import bei7473p5254d69jcuat.tenyu.communication.request.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.subjectivity.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.subjectivity.PeriodicNotification.*;
 import glb.*;
+import glb.Conf.*;
 
 /**
  * 全通信クラスはこれを継承する。
@@ -14,6 +15,7 @@ import glb.*;
  */
 public abstract class Communicatable {
 	protected int release = Glb.getConst().getRelease();
+	protected RunLevel runLevel = Glb.getConf().getRunlevel();
 
 	@Override
 	public int hashCode() {
@@ -41,11 +43,15 @@ public abstract class Communicatable {
 		return release;
 	}
 
+	private boolean isValidRunLevel() {
+		return runLevel == Glb.getConf().getRunlevel();
+	}
+
 	private boolean isValidRelease() {
 		return release == Glb.getConst().getRelease()
 				|| this instanceof PeriodicNotification
 				|| this instanceof PeriodicNotificationResponse
-				|| this instanceof FileDownload;
+				|| this instanceof GetFile;
 	}
 
 	/**
@@ -55,7 +61,7 @@ public abstract class Communicatable {
 	 * @return	thisとmで実行可能なすべての検証処理において正しい内容か
 	 */
 	public final boolean validate(Message m) {
-		return isValidRelease() && validateConcrete(m);
+		return isValidRelease() && isValidRunLevel() && validateConcrete(m);
 	}
 
 	protected abstract boolean validateConcrete(Message m);

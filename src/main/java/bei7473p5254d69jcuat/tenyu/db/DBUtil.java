@@ -898,8 +898,19 @@ public class DBUtil {
 		return true;
 	}
 
-	public boolean remove(StoreInfo sInfo, ByteIterable key)
+	/**
+	 * 非重複ストアからこのキーに対応づくペアを１つ削除する
+	 *
+	 * @param sInfo
+	 * @param key
+	 * @return
+	 * @throws IOException
+	 */
+	public boolean delete(StoreInfo sInfo, ByteIterable key)
 			throws IOException {
+		if (sInfo.getType() == StoreConfig.WITH_DUPLICATES || sInfo
+				.getType() == StoreConfig.WITH_DUPLICATES_WITH_PREFIXING)
+			throw new IOException("duplicate store");
 		if (!getStore(sInfo).delete(txn, key))
 			throw new IOException();
 		return true;

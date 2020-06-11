@@ -13,7 +13,7 @@ import javax.crypto.*;
 import bei7473p5254d69jcuat.tenyu.db.store.satellite.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
 import glb.util.*;
 import glb.util.Util.*;
 
@@ -51,15 +51,20 @@ public class Const {
 	}
 
 	public String getTenyuPolicyOther(String workingDir) {
-		return getTenyuPolicyOtherInternal(workingDir, Glb.getFile().getSystemJarDir())
-				+ getTenyuPolicyOtherInternal(workingDir, Glb.getFile().getTrustedJarDir())
-				+ getTenyuPolicyOtherInternal(workingDir, Glb.getFile().getFriendJarDir())
-				+ getTenyuPolicyOtherInternal(workingDir, Glb.getFile().getAnonymouseJarDir());
+		return getTenyuPolicyOtherInternal(workingDir,
+				Glb.getFile().getSystemJarDir())
+				+ getTenyuPolicyOtherInternal(workingDir,
+						Glb.getFile().getTrustedJarDir())
+				+ getTenyuPolicyOtherInternal(workingDir,
+						Glb.getFile().getFriendJarDir())
+				+ getTenyuPolicyOtherInternal(workingDir,
+						Glb.getFile().getAnonymouseJarDir());
 	}
 
-	private String getTenyuPolicyOtherInternal(String workingDir, String kindDir) {
-		String tenyuPolicy = "grant codeBase \"file:" + workingDir + kindDir + "-\" {\r\n"
-				+ "};\r\n";
+	private String getTenyuPolicyOtherInternal(String workingDir,
+			String kindDir) {
+		String tenyuPolicy = "grant codeBase \"file:" + workingDir + kindDir
+				+ "-\" {\r\n" + "};\r\n";
 		return tenyuPolicy;
 	}
 
@@ -378,14 +383,13 @@ public class Const {
 
 		author.setRegistererUserId(ModelI.getSystemId());
 
-		author.addTag("Author");
-
 		author.setCreateDate(0);
 		author.setCreateHistoryIndex(0);
 		author.setUpdateDate(0);
 		author.setUpdateHistoryIndex(0);
 
 		author.setLocale(Locale.JAPANESE);
+		author.setModelConditionIds(new ArrayList<>());
 		return author;
 	}
 

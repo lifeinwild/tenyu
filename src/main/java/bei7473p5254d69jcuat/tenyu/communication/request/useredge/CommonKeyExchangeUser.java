@@ -8,7 +8,7 @@ import bei7473p5254d69jcuat.tenyu.communication.packaging.SignedPackage.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.useredge.CommonKeyExchangeConfirmationUser.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
 import glb.*;
 import glb.util.*;
 import io.netty.channel.*;

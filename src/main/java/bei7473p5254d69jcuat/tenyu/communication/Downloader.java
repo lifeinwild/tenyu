@@ -13,11 +13,9 @@ import bei7473p5254d69jcuat.tenyu.communication.request.HasFile.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.catchup.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.TenyuFile.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.agenda.content.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.agenda.content.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.subjectivity.*;
+import bei7473p5254d69jcuat.tenyutalk.file.*;
 import glb.*;
 import glb.Glb.*;
 import glb.util.*;
@@ -53,7 +51,7 @@ public class Downloader implements GlbMemberDynamicState {
 	 * P2Pネットワークの安定性や効率性等のためにできればDLしておきたいファイルか
 	 * @return	DL可能か。ストレージの空き容量チェック
 	 */
-	public boolean canDownload(TenyuFile f, boolean necessary) {
+	public boolean canDownload(TenyutalkFileMetadataI f, boolean necessary) {
 		long space = f.getRelativePath().toFile().getUsableSpace();
 		//ファイルをDLできるだけの空き容量があるか
 		boolean capacity = false;
@@ -82,7 +80,7 @@ public class Downloader implements GlbMemberDynamicState {
 	 * @param necessary		DL必須か
 	 * @return	DLに成功したか
 	 */
-	public void downloadAsync(TenyuFile f, boolean necessary) {
+	public void downloadAsync(TenyutalkFileMetadataI f, boolean necessary) {
 		Glb.getExecutorSlow().execute(() -> downloadSync(f, necessary));
 	}
 
@@ -91,7 +89,8 @@ public class Downloader implements GlbMemberDynamicState {
 	 * @param files
 	 * @param necessary
 	 */
-	public void downloadAsync(List<TenyuFile> files, boolean necessary) {
+	public void downloadAsync(List<TenyutalkFileMetadataI> files,
+			boolean necessary) {
 		Glb.getExecutorSlow().execute(() -> downloadSync(files, necessary));
 	}
 
@@ -103,8 +102,9 @@ public class Downloader implements GlbMemberDynamicState {
 	 * @param files
 	 * @param necessary
 	 */
-	public void downloadAsyncBurst(List<TenyuFile> files, boolean necessary) {
-		for (TenyuFile f : files) {
+	public void downloadAsyncBurst(List<TenyutalkFileMetadataI> files,
+			boolean necessary) {
+		for (TenyutalkFileMetadataI f : files) {
 			downloadAsync(f, necessary);
 		}
 	}
@@ -114,9 +114,10 @@ public class Downloader implements GlbMemberDynamicState {
 	 * @param necessary
 	 * @return	全て成功したらtrue
 	 */
-	public boolean downloadSync(List<TenyuFile> files, boolean necessary) {
+	public boolean downloadSync(List<TenyutalkFileMetadataI> files,
+			boolean necessary) {
 		boolean r = true;
-		for (TenyuFile f : files) {
+		for (TenyutalkFileMetadataI f : files) {
 			if (!downloadSync(f, necessary)) {
 				r = false;
 			}
@@ -129,7 +130,7 @@ public class Downloader implements GlbMemberDynamicState {
 	 * @param necessary	必須ファイルか
 	 * @return	DLに成功したか既にDL済みだったらtrue
 	 */
-	public boolean downloadSync(TenyuFile f, boolean necessary) {
+	public boolean downloadSync(TenyutalkFileMetadataI f, boolean necessary) {
 		try {
 			//もし必須ファイルでないなら
 			if (!necessary) {
@@ -181,7 +182,8 @@ public class Downloader implements GlbMemberDynamicState {
 	 * @param f
 	 * @return	ファイルのDLに成功したか
 	 */
-	private boolean downloadSyncInternal(TenyuFile f, boolean necessary) {
+	private boolean downloadSyncInternal(TenyutalkFileMetadataI f,
+			boolean necessary) {
 		//このあたりでビットと言っているのはたいていwriteBitのことで、1ビットあたり
 		//WriteBits.unitバイトのデータに相当する
 
@@ -658,7 +660,7 @@ public class Downloader implements GlbMemberDynamicState {
 	private boolean canDelete(Path p, Path stop) {
 		if (p == null || stop == null || p.toString().length() == 0
 				|| stop.toString().length() == 0
-				|| !Glb.getFile().isAppPathBoth(p)) {
+				|| !Glb.getFile().isAppPath(p)) {
 			Glb.getLogger().warn("invalid path=" + p + " stop=" + stop,
 					new Exception());
 			return false;
@@ -735,7 +737,7 @@ public class Downloader implements GlbMemberDynamicState {
 	/*
 	private void periodicDownloadMaterial() {
 		periodicDownloadCommon((Material m) -> {
-			List<TenyuFile> l = new ArrayList<>();
+			List<TenyutalkFileMetadataI> l = new ArrayList<>();
 			l.add(m.getFile());
 			return l;
 		}, Glb.tryW(txn -> new MaterialStore(txn), null));
@@ -743,7 +745,7 @@ public class Downloader implements GlbMemberDynamicState {
 	*/
 
 	private <I extends ModelI, O extends I> void periodicDownloadCommon(
-			Function<O, List<TenyuFile>> func,
+			Function<O, List<TenyutalkFileMetadataI>> func,
 			Function<Transaction, ModelStore<I, O>> getStore) {
 		Local local = new Local();
 		local.id = ModelI.getFirstId();
@@ -770,8 +772,8 @@ public class Downloader implements GlbMemberDynamicState {
 						if (m == null) {
 							continue;
 						}
-						List<TenyuFile> files = func.apply(m);
-						for (TenyuFile f : files) {
+						List<TenyutalkFileMetadataI> files = func.apply(m);
+						for (TenyutalkFileMetadataI f : files) {
 							ValidationResult vr = new ValidationResult();
 							if (!f.validateAtCreate(vr)) {
 								Glb.getLogger().error("" + vr, new Exception());
@@ -970,7 +972,7 @@ public class Downloader implements GlbMemberDynamicState {
 		/**
 		 * DL対象ファイル
 		 */
-		private TenyuFile file;
+		private TenyutalkFileMetadataI file;
 
 		/**
 		 * ファイルの少なくとも一部を持っていた近傍一覧
@@ -1018,7 +1020,7 @@ public class Downloader implements GlbMemberDynamicState {
 			return dlTimeout;
 		}
 
-		public TenyuFile getFile() {
+		public TenyutalkFileMetadataI getFile() {
 			return file;
 		}
 
@@ -1046,7 +1048,7 @@ public class Downloader implements GlbMemberDynamicState {
 			this.dlTimeout = dlTimeout;
 		}
 
-		public void setFile(TenyuFile file) {
+		public void setFile(TenyutalkFileMetadataI file) {
 			this.file = file;
 		}
 
@@ -1084,8 +1086,7 @@ public class Downloader implements GlbMemberDynamicState {
 			if (hasNeighbors == null || hasNeighbors.size() == 0) {
 				b = false;
 			}
-			if (initNeighbors == null
-					|| initNeighbors.size() == 0) {
+			if (initNeighbors == null || initNeighbors.size() == 0) {
 				b = false;
 			}
 			if (notDownloadedBitCount <= 0) {

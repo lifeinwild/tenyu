@@ -9,8 +9,8 @@ import javax.management.modelmbean.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
-import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.tenyupedia.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.tenyupedia.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.individuality.tenyupedia.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.tenyupedia.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.*;
@@ -55,7 +55,7 @@ public class TagStore extends IndividualityObjectStore<TagI, Tag> {
 	}
 
 	@Override
-	public List<StoreInfo> getStoresIndividualityObjectConcrete() {
+	protected List<StoreInfo> getStoresIndividualityObjectConcrete() {
 		List<StoreInfo> r = new ArrayList<>();
 		return r;
 	}
@@ -75,7 +75,7 @@ public class TagStore extends IndividualityObjectStore<TagI, Tag> {
 
 	@Override
 	public boolean isSupport(Object o) {
-		if (o instanceof bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.tenyupedia.TagI)
+		if (o instanceof bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.individuality.tenyupedia.TagI)
 			return true;
 		return false;
 	}

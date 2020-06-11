@@ -6,7 +6,7 @@ import java.util.Map.*;
 import java.util.concurrent.*;
 
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.subjectivity.P2PNode.*;
 import glb.*;
 import glb.util.Util.*;

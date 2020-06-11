@@ -8,9 +8,8 @@ import java.util.*;
 import javax.management.modelmbean.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
-import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
-import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.role.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.role.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.individuality.role.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.role.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.*;
@@ -71,7 +70,7 @@ public class RoleStore extends IndividualityObjectStore<RoleI, Role> {
 	}
 
 	@Override
-	public List<StoreInfo> getStoresIndividualityObjectConcrete() {
+	protected List<StoreInfo> getStoresIndividualityObjectConcrete() {
 		List<StoreInfo> r = new ArrayList<>();
 		return r;
 	}

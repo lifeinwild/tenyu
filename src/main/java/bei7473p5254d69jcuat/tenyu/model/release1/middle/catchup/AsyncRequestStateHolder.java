@@ -217,8 +217,14 @@ public abstract class AsyncRequestStateHolder<
 		Glb.debug("retry " + e.getReq(), new Exception());
 
 		//何らかのプログラムのミスで無限に試行される可能性を無くす
-		if (isExpired() || isOverCount())
+		if (isExpired()) {
+			Glb.getLogger().warn("expired in retry. " + e.getReq());
 			return false;
+		}
+		if (isOverCount()) {
+			Glb.getLogger().warn("over count in retry. " + e.getReq());
+			return false;
+		}
 
 		retryCount++;
 

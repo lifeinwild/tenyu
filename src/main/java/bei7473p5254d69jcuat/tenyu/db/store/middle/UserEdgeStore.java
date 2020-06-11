@@ -26,7 +26,7 @@ import jetbrains.exodus.env.*;
  *
  */
 public class UserEdgeStore
-		extends SatelliteStore<NodeIdentifierUser, UserEdge> {
+		extends ByNodeStore<NodeIdentifierUser, UserEdge> {
 	/**
 	 * userIdとnodeNumberでキーを作る。一意
 	 * userIdだけで前方一致検索ができる。全nodeNumberの値が検索される。
@@ -84,7 +84,7 @@ public class UserEdgeStore
 	}
 
 	protected static <R> R simpleReadAccess(StoreFunction<Transaction, R> f) {
-		return simpleReadAccess(Glb.getFile().getMiddleDBPath(), f);
+		return simpleReadAccess(Glb.getFile().getMiddleDBDir(), f);
 	}
 
 	@Override

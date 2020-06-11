@@ -5,7 +5,7 @@ import bei7473p5254d69jcuat.tenyu.communication.packaging.PlainPackage.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.takeoverserver.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.role.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.role.*;
 import glb.*;
 import glb.util.*;
 import io.netty.channel.*;

@@ -6,7 +6,10 @@ import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.satellite.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.*;
-import bei7473p5254d69jcuat.tenyu.reference.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.individuality.tenyupedia.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.reference.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.reference.*;
 import bei7473p5254d69jcuat.tenyu.ui.common.*;
 import glb.*;
 import glb.util.*;
@@ -35,10 +38,15 @@ import jetbrains.exodus.env.*;
  *
  * @author exceptiontenyu@gmail.com
  */
-public interface ModelI extends StorableI, Serializable, UnversionableI,
-		ChainVersionup, HasReference, HasGui {
+public interface ModelI extends ObjectI, Serializable, UnversionableI,
+		ChainVersionup, HasReferenceI, TenyupediaObjectI<ModelI> {
 	public static final long defaultDate = -1;
 	public static final long defaultHistoryIndex = -1;
+
+	@Override
+	default ModelI getObj() {
+		return this;
+	}
 
 	/**
 	 * 削除されたID
@@ -116,7 +124,7 @@ public interface ModelI extends StorableI, Serializable, UnversionableI,
 	@Unversionable
 	long getCreateHistoryIndex();
 
-	ModelGui<?, ?, ?, ?, ?, ?> getGui(String guiName, String cssIdPrefix);
+	ModelGui<?, ?, ?, ?, ?, ?> getGuiReferenced(String guiName, String cssIdPrefix);
 
 	/**
 	 * 一部モデルは{@link HashStore}を使わないが、
@@ -139,8 +147,7 @@ public interface ModelI extends StorableI, Serializable, UnversionableI,
 	 * @param txn
 	 * @return	このモデルを格納するストア
 	 */
-	ModelStore<? extends ModelI, ? extends ModelI> getStore(
-			Transaction txn);
+	ModelStore<? extends ModelI, ? extends ModelI> getStore(Transaction txn);
 
 	/**
 	 * @return	このモデルを格納するストアの名前
@@ -207,17 +214,17 @@ public interface ModelI extends StorableI, Serializable, UnversionableI,
 	/**
 	 * DBに最初に記録される時、検証直前に呼び出される
 	 */
-	void setupAtCreate();
+	void setupAtCreate(Transaction txn);
 
 	/**
 	 * DBで削除される直前に呼び出される
 	 */
-	void setupAtDelete();
+	void setupAtDelete(Transaction txn);
 
 	/**
 	 * DBで更新される時、検証直前に呼び出される
 	 */
-	void setupAtUpdate();
+	void setupAtUpdate(Transaction txn);
 
 	void setUpdateHistoryIndex(long historyIndex);
 
@@ -241,4 +248,48 @@ public interface ModelI extends StorableI, Serializable, UnversionableI,
 				|| validateAtUpdate(new ValidationResult());
 	}
 
+	TenyuReferenceModelI<? extends ModelI> getReference();
+
+	/**
+	 * @return	このオブジェクトのユーザーとしての情報を保存するストアのDB
+	 */
+	default Environment getDbCookie() {
+		return Glb.getDb(Glb.getFile().getCookieDBDir());
+	}
+
+	/**
+	 * このオブジェクトのユーザーが自分のためだけに何か情報をセーブする場合に使用する。
+	 * @return	セーブに成功したか
+	 */
+	default boolean saveCookie(String key, Cookie data) {
+		return getDbCookie().computeInTransaction(txn -> {
+			try {
+				CookieStore s = getStoreCookie(txn);
+				Cookie old = s.get(key);
+				if (old == null) {
+					return s.create(key, data);
+				} else {
+					return s.update(key, data);
+				}
+			} catch (Exception e) {
+				Glb.getLogger().error("Failed to saveCookie " + data, e);
+				return false;
+			}
+		});
+	}
+
+	/**
+	 * @param txn
+	 * @return	自分のためだけの情報を記録するコンテンツのユーザー用ストア
+	 */
+	default CookieStore getStoreCookie(Transaction txn) {
+		return new CookieStore(this.getClass().getCanonicalName(), txn);
+	}
+
+	/**
+	 * @return	検証でエラーがあっても処理がキャンセルされないか
+	 */
+	default boolean isWarningValidation() {
+		return false;//ほとんどのモデルは検証に失敗したらその処理をキャンセルする
+	}
 }

@@ -3,7 +3,7 @@ package bei7473p5254d69jcuat.tenyutalk.reference;
 import com.esotericsoftware.kryo.*;
 
 import bei7473p5254d69jcuat.tenyu.db.store.*;
-import bei7473p5254d69jcuat.tenyu.reference.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.reference.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.env.*;
@@ -60,5 +60,4 @@ public class StoreNameRegister implements StoreName {
 			throws Exception {
 		return validateCommon(r);
 	}
-
 }

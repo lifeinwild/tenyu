@@ -1,6 +1,5 @@
 package bei7473p5254d69jcuat.tenyu.db.store.single;
 
-import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.satellite.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
@@ -28,5 +27,7 @@ public interface SingleObjectStoreI {
 		o.setId(SingleObjectStoreI.getDefaultIdStatic());
 		o.setHid(SingleObjectStoreI.getDefaultHidStatic());
 		o.setSpecifiedId(true);
+		//o.setCreateHistoryIndex(0);
+		//o.setCreateDate(0);
 	}
 }

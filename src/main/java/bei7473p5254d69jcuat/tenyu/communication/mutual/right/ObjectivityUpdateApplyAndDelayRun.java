@@ -4,7 +4,6 @@ import java.util.*;
 
 import bei7473p5254d69jcuat.tenyu.communication.mutual.*;
 import bei7473p5254d69jcuat.tenyu.communication.mutual.P2PStatement.*;
-import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.db.store.satellite.*;
 import glb.*;
@@ -38,7 +37,8 @@ public class ObjectivityUpdateApplyAndDelayRun
 		return statementTime;
 	}
 
-	private static final long statementTime = 1000L * 60;
+	private static final long statementTime = ObjectivityUpdateSequence.sequenceTime
+			/ 2;
 
 	/**
 	 * @return	遅延実行以外の情報を取得して返す
@@ -94,10 +94,11 @@ public class ObjectivityUpdateApplyAndDelayRun
 			//優先度が高い遅延実行系の客観更新
 			//他のトランザクションと分けられる。
 			//重要な処理が多く、通常の客観更新の失敗に連れ立って失敗されては困るため。
-			List<ObjectivityUpdateDataElement> processedSuperior = Glb.getObje().writeTryW(txn -> {
-				AgendaStore as = new AgendaStore(txn);
-				return as.applyDelayRuns(2000, nextHistoryIndex);
-			});
+			List<ObjectivityUpdateDataElement> processedSuperior = Glb.getObje()
+					.writeTryW(txn -> {
+						AgendaStore as = new AgendaStore(txn);
+						return as.applyDelayRuns(2000, nextHistoryIndex);
+					});
 			data.setProcessedSuperiors(processedSuperior);
 
 			//UserRightRequest系の客観更新

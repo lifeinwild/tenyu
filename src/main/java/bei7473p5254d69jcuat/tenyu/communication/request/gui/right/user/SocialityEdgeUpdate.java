@@ -4,7 +4,8 @@ import bei7473p5254d69jcuat.tenyu.communication.*;
 import bei7473p5254d69jcuat.tenyu.communication.packaging.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.gui.right.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.sociality.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.reference.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.env.*;
@@ -40,15 +41,15 @@ public class SocialityEdgeUpdate extends UserRightRequest {
 		//メッセージクラスを通したエッジ作成ではゲーム系ノードにエッジを作成できない。
 		//エンジニアリングメモに詳細な考察がある。
 		//ゲームは他のゲームに創作的な影響を与えた等の意味でエッジを獲得する場合
-		//そのWEBノードを通じて獲得すべきである。
+		//そのWEBノードを通じて獲得すべきである。（ゲームはWEBノードとゲームノードで２つノードを持つ）
 		//Tenyuに登録されたゲームがTenyuからゲームを削除した場合でも
 		//相互評価フローネットワークの利用は可能である。
 		//一方、ゲーム系ノードを通じて獲得するエッジはTenyuに組み込まれている事によって得られるもので、
 		//Tenyuにゲームが登録されている間のみ機能する。
 		//ゲーム系ノードが獲得するエッジはシステムを通じて自動的に作成される。
 		Sociality to = SocialityStore.getSimple(e.getDestSocialityId());
-		if (to.getType() == NodeType.RATINGGAME
-				|| to.getType() == NodeType.STATICGAME) {
+		if (to.getStoreName() == StoreNameObjectivity.RATING_GAME
+				|| to.getStoreName() == StoreNameObjectivity.STATIC_GAME) {
 			return false;
 		}
 
@@ -58,7 +59,8 @@ public class SocialityEdgeUpdate extends UserRightRequest {
 	@Override
 	public boolean apply(Transaction txn, long historyIndex) throws Exception {
 		SocialityStore store = new SocialityStore(txn);
-		Sociality s = store.getByIndividuality(NodeType.USER, fromUserId);
+		Sociality s = store.getByIndividualityObject(new TenyuReferenceModelSimple<>(
+				fromUserId, StoreNameObjectivity.USER));
 		if (s == null)
 			return false;
 		//キーが存在しなければ新規に作成されるのでDB処理がcreateになる

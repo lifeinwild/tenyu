@@ -126,7 +126,7 @@ public class UserMessageListDiffusion
 
 	@Override
 	public long getStatementTime() {
-		return 1000L * 60;
+		return ObjectivityUpdateSequence.sequenceTime / 2;
 	}
 
 	@Override

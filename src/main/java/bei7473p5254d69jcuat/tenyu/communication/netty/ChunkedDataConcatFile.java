@@ -186,6 +186,8 @@ public class ChunkedDataConcatFile extends ChannelInboundHandlerAdapter {
 		 *             handlerRemoved0(ctx);
 		 * ハンドラを削除した時にreadCompleteが呼ばれてしまっている。
 		 * ポート統合でハンドラ削除は公式のサンプルコードでも書かれているものなので、問題だろう。
+		 *
+		 * https://github.com/netty/netty/issues/9208
 		 */
 		if (first) {
 			return;

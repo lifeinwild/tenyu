@@ -75,7 +75,7 @@ public abstract class CommonKeyPackage extends Package {
 	}
 
 	@Override
-	protected boolean binarizeAndSetContentConcrete(Communicatable content,
+	protected boolean serializeAndSetContentConcrete(Communicatable content,
 			Message m) {
 		try {
 			byte[] s = Glb.getUtil().toKryoBytesForCommunication(content);

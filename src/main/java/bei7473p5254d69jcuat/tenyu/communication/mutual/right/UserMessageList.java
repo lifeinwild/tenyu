@@ -8,6 +8,7 @@ import bei7473p5254d69jcuat.tenyu.communication.packaging.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.*;
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.core.*;
 import glb.*;
 import glb.util.*;
 import glb.util.Util.*;
@@ -26,7 +27,7 @@ import jetbrains.exodus.env.*;
  *
  * @author exceptiontenyu@gmail.com
  */
-public class UserMessageList implements StorableI{
+public class UserMessageList implements ValidatableI{
 	/**
 	 * 現在の想定される反映時負荷量。
 	 * メッセージ件数と一致しない。loadSize()の合計

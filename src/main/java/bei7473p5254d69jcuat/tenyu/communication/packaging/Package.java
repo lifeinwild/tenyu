@@ -64,7 +64,7 @@ public abstract class Package extends Communicatable {
 
 	/**
 	 * シリアライズや暗号化などがされた内容
-	 * 具象クラスによってバイナライズ方法が異なる
+	 * 具象クラスによってシリアライズ方法が異なる
 	 */
 	protected byte[] contentBinary;
 
@@ -78,12 +78,18 @@ public abstract class Package extends Communicatable {
 	}
 
 	/**
-	 * cをシリアライズや暗号化して内容に設定する。
+	 * 梱包に内容（シリアライズされたbyte[]）をセットする。
+	 *
 	 * isValidTypeを呼び出すコードを一元化
 	 *
-	 * @param content
+	 * @param content	これをシリアライズや暗号化して内容に設定する。
+	 *
+	 * ここでcontentの型が{@link Communicatable}になっている事は、
+	 * {@link MessageContent}だけではなく{@link Package}も含まれる事、
+	 * 即ち梱包の内容として梱包が入れられ、その内容として梱包が入れられる
+	 * という入れ子になりうる。ただし最も内側は{@link MessageContent}になる。
 	 */
-	public boolean binarizeAndSetContent(Communicatable content, Message m) {
+	public boolean serializeAndSetContent(Communicatable content, Message m) {
 		//梱包は組み合わせを問わない
 		//内容のinterfaceにおいて梱包を指定しているのは
 		//最も内側の梱包がgetEdgeやgetUserIdで意味を持つから、もう一つは
@@ -91,7 +97,7 @@ public abstract class Package extends Communicatable {
 		//梱包は他の梱包との組み合わせを限定しない
 		if (!(content instanceof Package) && !isValidType(content))
 			return false;
-		if (!binarizeAndSetContentConcrete(content, m)) {
+		if (!serializeAndSetContentConcrete(content, m)) {
 			return false;
 		}
 		//成功した場合キャッシュする
@@ -100,12 +106,13 @@ public abstract class Package extends Communicatable {
 	}
 
 	/**
-	 * binarizeAndSetContentから呼び出される具象クラス側の実装
+	 * binarizeAndSetContentから呼び出される具象クラス側の実装。
+	 *
 	 * @param content
 	 * @param detector
 	 * @return
 	 */
-	protected abstract boolean binarizeAndSetContentConcrete(
+	protected abstract boolean serializeAndSetContentConcrete(
 			Communicatable content, Message m);
 
 	/**
@@ -114,14 +121,15 @@ public abstract class Package extends Communicatable {
 	 * @return デシリアライズされた内容
 	 */
 	public Communicatable deserialize(Message m) {
-		;
 		//キャッシュがあればキャッシュを返す。
 		if (deserialized == null) {
 			Communicatable tmp = deserializeConcrete(m);
 			if (tmp != null && isValidType(tmp) && tmp.validate(m)) {
 				deserialized = tmp;
 			} else {
-				Glb.getLogger().error("tmp=" + tmp, new Exception());
+				Glb.getLogger().error(
+						"tmp=" + tmp + " " + tmp == null ? "" : tmp.getClass(),
+						new Exception());
 			}
 		}
 		return deserialized;

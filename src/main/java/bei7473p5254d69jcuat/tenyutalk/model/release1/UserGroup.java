@@ -3,7 +3,6 @@ package bei7473p5254d69jcuat.tenyutalk.model.release1;
 import java.util.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
-import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
 import glb.*;
@@ -17,7 +16,7 @@ import jetbrains.exodus.env.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class UserGroup implements StorableI {
+public class UserGroup implements ValidatableI {
 	/**
 	 * 重複無しユーザーID一覧
 	 */

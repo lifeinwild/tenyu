@@ -9,7 +9,7 @@ import glb.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public interface VoteValue extends StorableI {
+public interface VoteValue extends ValidatableI {
 	/**
 	 * @return 投票の名目、この投票が対応するDistributedVote#getName()と同値
 	 */

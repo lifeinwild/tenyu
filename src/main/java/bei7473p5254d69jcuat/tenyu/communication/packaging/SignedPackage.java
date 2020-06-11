@@ -1,13 +1,10 @@
 package bei7473p5254d69jcuat.tenyu.communication.packaging;
 
-import java.io.*;
-import java.security.*;
-import java.security.spec.*;
-
 import bei7473p5254d69jcuat.tenyu.communication.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.sociality.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.sociality.*;
 import glb.*;
 
 /**
@@ -17,7 +14,7 @@ import glb.*;
  * @author exceptiontenyu@gmail.com
  *
  */
-public class SignedPackage extends Package {
+public class SignedPackage extends Package implements ClassNameUnchangeableI {
 	public static SignedPackage getPack(Message m) {
 		if (m == null || m.getInnermostPack() == null)
 			return null;
@@ -34,31 +31,20 @@ public class SignedPackage extends Package {
 	}
 
 	/**
-	 * 署名に使われた鍵のタイプ
-	 */
-	private KeyType keyType = Glb.getConf().getKeys().getMyStandardKeyType();
-
-	public KeyType getKeyType() {
-		return keyType;
-	}
-
-	/**
-	 * 作成者による内容の署名
-	 */
-	private byte[] signature = null;
-
-	/**
-	 * 署名者
+	 * 署名関連情報
 	 *
-	 * 現状ユーザーによる署名しか想定しない。
-	 * 理屈上、ユーザー登録前でも署名梱包を使う可能性はある。
+	 * 現状ユーザーによる署名しか想定しないが、
+	 * ユーザー登録前でも鍵自体は存在するので署名梱包を使う可能性はある。
 	 * そうなったら抽象クラスに共通メソッドをくくりだして共通鍵梱包同様の方法で
 	 * 実装できるだろう。
 	 */
-	private Long signerUserId = Glb.getMiddle().getMyUserId();
+	private NominalSignature signature = new NominalSignature(
+			Glb.getConf().getKeys().getMyStandardKeyType(),
+			getSignNominal(Glb.getMiddle().getMyUserId()),
+			Glb.getMiddle().getMyUserId());
 
 	@Override
-	protected boolean binarizeAndSetContentConcrete(Communicatable content,
+	protected boolean serializeAndSetContentConcrete(Communicatable content,
 			Message m) {
 		Communicatable backup = deserialized;
 		try {
@@ -96,22 +82,30 @@ public class SignedPackage extends Package {
 		return null;
 	}
 
-	public byte[] getSignature() {
-		return signature;
+	public KeyType getKeyType() {
+		return signature.getKeyType();
+	}
+
+	public byte[] getSign() {
+		return signature.getSign();
 	}
 
 	public Long getSignerUserId() {
-		return signerUserId;
+		return signature.getSignerUserId();
 	}
 
 	/**
-	 * 内容がセットされてから呼ぶ
 	 * @return	署名の名目
 	 */
 	public String getSignNominal() {
-		return Glb.getConst().getAppName() + "_"
-				+ Glb.getObje().getCore().getHistoryIndex() + "_"
-				+ signerUserId;
+		return getSignNominal(signature.getSignerUserId());
+	}
+
+	public String getSignNominal(Long signerUserId) {
+		return Glb.getConf().getKeys().getSignNominal(
+				SignedPackage.class.getSimpleName(),
+				"" + Glb.getObje().getCore().getHistoryIndex(),
+				"" + signerUserId);
 	}
 
 	/**
@@ -119,17 +113,7 @@ public class SignedPackage extends Package {
 	 */
 	private boolean isValidSignature(Message m) {
 		try {
-			User signer = Glb.getObje().getUser(us->us.get(signerUserId));
-			if (signer == null || keyType == null)
-				return false;
-
-			//作成者の公開鍵を取得
-			byte[] pubB = signer.getPubKey(keyType);
-			if (pubB == null)
-				return false;
-
-			return Glb.getUtil().verify(getSignNominal(), getSignature(), pubB,
-					getContentBinary());
+			return signature.searchAndVerify(getContentBinary());
 		} catch (Exception e) {
 			Glb.getLogger().error("", e);
 			return false;
@@ -145,15 +129,15 @@ public class SignedPackage extends Package {
 	 * @return	作成者userIdは存在し、BANされてないか
 	 */
 	private boolean isValidUserId(Message m) {
-		if (signerUserId == null) {
+		if (getSignerUserId() == null) {
 			Glb.debug("signerUserId is null");
 			return false;
 		}
-		User signer = Glb.getObje().getUser(us->us.get(signerUserId));
+		User signer = Glb.getObje().getUser(us -> us.get(getSignerUserId()));
 		if (signer == null || signer.getId() == null)
 			return false;
 
-		Sociality s = SocialityStore.getByUserIdSimple(signer.getId());
+		Sociality s = SocialityStore.getByUserIdStatic(signer.getId());
 
 		if (s == null || s.isBanned())
 			return false;
@@ -161,26 +145,17 @@ public class SignedPackage extends Package {
 		return true;
 	}
 
-	public void setSignature(byte[] signature) {
-		this.signature = signature;
-	}
-
 	/**
 	 * 内容を署名
 	 */
 	private boolean sign() {
 		try {
-			signature = Glb.getConf().getKeys().sign(getSignNominal(), keyType,
-					getContentBinary());
-			if (signature == null)
-				return false;
-		} catch (InvalidKeySpecException | NoSuchAlgorithmException
-				| IOException e) {
+			return signature.sign(getContentBinary());
+		} catch (Exception e) {
 			//signに失敗したらvalidateに失敗するので送受信されない。
 			Glb.getLogger().error("", e);
 			return false;
 		}
-		return true;
 	}
 
 	@Override
@@ -203,5 +178,9 @@ public class SignedPackage extends Package {
 			//少しある
 			return new SignedPackage();
 		}
+	}
+
+	public void setSignature(NominalSignature signature) {
+		this.signature = signature;
 	}
 }

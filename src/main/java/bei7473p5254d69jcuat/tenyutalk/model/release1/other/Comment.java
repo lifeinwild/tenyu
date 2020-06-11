@@ -2,12 +2,11 @@ package bei7473p5254d69jcuat.tenyutalk.model.release1.other;
 
 import java.util.*;
 
-import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.*;
-import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
-import bei7473p5254d69jcuat.tenyu.reference.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.reference.*;
 import bei7473p5254d69jcuat.tenyu.ui.common.*;
 import bei7473p5254d69jcuat.tenyutalk.db.other.*;
 import bei7473p5254d69jcuat.tenyutalk.model.promise.other.*;
@@ -222,7 +221,7 @@ public class Comment extends AdministratedObject implements CommentI {
 	}
 
 	@Override
-	public AdministratedObjectGui<?, ?, ?, ?, ?, ?> getGui(String guiName,
+	public AdministratedObjectGui<?, ?, ?, ?, ?, ?> getGuiReferenced(String guiName,
 			String cssIdPrefix) {
 		return new CommentGui(guiName, cssIdPrefix);
 	}

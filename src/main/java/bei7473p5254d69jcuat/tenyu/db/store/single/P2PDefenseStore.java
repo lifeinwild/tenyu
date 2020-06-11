@@ -10,6 +10,8 @@ import javax.management.modelmbean.*;
 import bei7473p5254d69jcuat.tenyu.communication.*;
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.*;
@@ -55,7 +57,7 @@ public class P2PDefenseStore extends ModelStore<P2PDefenseI, P2PDefense>
 
 	@Override
 	public boolean isSupport(Object o) {
-		if (o instanceof bei7473p5254d69jcuat.tenyu.communication.P2PDefense)
+		if (o instanceof bei7473p5254d69jcuat.tenyu.model.release1.P2PDefense)
 			return true;
 		return false;
 	}

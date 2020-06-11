@@ -2,7 +2,6 @@ package glb;
 
 import java.io.*;
 import java.net.*;
-import java.nio.file.*;
 import java.security.*;
 import java.util.*;
 import java.util.concurrent.*;
@@ -10,6 +9,7 @@ import java.util.concurrent.atomic.*;
 import java.util.function.*;
 
 import org.apache.logging.log4j.*;
+import org.apache.tika.*;
 import org.quartz.*;
 import org.quartz.impl.*;
 
@@ -52,18 +52,20 @@ import bei7473p5254d69jcuat.tenyu.communication.request.useredge.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.satellite.*;
 import bei7473p5254d69jcuat.tenyu.db.store.satellite.HashStore.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.catchup.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.catchup.Integrity.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.takeoverserver.game.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.takeoverserver.game.Team.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.core.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.game.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.sociality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.other.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.reference.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.subjectivity.*;
-import bei7473p5254d69jcuat.tenyu.reference.*;
 import bei7473p5254d69jcuat.tenyu.timer.*;
 import bei7473p5254d69jcuat.tenyu.ui.*;
 import bei7473p5254d69jcuat.tenyutalk.*;
@@ -236,6 +238,11 @@ public class Glb {
 	private static Util util;
 
 	/**
+	 * ファイルタイプ識別
+	 */
+	private static Tika fileTypeDetector;
+
+	/**
 	 * レーティング計算アルゴリズム
 	 */
 	private static SME2 sme2;
@@ -335,7 +342,7 @@ public class Glb {
 	private static ScheduledExecutorService executorPeriodic;
 
 	/**
-	 * TenyuFileをDLする
+	 * ファイルをDLする
 	 */
 	private static Downloader downloader;
 
@@ -347,6 +354,10 @@ public class Glb {
 	 * 通信専用Kryo
 	 */
 	private static ThreadLocal<Kryo> kryoForCommunication;
+	/**
+	 * LocalのRPC専用Kryo
+	 */
+	private static ThreadLocal<Kryo> kryoForRPC;
 	/**
 	 * Tenyutalk永続化専用Kryo
 	 */
@@ -457,7 +468,6 @@ public class Glb {
 		k.register(sun.util.calendar.ZoneInfo.class);
 
 		k.register(Sociality.class);
-		k.register(NodeType.class);
 		k.register(Web.class);
 		k.register(StaticGame.class);
 		k.register(RatingGame.class);
@@ -581,8 +591,6 @@ public class Glb {
 		k.register(ConcurrentHashMap.class);
 		k.register(URL.class);
 
-		k.register(NodeType.class);
-
 		k.register(User.class);
 
 		k.register(UserMessageListHash.class);
@@ -602,6 +610,8 @@ public class Glb {
 		//			lock = new GroupLockManager();
 		if (util == null)
 			util = new Util();
+		if (fileTypeDetector == null)
+			fileTypeDetector = new Tika();
 		if (cons == null)
 			cons = new Const();
 		if (guiConst == null)
@@ -650,7 +660,7 @@ public class Glb {
 			File tenyuPolicyFile = new File(tenyuPolicyPath);
 			//既にあるなら削除
 			if (tenyuPolicyFile.exists()
-					&& file.isAppPathBoth(tenyuPolicyFile.toPath())) {
+					&& file.isAppPath(tenyuPolicyFile.toPath())) {
 				file.remove(tenyuPolicyFile.toPath());
 			}
 			tenyuPolicyFile.createNewFile();
@@ -665,7 +675,7 @@ public class Glb {
 		//作成されたポリシーファイルを読み込む
 		String policyFileAbsolutePath = Glb.class.getClassLoader()
 				.getResource(tenyuPolicyFilename).getPath();
-		System.out.println(policyFileAbsolutePath);
+		System.out.println("policyFileAbsolutePath=" + policyFileAbsolutePath);
 		System.setProperty("java.security.policy", policyFileAbsolutePath);
 		Policy.getPolicy().refresh();
 		System.setSecurityManager(new TenyuSecurityManager());//これ以降権限の問題が生じる
@@ -768,6 +778,7 @@ public class Glb {
 					.values()) {
 				ModelStore<?, ?> s = storeName.getStore(txn);
 				s.initStores();
+				/*
 				try {
 					RecycleHidStore recycle = new RecycleHidStore(storeName,
 							txn);
@@ -776,11 +787,16 @@ public class Glb {
 					HashStore hashStore = new HashStore(storeName, txn);
 					hashStore.initStores();
 
+					s.getCatchUpUpdatedIDListStore().initStores();
+
 				} catch (Exception e) {
 					Glb.getLogger().error("", e);
 				}
+				*/
 			}
 			new ObjectivityUpdateDataStore(txn).initStores();
+
+			StoreNameSingle.OBJECTIVITY_CORE.getStore(txn).initStores();
 		});
 	}
 
@@ -802,8 +818,7 @@ public class Glb {
 		setupStores();
 
 		if (tenyutalk == null) {
-			tenyutalk = new Tenyutalk(
-					Glb.getMiddle().getMyNodeIdentifierUser());
+			tenyutalk = new Tenyutalk();
 		}
 
 		if (flow == null) {
@@ -815,7 +830,7 @@ public class Glb {
 
 		//通信処理は様々なモデルに依存するので、最後に開始
 		if (p2pdefense == null) {
-			p2pdefense = new P2PDefense();
+			p2pdefense = P2PDefense.loadOrCreate();
 		}
 		if (p2p == null) {
 			p2p = new P2P();
@@ -857,48 +872,11 @@ public class Glb {
 	}
 
 	/**
-	 * user.homeにこのアプリの情報、例えばローカルIPCポートを設置し、
-	 * 他のアプリがこのアプリと連携できるようにする。
-	 * file,const,confが設定されてから使う事。
-	 *
-	 * 現在の呼び出し位置だと、起動直後秘密鍵パスワードを入力した後に
-	 * これが呼ばれる。外部アプリとの連携もそれ以降出ないとできない。
-	 * しかしそれは仕方がないだろう。
-	 * パスワードが無ければ動作しない機能がたくさんある。
-	 */
-	private static void createUserHomeFile() {
-		try {
-			String userhome = System.getProperty("user.home");
-			if (userhome == null)
-				return;
-			userhome = getUtil().addSlashIfNot(userhome);
-			String dir = userhome + "tenyu/";
-			String file = "tenyu.txt";
-			Path p = Paths.get(dir, file);
-
-			StringBuilder content = new StringBuilder();
-			content.append("localIpcPort=" + Glb.getConf().getLocalIpcPort()
-					+ System.lineSeparator());
-			content.append("tenyuDir=" + Glb.getUtil().getExecutionFilePath()
-					+ System.lineSeparator());
-
-			boolean r = Glb.getFile().create(p,
-					content.toString().getBytes(Glb.getConst().getCharsetNio()),
-					true);
-			if (!r) {
-				throw new IOException();
-			}
-		} catch (Exception e) {
-			Glb.getLogger().error("Failed to create UserHomeFile", e);
-		}
-	}
-
-	/**
 	 * アプリ開始時に呼ばれる事を想定
 	 * 各オブジェクトのstart()を呼ぶ
 	 */
 	public static void startApplication() {
-		createUserHomeFile();
+		conf.createUserHomeFile();
 		if (subje != null) {
 			subje.start();
 		}
@@ -1144,6 +1122,14 @@ public class Glb {
 		Glb.util = util;
 	}
 
+	public static Tika getFileTypeDetector() {
+		return fileTypeDetector;
+	}
+
+	public static void setFileTypeDetector(Tika fileTypeDetector) {
+		Glb.fileTypeDetector = fileTypeDetector;
+	}
+
 	public static Subjectivity getSubje() {
 		return subje;
 	}
@@ -1157,14 +1143,7 @@ public class Glb {
 	}
 
 	/**
-	 * @return nodeのtenyutalkインスタンス。使用するDBが異なる
-	 */
-	public static Tenyutalk getTenyutalk(NodeIdentifierUser node) {
-		return tenyutalk.construct(node);
-	}
-
-	/**
-	 * @return	自分のTenyutalk情報へのアクセス
+	 * @return	Tenyutalk情報へのアクセス
 	 */
 	public static Tenyutalk getTenyutalk() {
 		return tenyutalk;
@@ -1204,6 +1183,10 @@ public class Glb {
 
 	public static Kryo getKryoForCommunication() {
 		return kryoForCommunication.get();
+	}
+
+	public static Kryo getKryoForRPC() {
+		return kryoForRPC.get();
 	}
 
 	public static Kryo getKryoForTenyutalk() {

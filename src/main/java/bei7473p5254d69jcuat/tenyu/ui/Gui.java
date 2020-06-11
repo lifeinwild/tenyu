@@ -83,6 +83,11 @@ public class Gui implements GlbMemberDynamicState {
 	private KeyCombination ctrlSpace = KeyCombination.valueOf("Shortcut+Space");
 
 	/**
+	 * ユーザー向けのログ表示
+	 */
+	private TextArea logForUser = null;
+
+	/**
 	 * ctrl+←で前のタブに移動
 	 */
 	private Runnable ctrlLeftHandler = () -> {
@@ -183,6 +188,23 @@ public class Gui implements GlbMemberDynamicState {
 
 	};
 
+	/**
+	 * ユーザー用ログ出力に指定した文字列を追記する
+	 * @param append	追記される文字列
+	 */
+	public void appendLogForUser(String title, String content) {
+		appendLogForUser(title + " : " + content);
+	}
+
+	public void appendLogForUser(String append) {
+		if (!started) {
+			Glb.getLogger().warn("Not started", new IllegalStateException());
+			return;
+		}
+
+		logForUser.appendText(append);
+	}
+
 	public void setTitle(String prefix, String suffix) {
 		//各要素の間に入る空白
 		String indent = "    ";
@@ -249,6 +271,11 @@ public class Gui implements GlbMemberDynamicState {
 					loadCss();
 			});
 			loadCss();
+
+			//log for user
+			logForUser = new TextArea(Lang.LOG_FOR_USER_PROMPT.toString());
+			logForUser.setTextFormatter(
+					GuiCommon.getTextFormatterMaxCharacters());
 
 			//TabPane
 			basePane = new TabPane();
@@ -533,7 +560,8 @@ public class Gui implements GlbMemberDynamicState {
 			//ハンドラを登録済みなら登録しない
 			//独自のハンドラを登録した箇所はGlobal系ハンドラを登録すべき
 			if (n.getOnKeyPressed() != null) {
-				System.out.println(n.getClass().getSimpleName());
+				Glb.getLogger().info(
+						"registerHandler " + n.getClass().getSimpleName());
 				return true;
 			}
 			n.setOnKeyPressed(new GlobalKeyPressedEventHandler(n));
@@ -630,29 +658,28 @@ public class Gui implements GlbMemberDynamicState {
 
 	private boolean started = false;
 
+	public TextArea getLogForUser() {
+		return logForUser;
+	}
+
 	public void alert(AlertType type, String title, String content) {
 		if (!started) {
 			Glb.getLogger().warn("Not started", new IllegalStateException());
 			return;
 		}
-		Runnable r = new Runnable() {
-			@Override
-			public void run() {
-				try {
-					Alert a = new Alert(type);
-					a.setTitle(title);
-					Stage stage = (Stage) a.getDialogPane().getScene()
-							.getWindow();
-					stage.getIcons().add(Glb.getFile().getIcon());
-					a.setContentText(content);
-					a.show();
-				} catch (Exception e) {
-					Glb.getLogger().error("", e);
-				}
-			}
-		};
 
-		runByFXThread(r);
+		runByFXThread(() -> {
+			try {
+				Alert a = new Alert(type);
+				a.setTitle(title);
+				Stage stage = (Stage) a.getDialogPane().getScene().getWindow();
+				stage.getIcons().add(Glb.getFile().getIcon());
+				a.setContentText(content);
+				a.show();
+			} catch (Exception e) {
+				Glb.getLogger().error("", e);
+			}
+		});
 	}
 
 	/**

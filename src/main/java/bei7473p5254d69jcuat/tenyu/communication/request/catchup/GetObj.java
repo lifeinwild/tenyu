@@ -76,8 +76,7 @@ public class GetObj extends AbstractByStoreMessage {
 		if (idList != null) {
 			long[] ids = idList.uncompress();
 			Glb.getObje().read(txn -> {
-				ModelStore<? extends ModelI,
-						?> s = storeName.getStore(txn);
+				ModelStore<? extends ModelI, ?> s = storeName.getStore(txn);
 				if (s == null)
 					return;
 				int count = 0;
@@ -97,8 +96,7 @@ public class GetObj extends AbstractByStoreMessage {
 		if (hidList != null) {
 			long[] hids = hidList.uncompress();
 			Glb.getObje().read(txn -> {
-				ModelStore<? extends ModelI,
-						?> s = storeName.getStore(txn);
+				ModelStore<? extends ModelI, ?> s = storeName.getStore(txn);
 				if (s == null)
 					return;
 				int count = 0;
@@ -191,6 +189,11 @@ public class GetObj extends AbstractByStoreMessage {
 			return true;
 		}
 
+	}
+
+	@Override
+	public String toString() {
+		return "GetObj [idList=" + idList + ", hidList=" + hidList + "]";
 	}
 
 }

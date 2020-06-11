@@ -2,6 +2,7 @@ package glb;
 
 import java.io.*;
 import java.net.*;
+import java.nio.file.*;
 import java.security.*;
 import java.time.*;
 import java.util.*;
@@ -43,7 +44,7 @@ public class Conf {
 		return addr;
 	}
 
-	private RunLevel runLevel;
+	private RunLevel runLevel = RunLevel.DEV;
 
 	/**
 	 * ゲームのクライアントソフトウェアで使われるポート
@@ -57,10 +58,7 @@ public class Conf {
 	 * tenyutalk用ポート
 	 */
 	private int tenyutalkPort;
-	/**
-	 * localhostの他のプログラムにwebapiを提供するためのポート
-	 */
-	private int localIpcPort;
+
 	private int userMessageServerPort;
 	private boolean neighborWhitelist = false;
 
@@ -142,13 +140,8 @@ public class Conf {
 		return nodeNumber;
 	}
 
-
 	public String getFqdn() {
 		return fqdn;
-	}
-
-	public int getLocalIpcPort() {
-		return localIpcPort;
 	}
 
 	public Keys getKeys() {
@@ -192,12 +185,10 @@ public class Conf {
 		return runLevel;
 	}
 
-
 	public void init() {
 		//		loc = loadLoc();
 		loadTenyuConf();
 	}
-
 
 	/**
 	 * @param password	検証されるパスワード
@@ -262,16 +253,6 @@ public class Conf {
 					Lang.P2PPORT.toString() + Lang.ERROR_INVALID.toString(), e);
 			System.exit(1);
 		}
-
-		String localIpcPortStr = tenyuconf.getProperty("localIpcPort");
-		try {
-			localIpcPort = Integer.parseInt(localIpcPortStr);
-		} catch (Exception e) {
-			Glb.getLogger().error(
-					Lang.LOCALIPCPORT + Lang.ERROR_INVALID.toString(), e);
-			System.exit(1);
-		}
-		Glb.getLogger().info(Lang.LOCALIPCPORT + " " + getLocalIpcPort());
 
 		//以下、設定が無くても良いタイプ
 		String bigStorageStr = tenyuconf.getProperty("bigStorage");
@@ -424,8 +405,6 @@ public class Conf {
 		}
 	}
 
-
-
 	public static enum RunLevel {
 		/**
 		 * 本番動作。デバッグログ無し
@@ -483,5 +462,60 @@ public class Conf {
 
 	FileManagement getFile() {
 		return f;
+	}
+
+	/**
+	 * user.homeにこのアプリの情報、例えばローカルIPCポートを設置し、
+	 * 他のアプリがこのアプリと連携できるようにする。
+	 *
+	 * 現在の呼び出し位置だと、起動直後秘密鍵パスワードを入力した後に
+	 * これが呼ばれる。外部アプリとの連携もそれ以降出ないとできない。
+	 * しかしそれは仕方がないだろう。
+	 * パスワードが無ければ動作しない機能がたくさんある。
+	 */
+	public void createUserHomeFile() {
+		try {
+			String dir = Glb.getFile().getUserHomeTenyuDir();
+			Path p = Paths.get(dir, Glb.getFile().getUserHomeFile());
+
+			StringBuilder content = new StringBuilder();
+			if (Glb.getLocalIpc() != null) {
+				content.append(localIpcPort + "=" + Glb.getLocalIpc().getPort()
+						+ System.lineSeparator());
+			}
+			content.append(tenyuDir + "=" + Glb.getUtil().getExecutionFilePath()
+					+ System.lineSeparator());
+
+			boolean r = Glb.getFile().create(p,
+					content.toString().getBytes(Glb.getConst().getCharsetNio()),
+					true);
+			if (!r) {
+				throw new IOException();
+			}
+		} catch (Exception e) {
+			Glb.getLogger().error("Failed to create UserHomeFile", e);
+		}
+	}
+
+	private static final String localIpcPort = "localIpcPort";
+	private static final String tenyuDir = "tenyuDir";
+
+	/**
+	 * @return	user.homeのファイルから取得されたLocalIPC用ポート
+	 */
+	public int getLocalIpcPortFromUserHomeFile() {
+		List<String> lines;
+		try {
+			lines = Files.readAllLines(Paths.get(f.getUserHomeFileFull()));
+		} catch (IOException e) {
+			Glb.getLogger().error("", e);
+			return -1;
+		}
+		for (String line : lines) {
+			if (line.startsWith(localIpcPort)) {
+				return Integer.valueOf(line.substring(line.indexOf("=") + 1));
+			}
+		}
+		return -1;
 	}
 }

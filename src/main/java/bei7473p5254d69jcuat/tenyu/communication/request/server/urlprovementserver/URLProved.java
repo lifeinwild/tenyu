@@ -4,14 +4,14 @@ import java.util.*;
 
 import bei7473p5254d69jcuat.tenyu.communication.*;
 import bei7473p5254d69jcuat.tenyu.communication.request.server.*;
-import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.sociality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.takeoverserver.urlprovement.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.role.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.role.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.reference.*;
 import glb.*;
 import jetbrains.exodus.env.*;
 
@@ -45,7 +45,7 @@ public class URLProved extends ServerObjectivityMessage {
 		if (w == null)
 			return false;
 		SocialityStore sos = new SocialityStore(txn);
-		Sociality so = sos.getByIndividuality(NodeType.WEB, provedWebId);
+		Sociality so = sos.getByIndividualityObject(new TenyuReferenceModelSimple<>(provedWebId, StoreNameObjectivity.WEB));
 		if (so == null)
 			return false;
 

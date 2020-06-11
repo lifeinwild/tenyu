@@ -8,10 +8,9 @@ import java.util.*;
 import javax.management.modelmbean.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
-import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
-import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.game.item.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.item.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.individuality.game.item.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.game.item.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.*;
@@ -136,7 +135,7 @@ public class StaticGameMaterialClassStore
 	}
 
 	@Override
-	public List<StoreInfo> getStoresIndividualityObjectConcrete() {
+	protected List<StoreInfo> getStoresIndividualityObjectConcrete() {
 		List<StoreInfo> r = new ArrayList<>();
 		r.add(getGameIdToIdStore());
 		return r;

@@ -10,9 +10,9 @@ import javax.management.modelmbean.*;
 import bei7473p5254d69jcuat.tenyu.db.*;
 import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.*;
-import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.game.*;
-import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.game.statebyuser.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.game.statebyuser.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.individuality.game.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.individuality.game.statebyuser.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.game.statebyuser.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.*;
@@ -246,7 +246,7 @@ public class StaticGameStateByUserStore
 	@Override
 	protected boolean deleteAdministratedObjectConcrete(
 			StaticGameStateByUserI o) throws Exception {
-		if (!util.remove(getGameIdUserIdToIdStore(),
+		if (!util.delete(getGameIdUserIdToIdStore(),
 				cnvBA(getGameIdUserIdBA(o))))
 			return false;
 		if (!util.deleteDupSingle(getUserIdToIdStore(),
@@ -272,7 +272,7 @@ public class StaticGameStateByUserStore
 					+ oldGameId + " rId=" + rId);
 			Glb.debug("updatedUserId=" + updatedUserId + " oldUserId="
 					+ oldUserId);
-			if (!util.remove(getGameIdUserIdToIdStore(),
+			if (!util.delete(getGameIdUserIdToIdStore(),
 					cnvBA(getGameIdUserIdBA(old))))
 				return false;
 			if (!util.put(getGameIdUserIdToIdStore(),

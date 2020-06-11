@@ -8,10 +8,9 @@ import java.util.*;
 import javax.management.modelmbean.*;
 
 import bei7473p5254d69jcuat.tenyu.db.*;
-import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
-import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.individuality.core.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.core.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.*;
@@ -73,7 +72,7 @@ public class ObjectivityCoreStore
 
 	@Override
 	public boolean isSupport(Object o) {
-		if (o instanceof bei7473p5254d69jcuat.tenyu.model.release1.objectivity.ObjectivityCore)
+		if (o instanceof bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.core.ObjectivityCore)
 			return true;
 		return false;
 	}
@@ -104,7 +103,7 @@ public class ObjectivityCoreStore
 	}
 
 	@Override
-	public List<StoreInfo> getStoresIndividualityObjectConcrete() {
+	protected List<StoreInfo> getStoresIndividualityObjectConcrete() {
 		List<StoreInfo> r = new ArrayList<>();
 		return r;
 	}

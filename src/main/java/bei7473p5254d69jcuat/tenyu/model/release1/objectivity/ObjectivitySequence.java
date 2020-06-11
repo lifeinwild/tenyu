@@ -4,16 +4,17 @@ import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.sociality.*;
 import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.*;
-import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.individuality.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.promise.objectivity.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.reference.*;
 import glb.*;
 import jetbrains.exodus.env.*;
 
 /**
  * あるモデルを作るときに必ず別のモデルを作る必要があるなど、
  * モデル作成はシーケンスになる場合がある。
- * そのうち客観に関するロジックをここに書く。
+ * 客観に関するシーケンスをここに書く。
  *
  * ・ユーザー物理削除の仕様について
  * もし異常データのみを作成したユーザーなら、
@@ -52,11 +53,16 @@ import jetbrains.exodus.env.*;
  */
 public class ObjectivitySequence {
 	public static boolean deleteSequence(Transaction txn, IndividualityObject n,
-			IndividualityObjectStore<?, ?> ns, NodeType type) throws Exception {
+			StoreNameObjectivity sn) throws Exception {
 		if (n == null) {
 			Glb.getLogger().warn("IndividualityObject is null");
 			return false;
 		}
+
+		ModelStore<?, ?> ms = sn.getStore(txn);
+		if (!(ms instanceof IndividualityObjectStore))
+			return false;
+		IndividualityObjectStore<?, ?> ns = (IndividualityObjectStore<?, ?>) ms;
 
 		//個性系オブジェクト
 		if (!ns.delete(n.getId()))
@@ -64,7 +70,7 @@ public class ObjectivitySequence {
 
 		//社会性
 		SocialityStore ss = new SocialityStore(txn);
-		Long sId = ss.getIdByIndividualityObject(type, n.getId());
+		Long sId = ss.getIdByIndividualityObject(sn, n.getId());
 		if (!ss.delete(sId))
 			throw new IllegalStateException();
 		return true;
@@ -83,11 +89,17 @@ public class ObjectivitySequence {
 	 */
 	public static <T1 extends IndividualityObjectI,
 			T2 extends T1> boolean createSequence(Transaction txn, T1 n,
-					boolean specifiedId, long historyIndex,
-					IndividualityObjectStore<T1, T2> ns, Long admin, Long registerer,
-					NodeType type) throws Exception {
+					boolean specifiedId, long historyIndex, Long admin,
+					Long registerer, StoreNameObjectivity sn) throws Exception {
 		if (n == null)
 			return false;
+
+		ModelStore<?, ?> ms = sn.getStore(txn);
+		if (!(ms instanceof IndividualityObjectStore))
+			return false;
+		IndividualityObjectStore<T1,
+				T2> ns = (IndividualityObjectStore<T1, T2>) ms;
+
 		//個性系オブジェクト登録
 		Long nid = null;
 		if (specifiedId) {
@@ -98,14 +110,14 @@ public class ObjectivitySequence {
 		if (nid == null)
 			throw new IllegalStateException();
 
-		if (type == NodeType.USER && admin == null)
+		if (sn == StoreNameObjectivity.USER && admin == null)
 			admin = nid;
 
 		//この場合管理者不在になるので、後から管理者を設定する手段が用意されている必要がある
 		if (admin == null)
 			admin = ModelI.getNullId();
 
-		if (type == NodeType.USER && registerer == null)
+		if (sn == StoreNameObjectivity.USER && registerer == null)
 			registerer = nid;
 
 		if (registerer == null)
@@ -116,8 +128,8 @@ public class ObjectivitySequence {
 		sociality.setMainAdministratorUserId(admin);
 		sociality.setBanned(false);
 		sociality.setFlowFromCooperativeAccount(0);
-		sociality.setType(type);
-		sociality.setIndividualityObjectConcreteId(nid);
+		sociality.setIndividualityObjectConcreteRef(
+				new TenyuReferenceModelSimple<>(nid, sn));
 		sociality.setRegistererUserId(registerer);
 		SocialityStore s2 = new SocialityStore(txn);
 		Long socialityId = s2.create(sociality);

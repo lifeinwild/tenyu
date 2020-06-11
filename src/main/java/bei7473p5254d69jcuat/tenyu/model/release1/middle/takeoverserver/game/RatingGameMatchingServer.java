@@ -4,13 +4,12 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import bei7473p5254d69jcuat.tenyu.communication.request.useredge.*;
-import bei7473p5254d69jcuat.tenyu.db.store.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.*;
 import bei7473p5254d69jcuat.tenyu.db.store.administrated.sociality.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.*;
 import bei7473p5254d69jcuat.tenyu.model.release1.middle.takeoverserver.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.individuality.*;
-import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.sociality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.reference.*;
 import glb.*;
 
 /**
@@ -106,7 +105,7 @@ public class RatingGameMatchingServer
 	}
 
 	public MatchingStateByGameSingle getOrCreateSingle(Long gameId) {
-		if (SocialityStore.isBanStatic(NodeType.RATINGGAME, gameId)) {
+		if (SocialityStore.isBanStatic(StoreNameObjectivity.RATING_GAME, gameId)) {
 			Glb.getLogger().warn("banned game", new Exception());
 			return null;
 		}
@@ -130,7 +129,7 @@ public class RatingGameMatchingServer
 	}
 
 	public MatchingStateByGameTeam getOrCreateTeam(Long gameId) {
-		if (SocialityStore.isBanStatic(NodeType.RATINGGAME, gameId)) {
+		if (SocialityStore.isBanStatic(StoreNameObjectivity.RATING_GAME, gameId)) {
 			Glb.getLogger().warn("banned game", new Exception());
 			return null;
 		}
