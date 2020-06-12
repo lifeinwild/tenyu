@@ -71,7 +71,9 @@ import jetbrains.exodus.env.*;
 public interface ValidatableI {
 
 	/**
-	 * RPCで外部から渡された時に呼び出される。
+	 * RPCリクエストオブジェクトのメンバー変数にこのオブジェクトがあった場合に
+	 * このオブジェクトの状態を検証する。
+	 *
 	 * @return	妥当か
 	 */
 	default boolean validateAtRpc(ValidationResult r) {

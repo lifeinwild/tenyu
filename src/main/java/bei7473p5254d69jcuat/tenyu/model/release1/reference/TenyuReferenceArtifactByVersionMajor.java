@@ -17,7 +17,7 @@ import jetbrains.exodus.env.*;
  * {@link TenyuArtifactByVersionI#getTenyuArtifactId()}が同じ範囲で
  * 最新版を参照する。
  *
- * 関連：{@link TenyuReferenceArtifactByVersionSecure}
+ * 関連：{@link TenyuReferenceArtifactByVersionFile}
  *
  * @author exceptiontenyu@gmail.com
  */
@@ -163,7 +163,7 @@ public class TenyuReferenceArtifactByVersionMajor
 	@Override
 	protected boolean validateAtUpdateChangeTenyuReferenceArtifactConcrete(
 			ValidationResult r, Object old) {
-		if (!(old instanceof TenyuReferenceArtifactByVersionSecure)) {
+		if (!(old instanceof TenyuReferenceArtifactByVersionMajor)) {
 			return false;
 		}
 		TenyuReferenceArtifactByVersionMajor o = (TenyuReferenceArtifactByVersionMajor) old;

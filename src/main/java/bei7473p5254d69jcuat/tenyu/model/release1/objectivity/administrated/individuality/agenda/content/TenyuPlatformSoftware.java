@@ -1,24 +1,30 @@
 package bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.agenda.content;
 
-import java.util.*;
-
 import bei7473p5254d69jcuat.tenyu.db.*;
-import bei7473p5254d69jcuat.tenyutalk.file.*;
+import bei7473p5254d69jcuat.tenyu.db.store.administrated.individuality.repository.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.*;
+import bei7473p5254d69jcuat.tenyu.model.release1.objectivity.administrated.individuality.repository.*;
 import glb.*;
 import glb.util.*;
 import jetbrains.exodus.env.*;
 
+/**
+ * tenyu基盤ソフトウェアのメタデータ
+ *
+ * @author exceptiontenyu@gmail.com
+ *
+ */
 public class TenyuPlatformSoftware implements ValidatableI {
-	public static final int filesMax = 2000;
 
 	/**
-	 * ファイル一覧
+	 * ファイルのメタデータへの参照
 	 */
-	private List<TenyutalkFileMetadataI> files = new ArrayList<>();
+	private Long tenyuArtifactByVersionId;
 
 	/**
 	 * リリース番号
-	 * バージョン的な数値
+	 * 必ず更新のたびにインクリメントされる。
+	 * これが異なっている事で今実行中のソフトウェアが最新版ではないと分かるので
 	 */
 	private int release;
 
@@ -31,22 +37,15 @@ public class TenyuPlatformSoftware implements ValidatableI {
 		if (getClass() != obj.getClass())
 			return false;
 		TenyuPlatformSoftware other = (TenyuPlatformSoftware) obj;
-		if (files == null) {
-			if (other.files != null)
-				return false;
-		} else if (!files.equals(other.files))
-			return false;
 		if (release != other.release)
 			return false;
+		if (tenyuArtifactByVersionId == null) {
+			if (other.tenyuArtifactByVersionId != null)
+				return false;
+		} else if (!tenyuArtifactByVersionId
+				.equals(other.tenyuArtifactByVersionId))
+			return false;
 		return true;
-	}
-
-	public List<TenyutalkFileMetadataI> getFiles() {
-		List<TenyutalkFileMetadataI> r = new ArrayList<>();
-		for (TenyutalkFileMetadataI f : files) {
-			r.add(f.cloneAndPrefix(Glb.getFile().getPlatformFileDirName()));
-		}
-		return r;
 	}
 
 	public int getRelease() {
@@ -57,45 +56,43 @@ public class TenyuPlatformSoftware implements ValidatableI {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((files == null) ? 0 : files.hashCode());
 		result = prime * result + release;
+		result = prime * result + ((tenyuArtifactByVersionId == null) ? 0
+				: tenyuArtifactByVersionId.hashCode());
 		return result;
-	}
-
-	public void setFiles(List<TenyutalkFileMetadataI> files) {
-		this.files = files;
 	}
 
 	public void setRelease(int release) {
 		this.release = release;
 	}
 
-	@Override
-	public boolean validateAtCreate(ValidationResult r) {
+	private boolean validateAtCommon(ValidationResult r) {
 		boolean b = true;
 		if (release <= 0) {
 			r.add(Lang.TENYU_PLATFORM_FILE_RELEASE, Lang.ERROR_INVALID);
 			b = false;
 		}
-		//release1にハッシュ値一覧を与える事が難しい事に気付いたので
-		//ソフトウェアは自身を構成する全てのファイルのハッシュ値一覧を自身に含めれない。
-		//release2以降のハッシュ値一覧はAgendaVersionupのオブジェクトとしてDB上に存在し、
-		//ハッシュ値一覧自体はソフトウェアに含められない。
-		if (files == null || (release > 1 && files.size() == 0)) {
-			r.add(Lang.TENYU_PLATFORM_FILES, Lang.ERROR_EMPTY);
-			b = false;
-		} else {
-			if (files.size() > filesMax) {
-				r.add(Lang.TENYU_PLATFORM_FILES, Lang.ERROR_TOO_MANY);
+		if (release > 1) {
+			if (tenyuArtifactByVersionId == null) {
+				r.add(Lang.TENYU_PLATFORM_SOFTWARE,
+						Lang.TENYU_PLATFORM_SOFTWARE_ARTIFACT_BY_VERSION_ID,
+						Lang.ERROR_EMPTY);
 				b = false;
-			} else {
-				for (TenyutalkFileMetadataI e : getFiles()) {
-					if (!e.validateAtCreate(r)) {
-						b = false;
-						break;
-					}
-				}
+			} else if (!Model.validateIdStandard(tenyuArtifactByVersionId)) {
+				r.add(Lang.TENYU_PLATFORM_SOFTWARE,
+						Lang.TENYU_PLATFORM_SOFTWARE_ARTIFACT_BY_VERSION_ID,
+						Lang.ERROR_EMPTY);
+				b = false;
 			}
+		}
+		return b;
+	}
+
+	@Override
+	public boolean validateAtCreate(ValidationResult r) {
+		boolean b = true;
+		if (!validateAtCommon(r)) {
+			b = false;
 		}
 		return b;
 	}
@@ -107,28 +104,47 @@ public class TenyuPlatformSoftware implements ValidatableI {
 
 	@Override
 	public boolean validateAtUpdate(ValidationResult r) {
-		return validateAtCreate(r);//同じ
+		boolean b = true;
+		if (!validateAtCommon(r)) {
+			b = false;
+		}
+		return b;
 	}
 
 	@Override
 	public boolean validateReference(ValidationResult r, Transaction txn)
 			throws Exception {
 		boolean b = true;
-		if (files != null) {
-			for (TenyutalkFileMetadataI e : getFiles()) {
-				if (!e.validateReference(r, txn)) {
-					b = false;
-					break;
-				}
-			}
+		TenyuArtifactByVersionStore tabvs = new TenyuArtifactByVersionStore(
+				txn);
+		if (tabvs.get(tenyuArtifactByVersionId) == null) {
+			r.add(Lang.TENYU_PLATFORM_SOFTWARE,
+					Lang.TENYU_PLATFORM_SOFTWARE_ARTIFACT_BY_VERSION_ID,
+					Lang.ERROR_DB_NOTFOUND_REFERENCE,
+					"tenyuArtifactByVersionId=" + tenyuArtifactByVersionId);
+			b = false;
 		}
+
 		return b;
 	}
 
 	@Override
 	public String toString() {
-		return "TenyuPlatformSoftware [files=" + files + ", release=" + release
-				+ "]";
+		return "TenyuPlatformSoftware [tenyuArtifactByVersionId="
+				+ tenyuArtifactByVersionId + ", release=" + release + "]";
+	}
+
+	public TenyuArtifactByVersion getTenyuArtifactByVersion() {
+		return Glb.getObje().getTenyuArtifactByVersion(
+				tabvs -> tabvs.get(tenyuArtifactByVersionId));
+	}
+
+	public Long getTenyuArtifactByVersionId() {
+		return tenyuArtifactByVersionId;
+	}
+
+	public void setTenyuArtifactByVersionId(Long tenyuArtifactByVersionId) {
+		this.tenyuArtifactByVersionId = tenyuArtifactByVersionId;
 	}
 
 }

@@ -192,11 +192,15 @@ public abstract class AdministratedObject extends Model
 			} else {
 				if (isRestrictedInSpecialIdRegisterer()) {
 					r.add(Lang.ADMINISTRATEDOBJECT_REGISTERER,
-							Lang.ERROR_INVALID);
+							Lang.ERROR_INVALID,
+							"isRestrictedInSpecialIdRegisterer=true registerer="
+									+ registererUserId);
 					b = false;
 				} else if (!validateIdStandardNotSpecialId(registererUserId)) {
 					r.add(Lang.ADMINISTRATEDOBJECT_REGISTERER,
-							Lang.ERROR_INVALID);
+							Lang.ERROR_INVALID,
+							"isRestrictedInSpecialIdRegisterer=false registerer="
+									+ registererUserId);
 					b = false;
 				}
 			}

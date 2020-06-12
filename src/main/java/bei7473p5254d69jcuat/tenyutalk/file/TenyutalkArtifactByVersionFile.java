@@ -11,11 +11,8 @@ import glb.util.*;
 import jetbrains.exodus.env.*;
 
 /**
+ * {@link TenyuArtifactByVersionI}成果物メタデータのファイル
  * {@link TenyutalkFileMetadataI}の実装
- *
- * Tenyutalk系で扱うファイル。
- * 現状Tenyuの設計では動的に送受信するファイルはこれのみ。
- * {@link TenyuArtifactI}成果物としてのファイルアップロードのみということ。
  *
  * @author exceptiontenyu@gmail.com
  *
@@ -79,7 +76,7 @@ public class TenyutalkArtifactByVersionFile
 	@Override
 	public String getBaseDir() {
 		return Glb.getFile().getTenyutalkRepositoryReleaseArtifactDir(
-				getTenyuArtifact()) + getDirAndFilename();
+				getTenyuArtifact());
 	}
 
 	public String getDirAndFilename() {

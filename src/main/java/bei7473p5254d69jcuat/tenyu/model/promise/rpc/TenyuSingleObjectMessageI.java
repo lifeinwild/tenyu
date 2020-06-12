@@ -63,9 +63,10 @@ public interface TenyuSingleObjectMessageI {
 	}
 
 	/**
-	 * 通信検証
-	 * 機能毎に様々な情報を総合した検証を行う
-	 * ただしrpc時に必要最小限な検証を行う。
+	 * 周辺検証のRPC版
+	 *
+	 * RPCに伴う様々な情報を総合した検証を行う。
+	 * ただし{@link ValidatableI#validateAtRpc(ValidationResult)}で行われる検証をしない。
 	 *
 	 * @param m			SOM
 	 * @param addr		リクエスト元アドレス

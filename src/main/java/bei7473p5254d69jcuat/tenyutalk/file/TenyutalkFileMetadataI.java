@@ -88,7 +88,7 @@ public interface TenyutalkFileMetadataI extends FileMetadataI, ValidatableI {
 
 	@Override
 	default String getRelativePathStr() {
-		String p = getBaseDir();
+		String p = getBaseDir() + getDirAndFilename();
 		if (!Glb.getFile().isAppPathRelative(p) || !Glb.getUtil()
 				.validatePath(p, ChunkedDataConcatFile.fileNameLenMax)) {
 			return null;
@@ -173,7 +173,7 @@ public interface TenyutalkFileMetadataI extends FileMetadataI, ValidatableI {
 	}
 
 	default String getWriteBitsPathStr() {
-		String p = getBaseDir() + Glb.getFile().getWriteBitsSuffix();
+		String p = getRelativePathStr() + Glb.getFile().getWriteBitsSuffix();
 		if (!Glb.getFile().isAppPathRelative(p) || !Glb.getUtil()
 				.validatePath(p, ChunkedDataConcatFile.fileNameLenMax)) {
 			return null;

@@ -821,7 +821,7 @@ public class Downloader implements GlbMemberDynamicState {
 
 		//DL試行。結果を確認しない。定期的に繰り返され、バージョンアップ直前に再度DLが試行される。
 		//既にDL済みかもしれないが、その場合DL処理は内部で行われない
-		downloadAsync(plat.getFiles(), true);
+		downloadAsync(plat.getTenyuArtifactByVersion().getFileMetadata(), true);
 	}
 
 	/**

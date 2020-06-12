@@ -43,10 +43,12 @@ public abstract class TenyuReferenceArtifactByVersion
 	private String mediaType;
 
 	/**
-	 * ミラーノード一覧
+	 * キャッシュノード一覧
 	 * uploaderUserIdの０番ノードはデフォルトで想定されるので含まない。
+	 *
+	 * ただしキャッシュノードは最新版を判定する能力を持たない。
 	 */
-	private List<NodeIdentifierUser> mirrorNodes = new ArrayList<>();
+	private List<NodeIdentifierUser> cacheNodes = new ArrayList<>();
 
 	/**
 	 * オプション値。被参照オブジェクトがGUI表示する時場合によって活用する。
@@ -68,10 +70,10 @@ public abstract class TenyuReferenceArtifactByVersion
 				return false;
 		} else if (!mediaType.equals(other.mediaType))
 			return false;
-		if (mirrorNodes == null) {
-			if (other.mirrorNodes != null)
+		if (cacheNodes == null) {
+			if (other.cacheNodes != null)
 				return false;
-		} else if (!mirrorNodes.equals(other.mirrorNodes))
+		} else if (!cacheNodes.equals(other.cacheNodes))
 			return false;
 		if (options == null) {
 			if (other.options != null)
@@ -100,12 +102,8 @@ public abstract class TenyuReferenceArtifactByVersion
 		return mediaType;
 	}
 
-	public List<NodeIdentifierUser> getMirrorNodes() {
-		return mirrorNodes;
-	}
-
-	public List<NodeIdentifierUser> getNodes() {
-		return mirrorNodes;
+	public List<NodeIdentifierUser> getCacheNodes() {
+		return cacheNodes;
 	}
 
 	public Map<String, String> getOptions() {
@@ -124,7 +122,7 @@ public abstract class TenyuReferenceArtifactByVersion
 		result = prime * result
 				+ ((mediaType == null) ? 0 : mediaType.hashCode());
 		result = prime * result
-				+ ((mirrorNodes == null) ? 0 : mirrorNodes.hashCode());
+				+ ((cacheNodes == null) ? 0 : cacheNodes.hashCode());
 		result = prime * result + ((options == null) ? 0 : options.hashCode());
 		return result;
 	}
@@ -133,8 +131,8 @@ public abstract class TenyuReferenceArtifactByVersion
 		this.mediaType = mediaType;
 	}
 
-	public void setMirrorNodes(List<NodeIdentifierUser> mirrorNodes) {
-		this.mirrorNodes = mirrorNodes;
+	public void setCacheNodes(List<NodeIdentifierUser> cacheNodes) {
+		this.cacheNodes = cacheNodes;
 	}
 
 	public void setOptions(Map<String, String> options) {
@@ -144,7 +142,7 @@ public abstract class TenyuReferenceArtifactByVersion
 	@Override
 	public String toString() {
 		return "TenyuReferenceArtifactByVersion [mediaType=" + mediaType
-				+ ", mirrorNodes=" + mirrorNodes + ", options=" + options + "]";
+				+ ", cacheNodes=" + cacheNodes + ", options=" + options + "]";
 	}
 
 	@Override
@@ -153,7 +151,7 @@ public abstract class TenyuReferenceArtifactByVersion
 		if (!validateCommon(r)) {
 			b = false;
 		} else {
-			for (NodeIdentifierUser n : mirrorNodes) {
+			for (NodeIdentifierUser n : cacheNodes) {
 				if (!n.validateAtCreate(r)) {
 					b = false;
 					break;
@@ -194,7 +192,7 @@ public abstract class TenyuReferenceArtifactByVersion
 		if (!validateCommon(r)) {
 			b = false;
 		} else {
-			for (NodeIdentifierUser n : mirrorNodes) {
+			for (NodeIdentifierUser n : cacheNodes) {
 				if (!n.validateAtUpdate(r)) {
 					b = false;
 					break;
@@ -234,15 +232,15 @@ public abstract class TenyuReferenceArtifactByVersion
 
 	private final boolean validateCommon(ValidationResult r) {
 		boolean b = true;
-		if (mirrorNodes == null) {
+		if (cacheNodes == null) {
 			r.add(Lang.TENYU_REFERENCE_ARTIFACT_BY_VERSION, Lang.MIRROR_NODES,
 					Lang.ERROR_EMPTY);
 			b = false;
 		} else {
-			if (mirrorNodes.size() > mirrorNodesMax) {
+			if (cacheNodes.size() > mirrorNodesMax) {
 				r.add(Lang.TENYU_REFERENCE_ARTIFACT_BY_VERSION,
 						Lang.MIRROR_NODES, Lang.ERROR_TOO_MANY,
-						"size=" + mirrorNodes.size());
+						"size=" + cacheNodes.size());
 				b = false;
 			}
 		}
@@ -299,7 +297,7 @@ public abstract class TenyuReferenceArtifactByVersion
 	public final boolean validateReference(ValidationResult r, Transaction txn)
 			throws Exception {
 		boolean b = true;
-		for (NodeIdentifierUser n : mirrorNodes) {
+		for (NodeIdentifierUser n : cacheNodes) {
 			if (!n.validateReference(r, txn)) {
 				b = false;
 				break;
@@ -311,4 +309,8 @@ public abstract class TenyuReferenceArtifactByVersion
 
 	abstract protected boolean validateReferenceTenyuReferenceArtifactConcrete(
 			ValidationResult r, Transaction txn) throws Exception;
+
+	public static int getMirrornodesmax() {
+		return mirrorNodesMax;
+	}
 }

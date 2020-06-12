@@ -8,13 +8,7 @@ import glb.util.*;
 import jetbrains.exodus.env.*;
 
 /**
- * 特定の成果物の特定のファイルを参照する。
- * ただしそのファイルを含む最後のバージョンから。
- *
- * 参照されたアーティファクトの全バージョンから、
- * できるだけ新しいバージョンで指定されたファイルを探し、
- * そのバージョンの全ファイルがDLされる。
- * 参照されたファイルのみをGUI表示する。
+ * 指定されたファイルを含む最後のバージョンを参照する。
  *
  * @author exceptiontenyu@gmail.com
  *
@@ -25,10 +19,10 @@ public class TenyuReferenceArtifactByVersionFile
 	 * 参照条件となるファイル
 	 * 成果物フォルダからのフォルダ名も含む
 	 */
-	private String filename;
+	private String dirAndFilename;
 
 	/**
-	 * この成果物の特定のバージョンが参照される
+	 * 対象アーティファクト
 	 */
 	private Long tenyuArtifactId;
 
@@ -123,7 +117,7 @@ public class TenyuReferenceArtifactByVersionFile
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result
-				+ ((filename == null) ? 0 : filename.hashCode());
+				+ ((dirAndFilename == null) ? 0 : dirAndFilename.hashCode());
 		result = prime * result
 				+ ((tenyuArtifactId == null) ? 0 : tenyuArtifactId.hashCode());
 		return result;
@@ -138,10 +132,10 @@ public class TenyuReferenceArtifactByVersionFile
 		if (getClass() != obj.getClass())
 			return false;
 		TenyuReferenceArtifactByVersionFile other = (TenyuReferenceArtifactByVersionFile) obj;
-		if (filename == null) {
-			if (other.filename != null)
+		if (dirAndFilename == null) {
+			if (other.dirAndFilename != null)
 				return false;
-		} else if (!filename.equals(other.filename))
+		} else if (!dirAndFilename.equals(other.dirAndFilename))
 			return false;
 		if (tenyuArtifactId == null) {
 			if (other.tenyuArtifactId != null)
@@ -153,8 +147,24 @@ public class TenyuReferenceArtifactByVersionFile
 
 	@Override
 	public String toString() {
-		return "TenyuReferenceArtifactByVersionFile [filename=" + filename
+		return "TenyuReferenceArtifactByVersionFile [filename=" + dirAndFilename
 				+ ", tenyuArtifactId=" + tenyuArtifactId + "]";
+	}
+
+	public String getDirAndFilename() {
+		return dirAndFilename;
+	}
+
+	public void setDirAndFilename(String dirAndFilename) {
+		this.dirAndFilename = dirAndFilename;
+	}
+
+	public Long getTenyuArtifactId() {
+		return tenyuArtifactId;
+	}
+
+	public void setTenyuArtifactId(Long tenyuArtifactId) {
+		this.tenyuArtifactId = tenyuArtifactId;
 	}
 
 }
